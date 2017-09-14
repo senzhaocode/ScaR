@@ -34,7 +34,7 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
   1.6 Genomic data and annotations
   
       ~/data/Gene_hg38.txt: gene annotation file (This file has been present in ~/data when you downlod the package)
-      ~/data/transcript_cdna.fa: user have to download the "transcript_cdna.fa" (transcriptome sequence) in ~/data
+      ~/data/transcript_cdna.fa: user have to download the "transcript_cdna.fa" (transcriptome sequence) in ~/data following the command
         cd ~/data
         wget "http://folk.uio.no/senz/Transcript_cdna.fa"
         
