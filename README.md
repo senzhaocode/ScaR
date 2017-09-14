@@ -38,3 +38,5 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
         cd ~/data
         wget "http://folk.uio.no/senz/Transcript_cdna.fa"
         
+#  2. Set the path of Perl library to environment variables
+        
