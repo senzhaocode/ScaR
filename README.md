@@ -1,7 +1,7 @@
 # scaffold_realign package
 Use scaffold realigning strategy to detect the recurrence of a list fusion transcripts across samples
 
-# 1. Requirements
+# 1. Requirements (before running program)
   1.1 Perl version >= 5.10.2
   
   1.2 HISAT2 version 2.1.0 (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip)
@@ -38,5 +38,9 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
         cd ~/data
         wget "http://folk.uio.no/senz/Transcript_cdna.fa"
         
-#  2. Set the path of Perl library to environment variables
+  1.7 Set the path of Perl library to environment variables
+  
+      PERL5LIB="$PERL5LIB:/where_is_path/scaffold_map/lib"
+      export PERL5LIB
+      NOTE: we recommend that users add the path of perl library to .bashrc, then "source .bashrc"
         
