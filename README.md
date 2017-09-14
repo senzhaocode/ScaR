@@ -30,6 +30,8 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       
       If R has not been installed in the server system, users have to donwload and install it locally.
       Then, users add it path to linux environment variables before running:
+        PATH=$PATH:/where_is_path/R
+        export PATH
     
   1.6 Genomic data and annotations
   
