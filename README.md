@@ -58,3 +58,13 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       # fastq file path for the first end of paired-end reads
       --second /work/projects/nn9313k/Andreas/RNA-seq/TCGA_testicular_53_102/4e42785e-6633-407d-afc6-848710e6f34e/*_2.fastq \
       # fastq file path for the second end of paired-end reads
+      --geneA TMPRSS2 --geneB ERG \
+      # fusion partner gene names (Refseq gene symbol and Ensembl id are accepted, but never mix them together)
+      --scaffold /work/projects/nn9313k/TCGA_prad/scaffold_map/TMPRSS2_ERG_scaff_seq.fa \
+      # Fusion scaffold sequences, users can extract them from raw output files of de novo fusion finders (e.g. deFuse, fusioncatcher, SOAPfuse). A list of candidate sequences in fasta format are accepted. 
+      # For instance:
+      #	>alt_0
+      #	XXXXXXXXXXXXXXXXXX|YYYYYYYYYYYYYYYY
+      #	>alt_1
+      #	XXXXXXXXXXXXXXXXXX*YYYYYYYYYYYYYYY
+      # NOTE: 
