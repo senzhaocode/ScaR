@@ -60,6 +60,8 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       # fastq file path for the second end of paired-end reads
       --geneA TMPRSS2 --geneB ERG \
       # fusion partner gene names (Refseq gene symbol and Ensembl id are accepted, but never mix them together)
+      --anchor (default: 6)
+      
       --scaffold /work/projects/nn9313k/TCGA_prad/scaffold_map/TMPRSS2_ERG_scaff_seq.fa \
       # Fusion scaffold sequences, users can extract them from raw output files of de novo fusion finders (e.g. deFuse, fusioncatcher, SOAPfuse). A list of candidate sequences in fasta format are accepted. 
       # For instance:
