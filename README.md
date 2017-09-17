@@ -48,7 +48,9 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
         
 # 2. Run the "select_read.pl"
   2.1 Look at running parameters
+      
       perl select_read.pl --help
 
   2.2 An example of running:
+      
       perl select_read.pl \
