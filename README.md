@@ -68,6 +68,13 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       # Set the length of anchor. The minimum number of bases is required to match to geneA/geneB region in the scaffold sequence.
       # If users want to more specificity of read mapping, just increase this value.
       
+      --trimm 0 \
+      # (default: 0)
+      # Set whether raw input fastq reads are trimmed (1) or not (0)
+      
+      --length 48 \
+      # Set the maximum length of fastq read, this option is only available when raw fastq reads are trimmed (--trimm 1)
+      
       --p 8 \ 
       # (default: 8)
       # The number of threads, and make sure that it should be the same as the number of CPUs allocated in jobscript
