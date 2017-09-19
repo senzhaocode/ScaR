@@ -94,4 +94,5 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       #	XXXXXXXXXXXXXXXXXX*YYYYYYYYYYYYYYY
       # NOTE: 1. It only accepts '*' or '|' as a separator for breakpoint sequences. Sequences 'XXXXXXXXXXX' and 'YYYYYYYYY' should correspond to geneA and geneB, respectively.
       #       2. In order to ensure the specificity of breakpoint sequence, we recommend that 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
+      #       3. In current version, the breakpoint sequence should be composed of cDNA (i.e. exon region). If it contains intron/intergenic sequences, the program will stop running scaffold realignment.
 
