@@ -56,11 +56,20 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       perl select_read.pl \
       --first /work/projects/nn9313k/Andreas/RNA-seq/TCGA_testicular_53_102/4e42785e-6633-407d-afc6-848710e6f34e/*_1.fastq \ 
       # fastq file path for the first end of paired-end reads
+      
       --second /work/projects/nn9313k/Andreas/RNA-seq/TCGA_testicular_53_102/4e42785e-6633-407d-afc6-848710e6f34e/*_2.fastq \
       # fastq file path for the second end of paired-end reads
+      
       --geneA TMPRSS2 --geneB ERG \
       # fusion partner gene names (Refseq gene symbol and Ensembl id are accepted, but never mix them together)
-      --anchor (default: 6)
+      
+      --anchor 6 \ (default: 6)
+      # Set the length of anchor. The minimum number of bases is required to match to geneA/geneB region in the scaffold sequence.
+      # If users want to more specificity of read mapping, just increase this value.
+      
+      --p 8 \ (default: 8)
+      # The number of threads, and make sure that it should be the same as the number of CPUs allocated in jobscript
+      
       
       --scaffold /work/projects/nn9313k/TCGA_prad/scaffold_map/TMPRSS2_ERG_scaff_seq.fa \
       # Fusion scaffold sequences, users can extract them from raw output files of de novo fusion finders (e.g. deFuse, fusioncatcher, SOAPfuse). A list of candidate sequences in fasta format are accepted. 
