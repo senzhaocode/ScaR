@@ -96,3 +96,6 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       #       2. In order to ensure the specificity of breakpoint sequence, we recommend that 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
       #       3. In current version, the breakpoint sequence should be composed of cDNA (i.e. exon region). If it contains intron/intergenic sequences, the program will stop running scaffold realignment.
 
+  2.3 Some tips for run scripts using slurm jobscript.
+  
+      Generally, "select_read.pl" script does not need huge memory, instead the implementation of multiple number of threads will speed up running process. For example: the setting "SBATCH --cpus-per-task=8 and SBATCH --mem-per-cpu=1G" should be much more efficient than the setting "SBATCH --cpus-per-task=4 and SBATCH --mem-per-cpu=4G"
