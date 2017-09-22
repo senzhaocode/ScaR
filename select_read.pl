@@ -120,8 +120,12 @@ print "#########################################################################
 	# calculate the read length
 	# Note: we recommend not trimming raw reads
 	if (! $read_length ) { $read_length = Check::read_length($fastq_1, $fastq_2); }
-	if (! $read_length ) { print "\nStep 0: read length of fastq file is error, please use RNA-seq fastq file\n"; exit; }
+	if (! $read_length ) { print "\nStep 0-1: read length of fastq file is error, please use RNA-seq fastq file\n"; exit; }
 
+	# judge the header name of fastq -- most likely three possibilities: " ", "/" and "end" 
+	my $header_sep = Check::judge_header($fastq_1, $fastq_2);
+	if ( $header_sep eq "end" ) { print "\nStep 0-2: the header of fastq file is error, please make sure the fastq format is correct\n"; exit; }
+	
 	# Exteact scaffold sequence 
 	#***/ $read_length => read length of fastq format
 	#***/ $scaffold => scaffold sequence path
@@ -232,19 +236,19 @@ print "#########################################################################
 			print "# (parse fastq file, grep the reads that could be aligned to breakpoint sequence $name) #\n";
 			print "#########################################################################################\n";
 			if ( %discordant ) {
-				First_output::grep_discordant(\%discordant, $fastq_1, $fastq_2, "$output/$name/");
+				First_output::grep_discordant(\%discordant, $fastq_1, $fastq_2, "$output/$name/", $header_sep);
 			} else {
 				print "Step 2-3: no discordant split reads mapped the scaffold\n";
 			}
 
 			if ( %singlton ) {
-				First_output::grep_singlton(\%singlton, $fastq_1, $fastq_2, "$output/$name/");
+				First_output::grep_singlton(\%singlton, $fastq_1, $fastq_2, "$output/$name/", $header_sep);
 			} else {
 				print "Step 2-3: no singlton split reads mapped the scaffold\n";
 			}
 
 			if ( %spanning ) {
-				First_output::grep_spanning(\%spanning, $fastq_1, $fastq_2, "$output/$name/");
+				First_output::grep_spanning(\%spanning, $fastq_1, $fastq_2, "$output/$name/", $header_sep);
 			} else {
 				print "Step 2-3: no spanning reads mapped the scaffold\n";
 			}
@@ -295,7 +299,7 @@ print "#########################################################################
 				if ( exists($read{$type}) ) {
 					my $spa_flag = system("hisat2 -p $cpus --no-unal --no-softclip --secondary -k 600 -x $genome_index -q -U $output/$name/${type}_1.txt,$output/$name/${type}_2.txt -S $output/$name/tmp/${type}_sec.sam");
 					$spa_flag == 0 or die "Step 3-1 Hisat2 maps spanning_1 and spanning_2 to genome fails\n";
-					Genome_align::discordant_specif($read{$type}, $multiple{$type}, "$output/$name/", \@partner, "spanning");
+					Genome_align::discordant_specif($read{$type}, $multiple{$type}, "$output/$name/", \@partner, "spanning", $header_sep);
 					if ( %{$read{$type}} ) {
 						open (OUT1, ">$output/$name/final_spanning_1.txt") || die "Step 3-1: cannot output the final 1st spanning:$!\n";
 						open (OUT2, ">$output/$name/final_spanning_2.txt") || die "Step 3-1: cannot output the final 2nd spanning:$!\n";
@@ -322,7 +326,7 @@ print "#########################################################################
 				if ( exists($read{$type}) ) {
 					my $dis_flag = system("hisat2 -p $cpus --no-unal --no-softclip --secondary -k 600 -x $genome_index -q -U $output/$name/${type}_1.txt,$output/$name/${type}_2.txt -S $output/$name/tmp/${type}_sec.sam");
 					$dis_flag == 0 or die "Step 3-2 Hisat2 maps discordant_split_1 and discordant_split_2 to genome fails\n";
-					Genome_align::discordant_specif($read{$type}, $multiple{$type}, "$output/$name/", \@partner, "discordant_split");
+					Genome_align::discordant_specif($read{$type}, $multiple{$type}, "$output/$name/", \@partner, "discordant_split", $header_sep);
 					if ( %{$read{$type}} ) {
 						open (OUT1, ">$output/$name/final_split_1.txt") || die "Step 3-2: cannot output the final 1st discordant split:$!\n";
 						open (OUT2, ">$output/$name/final_split_2.txt") || die "Step 3-2: cannot output the final 2nd discordant split:$!\n";
@@ -346,7 +350,7 @@ print "#########################################################################
 				if ( exists($read{$type}) ) {
 					my $sing_flag = system("hisat2 -p $cpus --no-unal --no-softclip --secondary -k 600 -x $genome_index -q -U $output/$name/${type}_1.txt,$output/$name/${type}_2.txt -S $output/$name/tmp/${type}_sec.sam");
 					$sing_flag == 0 or die "Step 3-3 Hisat2 maps singlton_split_1 and singlton_split_2 to genome fails\n";
-					Genome_align::singlton_specif($read{$type}, $multiple{$type}, "$output/$name", \@partner, "singlton_split");
+					Genome_align::singlton_specif($read{$type}, $multiple{$type}, "$output/$name", \@partner, "singlton_split", $header_sep);
 					if ( %{$read{$type}} ) {
 						open (OUT1, ">>$output/$name/final_split_1.txt") || die "Step 3-3: cannot output the final 1st singlton split:$!\n";
 						open (OUT2, ">>$output/$name/final_split_2.txt") || die "Step 3-3: cannot output the final 2nd singlton split:$!\n";
