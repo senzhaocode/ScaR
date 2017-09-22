@@ -3,12 +3,12 @@ use strict;
 use warnings;
 
 	sub grep_spanning {
-		my ($dis_ref, $fastq_1, $fastq_2, $path) = @_;
+		my ($dis_ref, $fastq_1, $fastq_2, $path, $sep) = @_;
 		open (OUT, ">>$path/read_mapped_info") || die "cannot open summary output path:$!\n";
 		open (OUT1, ">$path/spanning_1.txt") || die "cannot open first round spanning_1 output path:$!\n";
 		open (OUT2, ">$path/spanning_2.txt") || die "cannot open second round spanning_2 output path:$!\n";
 		foreach my $id ( keys %{$dis_ref} ) {
-			my $header = "@".$id." ";
+			my $header = "@".$id.$sep;
 			my $hit_1 = `grep "$header" -A 3 $fastq_1`; chomp $hit_1;
 			my $hit_2 = `grep "$header" -A 3 $fastq_2`; chomp $hit_2;
 			my $seq_1 = (split /\n/, $hit_1)[1]; my $seq_1_tr = $seq_1; $seq_1_tr =~tr/ATCG/TAGC/; $seq_1_tr = reverse($seq_1_tr);
@@ -67,13 +67,13 @@ use warnings;
 	}
 
 	sub grep_discordant {
-		my ($dis_ref, $fastq_1, $fastq_2, $path) = @_;
+		my ($dis_ref, $fastq_1, $fastq_2, $path, $sep) = @_;
 		open (OUT, ">$path/read_mapped_info") || die "cannot open summary output path:$!\n";
         	open (OUT1, ">$path/discordant_split_1.txt") || die "cannot open first round discordant_1 output path:$!\n";
         	open (OUT2, ">$path/discordant_split_2.txt") || die "cannot open second round discordant_2 output path:$!\n";
-		
+
 		foreach my $id ( keys %{$dis_ref} ) {
-                	my $header = "@".$id." ";
+                	my $header = "@".$id.$sep; 
                 	my $hit_1 = `grep "$header" -A 3 $fastq_1`; chomp $hit_1;
                 	my $hit_2 = `grep "$header" -A 3 $fastq_2`; chomp $hit_2;
                 	my $seq_1 = (split /\n/, $hit_1)[1]; my $seq_1_tr = $seq_1; $seq_1_tr =~tr/ATCG/TAGC/; $seq_1_tr = reverse($seq_1_tr);
@@ -150,13 +150,13 @@ use warnings;
 	}
 	
 	sub grep_singlton {
-		my ($dis_ref, $fastq_1, $fastq_2, $path) = @_;
+		my ($dis_ref, $fastq_1, $fastq_2, $path, $sep) = @_;
 		open (OUT, ">>$path/read_mapped_info") || die "cannot open summary output path:$!\n";
 		open (OUT1, ">$path/singlton_split_1.txt") || die "cannot open first round singlton_1 output path:$!\n";
 		open (OUT2, ">$path/singlton_split_2.txt") || die "cannot open first round singlton_2 output path:$!\n";
 	
 		foreach my $id ( keys %{$dis_ref} ) {
-                	my $header = "@".$id." ";
+                	my $header = "@".$id.$sep;
                 	my $hit_1 = `grep "$header" -A 3 $fastq_1`;
                 	my $hit_2 = `grep "$header" -A 3 $fastq_2`;
                 	my $seq_1 = (split /\n/, $hit_1)[1]; my $seq_1_tr = $seq_1; $seq_1_tr =~tr/ATCG/TAGC/; $seq_1_tr = reverse($seq_1_tr);

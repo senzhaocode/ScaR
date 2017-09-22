@@ -16,6 +16,21 @@ use warnings;
 		}
 	}
 
+	sub judge_header {
+		my ($fastq_1, $fastq_2) = @_;
+		my $tmp_1 = `head -n 2 $fastq_1`; chomp $tmp_1; my $name_1 = (split /\n/, $tmp_1)[0]; # header of first_end
+
+		if ( $name_1 =~/\s/ ) {
+			return(" ");
+		} else {
+			if ( $name_1 =~/\// ) {
+				return("/");
+			} else {
+				return("end");
+			}
+		}
+	}
+
 	sub extract_scaffold { # Load scaffold seq; at current stage, only one breakpoint sequence was allowed to involve in alignment 
 		my ($read_l, $scaffold, $ref) = @_;
 		$/ = ">";

@@ -10,6 +10,7 @@ use warnings;
 		while ( <IN> ) {
 			chomp $_; #
 			my ($name, $one_match, $one_pos, $other_match, $other_pos, $seq) = (split /\t/, $_)[0,2,3,6,7,9];
+			$name =~s/\/[\w\:\-]+$//g; $name =~s/\s[\w\:\-]+$//g; # trimmed header
 			if ( $one_match eq $geneA && $other_match eq $geneB ) {
 				push @{$dis_ref->{$name}}, [$one_pos, "spanning", $one_match, $seq];
 			} elsif ( $one_match eq $geneB && $other_match eq $geneA ) {
@@ -35,6 +36,7 @@ use warnings;
 		while ( <IN> ) {
 			chomp $_; #
 			my ($name, $one_match, $one_pos, $other_match, $other_pos, $seq) = (split /\t/, $_)[0,2,3,6,7,9];
+			$name =~s/\/[\w\:\-]+$//g; $name =~s/\s[\w\:\-]+$//g; # trimmed header
 			my $string = ""; # record mismatching information
 			if ( $_ =~/MD\:Z\:([\w\^]+)/ ) { 
 				$string = $1;
@@ -74,6 +76,7 @@ use warnings;
 		while ( <IN> ) {
 			chomp $_; #
 			my ($name, $one_match, $one_pos, $other_match, $other_pos, $seq) = (split /\t/, $_)[0,2,3,6,7,9];
+			$name =~s/\/[\w\:\-]+$//g; $name =~s/\s[\w\:\-]+$//g; # trimmed header
 			my $string = ""; # record mismatching information
 			if ( $_ =~/MD\:Z\:([\w\^]+)/ ) {
 				$string = $1;
@@ -126,6 +129,7 @@ use warnings;
         	while ( <IN> ) {
                 	chomp $_; #
                 	my ($name, $one_match, $one_pos, $other_match, $other_pos, $seq) = (split /\t/, $_)[0,2,3,6,7,9];
+			$name =~s/\/[\w\:\-]+$//g; $name =~s/\s[\w\:\-]+$//g; # trimmed header
 			my $string = ""; # record mismatching information
                         if ( $_ =~/MD\:Z\:([\w\^]+)/ ) {
                                 $string = $1;

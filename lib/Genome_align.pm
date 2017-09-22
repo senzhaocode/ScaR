@@ -3,10 +3,11 @@ use strict;
 use warnings;
 
 	sub discordant_specif {
-		my ($dis_ref, $multiple_ref, $path, $gene, $read_type) = @_; #read_type: spanning / discordant
+		my ($dis_ref, $multiple_ref, $path, $gene, $read_type, $sep) = @_; #read_type: spanning / discordant
 		foreach my $id ( keys %{$dis_ref} ) {
-			my $hit_1 = `grep "\@$id " -A 3 $path/${read_type}_1.txt`; chomp $hit_1;
-                        my $hit_2 = `grep "\@$id " -A 3 $path/${read_type}_2.txt`; chomp $hit_2;
+			my $com = "@".$id.$sep;
+			my $hit_1 = `grep "$com" -A 3 $path/${read_type}_1.txt`; chomp $hit_1;
+                        my $hit_2 = `grep "$com" -A 3 $path/${read_type}_2.txt`; chomp $hit_2;
                         my $seq_1 = (split /\n/, $hit_1)[1]; my $seq_1_tr = $seq_1; $seq_1_tr =~tr/ATCG/TAGC/; $seq_1_tr = reverse($seq_1_tr);
                         my $seq_2 = (split /\n/, $hit_2)[1]; my $seq_2_tr = $seq_2; $seq_2_tr =~tr/ATCG/TAGC/; $seq_2_tr = reverse($seq_2_tr);
                         $dis_ref->{$id}[0][1] = $seq_1;
@@ -21,6 +22,7 @@ use warnings;
 		open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5<40)' $path/tmp/${read_type}_sec.sam |") || die "cannot $read_type sam file:$!\n";
                 while ( <IN> ) {
                         chomp $_; my ($id, $flag, $chr, $pos, $quality, $cigar, $seq) = (split /\t/, $_)[0,1,2,3,4,5,9];
+			$id =~s/\/[\w\:\-]+$//g; $id =~s/\s[\w\:\-]+$//g; # print "#*$id\n"; # trimmed header
                         push @{$multiple_ref->{$id}{$seq}}, [$chr, $pos, $quality, $cigar, $flag]; #
                 }
                 close IN;
@@ -28,6 +30,7 @@ use warnings;
                 open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5>=40)' $path/tmp/${read_type}_sec.sam |") || die "cannot $read_type sam file:$!\n";
                 while ( <IN> ) {
                         chomp $_; my ($id, $flag, $chr, $pos, $quality, $cigar, $seq) = (split /\t/, $_)[0,1,2,3,4,5,9];
+			$id =~s/\/[\w\:\-]+$//g; $id =~s/\s[\w\:\-]+$//g; # print "#*$id\n"; # trimmed header
                         next if ( exists($multiple_ref->{$id}) );
                         push @{$mapped{$id}{$seq}}, [$chr, $pos, $quality, $cigar, $flag]; #
                 }
@@ -76,10 +79,11 @@ use warnings;
 	}
 
 	sub singlton_specif {
-		my ($dis_ref, $multiple_ref, $path, $gene, $read_type) = @_;
+		my ($dis_ref, $multiple_ref, $path, $gene, $read_type, $sep) = @_;
 		foreach my $id ( keys %{$dis_ref} ) {
-                        my $hit_1 = `grep "\@$id " -A 3 $path/${read_type}_1.txt`; chomp $hit_1;
-                        my $hit_2 = `grep "\@$id " -A 3 $path/${read_type}_2.txt`; chomp $hit_2;
+			my $com = "@".$id.$sep;
+                        my $hit_1 = `grep "$com" -A 3 $path/${read_type}_1.txt`; chomp $hit_1;
+                        my $hit_2 = `grep "$com" -A 3 $path/${read_type}_2.txt`; chomp $hit_2;
                         my $seq_1 = (split /\n/, $hit_1)[1]; my $seq_1_tr = $seq_1; $seq_1_tr =~tr/ATCG/TAGC/; $seq_1_tr = reverse($seq_1_tr);
                         my $seq_2 = (split /\n/, $hit_2)[1]; my $seq_2_tr = $seq_2; $seq_2_tr =~tr/ATCG/TAGC/; $seq_2_tr = reverse($seq_2_tr);
                         $dis_ref->{$id}[0][1] = $seq_1;
@@ -93,6 +97,7 @@ use warnings;
 		open (IN, "awk  -F '\t' -v OFS='\t' '(\$8>=0)' $path/tmp/${read_type}_sec.sam |") || die "cannot ${read_type} sam file:$!\n";
                 while ( <IN> ) {
                         chomp $_; my ($name, $flag, $chr, $pos, $quality, $cigar, $seq) = (split /\t/, $_)[0,1,2,3,4,5,9];
+			$name =~s/\/[\w\:\-]+$//g; $name =~s/\s[\w\:\-]+$//g; # print "#*$name\n"; # trimmed header
                         push @{$multiple_ref->{$name}{$seq}}, [$chr, $pos, $quality, $cigar, $flag];
                 }
                 close IN;
