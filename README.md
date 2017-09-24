@@ -104,12 +104,12 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
 # 3. Output results
   For example: ~/examples/output/
     
-    |--- "scaffold_*_seq.fa" (cDNA sequences of geneA and geneB, and breakpoint sequence of scaffold in fasta format)
-    |--- "hisats_noclip.sorted.bam" (BAM file: done by Hisat2 no-splicing alignment model)
-    |--- "discordant_split_1.txt, discordant_split_2.txt" (paired-end reads in fastq format: one-end maps to scaffold; the other maps to cDNA sequences of geneA/geneB -- extracted from hisats_noclip.sorted.bam)
-    |--- "singlton_split_1.txt, singlton_split_2.txt" (paired-end reads in fastq format: one-end maps to scaffold; the other shows no mapping to cDNA sequences of geneA/geneB -- extracted from hisats_noclip.sorted.bam)
-    |--- "spanning_1.txt, spanning_2.txt" (paired-end reads in fastq format: one-end maps to cDNA sequence of geneA; the other maps to cDNA sequence of geneB -- extracted from hisats_noclip.sorted.bam)
-    |--- "read_mapped_info" (mapping summary of discordant/singlton split reads and spanning reads)
+    |--- `"scaffold_*_seq.fa"` (cDNA sequences of geneA and geneB, and breakpoint sequence of scaffold in fasta format)
+    |--- `"hisats_noclip.sorted.bam"` (BAM file: done by Hisat2 no-splicing alignment model)
+    |--- `"discordant_split_1.txt, discordant_split_2.txt"` (paired-end reads in fastq format: one-end maps to scaffold; the other maps to cDNA sequences of geneA/geneB -- extracted from hisats_noclip.sorted.bam)
+    |--- `"singlton_split_1.txt, singlton_split_2.txt"` (paired-end reads in fastq format: one-end maps to scaffold; the other shows no mapping to cDNA sequences of geneA/geneB -- extracted from hisats_noclip.sorted.bam)
+    |--- `"spanning_1.txt, spanning_2.txt"` (paired-end reads in fastq format: one-end maps to cDNA sequence of geneA; the other maps to cDNA sequence of geneB -- extracted from hisats_noclip.sorted.bam)
+    |--- `"read_mapped_info"` (mapping summary of discordant/singlton split reads and spanning reads)
     |
     |--- `"final_read_mapped_info"` (mapping summary of filtered discordant/singlton split reads and filtered spanning reads)
     |--- "final_split_1.txt, final_split_2.txt" (paired-end reads in fastq format: combine discordant and singlton split reads after filtering out unspecific read mapping at the genome level)
