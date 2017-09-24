@@ -128,6 +128,7 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       perl evaluate.pl --help
       
   4.2 An example of running:
+      
       perl evaluate.pl \
       
       --input /where_is_your_path/RCC1_ABHD12B_new \
