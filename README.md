@@ -46,7 +46,7 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       export PERL5LIB
       NOTE: we recommend that users add the path of perl library to .bashrc, then "source .bashrc"
         
-# 2. Run the "select_read.pl"
+# 2. Usage of the "select_read.pl"
   2.1 Look at running parameters
       
       perl select_read.pl --help
@@ -100,3 +100,9 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
   2.3 Some tips for run scripts using slurm jobscript.
   
       Generally, "select_read.pl" script does not need huge memory, instead the implementation of multiple number of threads will speed up running process. For example: the setting "SBATCH --cpus-per-task=8 and SBATCH --mem-per-cpu=1G" should be much more efficient than the setting "SBATCH --cpus-per-task=4 and SBATCH --mem-per-cpu=4G"
+      
+# 3. Output results
+  For example: ~/examples/output/
+  |
+  |--- "scaffold_*_seq.fa"
+
