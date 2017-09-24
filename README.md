@@ -80,7 +80,7 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       # (default: 8)
       # The number of threads, and make sure that it should be the same as the number of CPUs allocated in jobscript
       
-      --input ~/data/ \
+      --input ~/data/ \
       # Set input path of genomic data and annotation
       
       --output ~/examples/output/ \
