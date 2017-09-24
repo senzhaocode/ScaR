@@ -112,5 +112,5 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
     |--- "read_mapped_info" (mapping summary of discordant/singlton split reads and spanning reads)
     |
     |--- "final_read_mapped_info" (mapping summary of filtered discordant/singlton split reads and filtered spanning reads)
-    |--- 
+    |--- "final_split_1.txt, final_split_2.txt" (paired-end reads in fastq format: combine discordant and singlton split reads after filtering out unspecific read mapping at the genome level)
 
