@@ -121,5 +121,5 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
         |--- "spanning_sec.sam" (align "spanning_1.txt, spanning_2.txt" to genome reference, done by hisat2 splicing alignment model)
         |--- "discordant_split_sec.sam" (align "discordant_split_1.txt, discordant_split_2.txt" to genome reference, done by hisat2 splicing alignment model)
         |--- "singlton_split_sec.sam" (align "singlton_split_1.txt, singlton_split_2.txt" to genome reference, done by hisat2 splicing alignment model)
-    *  most important output files for users
+   * most important output files for users
 
