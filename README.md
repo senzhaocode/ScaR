@@ -103,7 +103,7 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       
 # 3. Output results
   For example: ~/examples/output/
-  
-    |
-    |--- "scaffold_*_seq.fa"
+    
+    |--- "scaffold_*_seq.fa" (cDNA sequences of geneA and geneB, and breakpoint sequence of scaffold in fasta format)
+    
 
