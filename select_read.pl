@@ -3,7 +3,7 @@
 ###########################################################################################################################
 # Select_read.pl is perl script to detect the recurrence of known fusion transcripts using scaffold realignment strategy 
 # Before you start it, please read manual first: perl select_read.pl --help
-# The script was created in Nov. 11 2016, and the latest modification in Feb. 28 2017 
+# The script was created in Nov. 11 2016, and the latest modification in Sept. 15 2017 
 ###########################################################################################################################
 use strict;
 use warnings;
