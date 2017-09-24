@@ -123,3 +123,17 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
     
 *: files with bold name are most important for users
 
+# 4. Summarise the number of spanning and split reads across all samples (running the evaluate.pl)
+  4.1 Look at running parameters:
+      perl evaluate.pl --help
+      
+  4.2 An example of running:
+      perl evaluate.pl \
+      
+      --input /where_is_your_path/RCC1_ABHD12B_new \
+      #Set the input path, normally it should be the output directory of running the "select_read.pl"
+      
+      --output /where_is_your_path/RCC1_ABHD12B_summary \
+      #Set the output directory of running "evaluate.pl"
+      
+  4.3 Summary of output directory
