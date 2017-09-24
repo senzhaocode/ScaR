@@ -112,8 +112,8 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
   * `read_mapped_info` (mapping summary of discordant/singlton split reads and spanning reads)
   * **`final_read_mapped_info`** (mapping summary of filtered discordant/singlton split reads and filtered spanning reads)
   * **`final_split_1.txt, final_split_2.txt`** (paired-end reads in fastq format: combine discordant and singlton split reads after filtering out unspecific read mapping at the genome level)
-  * `final_spanning_1.txt, final_spanning_1.txt` (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping at the genome level)
-  * **`final_noclip.sorted.bam`** (show filtered discordant and singlton split reads, and spanning reads mapped to scaffold sequence, done by hisat2 no-splicing alignment model)
+  * `final_spanning_1.txt, final_spanning_1.txt` (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping at the genome level)
+  * **`final_noclip.sorted.bam`** (show filtered discordant and singlton split reads, and spanning reads mapped to scaffold sequence, done by hisat2 no-splicing alignment model)
     #If there are no spanning and discordant/singlton split reads, the "final_noclip.sorted.bam" is not present.
     
     * `tmp` folder (if users want to look at more detail of processing steps):
