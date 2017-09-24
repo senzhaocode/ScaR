@@ -54,7 +54,7 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
   2.2 An example of running:
       
       perl select_read.pl \
-      --first /where_is_path/4e42785e-6633-407d-afc6-848710e6f34e/*_1.fastq \ 
+      --first /examples/input/raw_1.fastq \ 
       # fastq file path for the first end of paired-end reads
       
       --second /where_is_path/4e42785e-6633-407d-afc6-848710e6f34e/*_2.fastq \
