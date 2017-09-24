@@ -115,10 +115,11 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
   * `final_spanning_1.txt, final_spanning_1.txt` (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping at the genome level)
   * **`final_noclip.sorted.bam`** (show filtered discordant and singlton split reads, and spanning reads mapped to scaffold sequence, done by hisat2 no-splicing alignment model) # If there are no spanning and discordant/singlton split reads, the "final_noclip.sorted.bam" is not present.
   * `tmp` folder (if users want to look at more detail of processing steps):
-    * `hisats_noclip.sam` (SAM format of "hisats_noclip.sorted.bam")
-    * `spanning_sec.sam` (align "spanning_1.txt, spanning_2.txt" to genome reference, done by hisat2 splicing alignment model)
-    * `discordant_split_sec.sam` (align "discordant_split_1.txt, discordant_split_2.txt" to genome reference, done by hisat2 splicing alignment model)
-    * `singlton_split_sec.sam` (align "singlton_split_1.txt, singlton_split_2.txt" to genome reference, done by hisat2 splicing alignment model)
+  
+    * `hisats_noclip.sam` (SAM format of "hisats_noclip.sorted.bam")
+    * `spanning_sec.sam` (align "spanning_1.txt, spanning_2.txt" to genome reference, done by hisat2 splicing alignment model)
+    * `discordant_split_sec.sam` (align "discordant_split_1.txt, discordant_split_2.txt" to genome reference, done by hisat2 splicing alignment model)
+    * `singlton_split_sec.sam` (align "singlton_split_1.txt, singlton_split_2.txt" to genome reference, done by hisat2 splicing alignment model)
     
    *most important output files for users
 
