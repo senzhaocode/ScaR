@@ -140,5 +140,10 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
   4.3 Summary of output directory
   
      For example: ~/output/RCC1_ABHD12B_summary
-      
-     * `summary.txt` (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold across samples; statistics tests for detection of mapping bias to scaffold sequence [<.05 indicates bias])
+     
+     * `summary.txt` (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold across samples; statistics tests for detection of mapping bias to scaffold sequence [<.05 indicates bias])
+     * `alt_1` (concatenate split reads across all samples, and make alignment)
+     
+      * `All_sample_split_1.txt, All_sample_split_2.txt` (concatenate discordant/singlton split reads across all samples)
+      * `All_sample_noclip.sorted.bam` (align concatenated split reads to breakpoint scaffold, done by hisat2 no-splicing alignment model)
+      * `p.value` (Fisher exact test for mapping bias to upstream/downstream of scaffold sequence)
