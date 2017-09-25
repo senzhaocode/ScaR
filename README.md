@@ -138,6 +138,7 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       #Set the output directory of running "evaluate.pl"
       
   4.3 Summary of output directory
-      For example: ~/output/RCC1_ABHD12B_summary
+  
+     For example: ~/output/RCC1_ABHD12B_summary
       
-      * `summary.txt` (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold across samples; statistics tests for detection of mapping bias to scaffold sequence [<.05 indicates bias])
+     * `summary.txt` (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold across samples; statistics tests for detection of mapping bias to scaffold sequence [<.05 indicates bias])
