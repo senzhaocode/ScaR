@@ -141,17 +141,10 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
   
      For example: ~/output/RCC1_ABHD12B_summary
       
-     * `scaffold_*_seq.fa` (cDNA sequences of geneA and geneB, and breakpoint sequence of scaffold in fasta format)
+     * **`summary.txt`** (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold sequence across samples; statistics test for mapping bias to scaffold sequence [p<.05 indicates bias])
      
-     * `hisats_noclip.sorted.bam` (BAM file: done by Hisat2 no-splicing alignment model)
-     
-     * `discordant_split_1.txt, discordant_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other maps to cDNA sequences of geneA/geneB -- extracted from hisats_noclip.sorted.bam)
-
-     
-     
-     * `summary.txt` (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold across samples; statistics tests for detection of mapping bias to scaffold sequence [<.05 indicates bias])
-     * `alt_1` (concatenate split reads across all samples, and make alignment)
+     * **`alt_1`** (concatenate split reads across all samples, and make alignment) 
      
       * `All_sample_split_1.txt, All_sample_split_2.txt` (concatenate discordant/singlton split reads across all samples)
-      * `All_sample_noclip.sorted.bam` (align concatenated split reads to breakpoint scaffold, done by hisat2 no-splicing alignment model)
+      * `All_sample_noclip.sorted.bam` (align concatenated split reads to breakpoint scaffold sequence, done by hisat2 no-splicing alignment model)
       * `p.value` (Fisher exact test for mapping bias to upstream/downstream of scaffold sequence)
