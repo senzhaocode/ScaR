@@ -152,4 +152,7 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
         |--- "All_sample_noclip.sorted.bam" (align concatenated split reads to breakpoint scaffold sequence, done by hisat2 no-splicing alignment model)
         |--- "p.value" (Fisher exact test for mapping bias to upstream/downstream of scaffold sequence)
         
-        
+
+## 5. Reference
+
+    
