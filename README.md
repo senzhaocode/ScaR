@@ -1,7 +1,11 @@
-# scaffold_realign package
+scaffold_realign package
+========================
+
 Use scaffold realigning strategy to detect the recurrence of a list fusion transcripts across samples
 
-# 1. Requirements (before running program)
+1. Requirements (before running program)
+----------------------------------------
+
   1.1 Perl version >= 5.10.2
   
   1.2 HISAT2 version 2.1.0 (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip)
