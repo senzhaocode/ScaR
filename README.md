@@ -138,7 +138,12 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       #Set the output directory of running "evaluate.pl"
       
   4.3 Summary of output directory
+      For example: ~/examples/output/
   
+      * `scaffold_*_seq.fa` (cDNA sequences of geneA and geneB, and breakpoint sequence of scaffold in fasta format)
+      * `hisats_noclip.sorted.bam` (BAM file: done by Hisat2 no-splicing alignment model)
+      * `discordant_split_1.txt, discordant_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other maps to cDNA sequences of geneA/geneB -- extracted from hisats_noclip.sorted.bam)
+
      For example: ~/output/RCC1_ABHD12B_summary
      
      * `summary.txt` (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold across samples; statistics tests for detection of mapping bias to scaffold sequence [<.05 indicates bias])
