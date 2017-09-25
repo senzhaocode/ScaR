@@ -155,5 +155,5 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
 
 ## 5. Reference
 
-      Daehwan Kim,	Ben Langmead	& Steven L Salzberg HISAT: a fast spliced aligner with low memory requirements [doi:10.1038/nmeth.3317](http://www.nature.com/nmeth/journal/v12/n4/full/nmeth.3317.html)
+      Daehwan Kim,Ben Langmead&Steven L.Salzberg HISAT: a fast spliced aligner with low memory requirements [Doi:10.1038/nmeth.3317] (http://www.nature.com/nmeth/journal/v12/n4/full/nmeth.3317.html)
     
