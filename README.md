@@ -134,7 +134,10 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       --input /where_is_your_path/RCC1_ABHD12B_new \
       #Set the input path, normally it should be the output directory of running the "select_read.pl"
       
-      --output /where_is_your_path/RCC1_ABHD12B_summary \
+      --output ~/output/RCC1_ABHD12B_summary \
       #Set the output directory of running "evaluate.pl"
       
   4.3 Summary of output directory
+      For example: ~/output/RCC1_ABHD12B_summary
+      
+      * `summary.txt` (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold across samples; statistics tests for detection of mapping bias to scaffold sequence [<.05 indicates bias])
