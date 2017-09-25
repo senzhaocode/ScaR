@@ -132,18 +132,18 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       perl evaluate.pl \
       
       --input /where_is_your_path/RCC1_ABHD12B_new \
-      #Set the input path, normally it should be the output directory of running the "select_read.pl"
+      # Set the input path, normally it should be the output directory of running the "select_read.pl"
       
       --output ~/output/RCC1_ABHD12B_summary \
-      #Set the output directory of running "evaluate.pl"
+      # Set the output directory of running "evaluate.pl"
   
   4.3 Summary of output directory
   
       For example: ~/output/RCC1_ABHD12B_summary
-  
-      * `scaffold_*_seq.fa` (cDNA sequences of geneA and geneB, and breakpoint sequence of scaffold in fasta format)
-      * `hisats_noclip.sorted.bam` (BAM file: done by Hisat2 no-splicing alignment model)
-      * `discordant_split_1.txt, discordant_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other maps to cDNA sequences of geneA/geneB -- extracted from hisats_noclip.sorted.bam)
+      |
+      |--- `scaffold_*_seq.fa` (cDNA sequences of geneA and geneB, and breakpoint sequence of scaffold in fasta format)
+      |--- `hisats_noclip.sorted.bam` (BAM file: done by Hisat2 no-splicing alignment model)
+      |--- `discordant_split_1.txt, discordant_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other maps to cDNA sequences of geneA/geneB -- extracted from hisats_noclip.sorted.bam)
 
      
      
