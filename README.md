@@ -2,6 +2,7 @@ scaffold_realign package
 ========================
 
 Use scaffold realigning strategy to detect the recurrence of a list fusion transcripts across samples
+![Figure1](https://github.com/senzhaocode/scaffold_realign/blob/master/examples/Figure_1.pdf)
 
 ## 1. Requirements (before running program)
   
