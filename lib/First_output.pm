@@ -4,9 +4,9 @@ use warnings;
 
 	sub grep_spanning {
 		my ($dis_ref, $fastq_1, $fastq_2, $path, $sep) = @_;
-		open (OUT, ">>$path/read_mapped_info") || die "cannot open summary output path:$!\n";
-		open (OUT1, ">$path/spanning_1.txt") || die "cannot open first round spanning_1 output path:$!\n";
-		open (OUT2, ">$path/spanning_2.txt") || die "cannot open second round spanning_2 output path:$!\n";
+		open (OUT, ">>$path/read_mapped_info") || die "Step 2-3: cannot open summary output path:$!\n";
+		open (OUT1, ">$path/spanning_1.txt") || die "Step 2-3: cannot open first round spanning_1 output path:$!\n";
+		open (OUT2, ">$path/spanning_2.txt") || die "Step 2-3: cannot open second round spanning_2 output path:$!\n";
 		foreach my $id ( keys %{$dis_ref} ) {
 			my $header = "@".$id.$sep;
 			my $hit_1 = `grep "$header" -A 3 $fastq_1`; chomp $hit_1;
@@ -68,9 +68,9 @@ use warnings;
 
 	sub grep_discordant {
 		my ($dis_ref, $fastq_1, $fastq_2, $path, $sep) = @_;
-		open (OUT, ">$path/read_mapped_info") || die "cannot open summary output path:$!\n";
-        	open (OUT1, ">$path/discordant_split_1.txt") || die "cannot open first round discordant_1 output path:$!\n";
-        	open (OUT2, ">$path/discordant_split_2.txt") || die "cannot open second round discordant_2 output path:$!\n";
+		open (OUT, ">$path/read_mapped_info") || die "Step 2-3: cannot open summary output path:$!\n";
+        	open (OUT1, ">$path/discordant_split_1.txt") || die "Step 2-3: cannot open first round discordant_1 output path:$!\n";
+        	open (OUT2, ">$path/discordant_split_2.txt") || die "Step 2-3: cannot open second round discordant_2 output path:$!\n";
 
 		foreach my $id ( keys %{$dis_ref} ) {
                 	my $header = "@".$id.$sep; 
@@ -125,23 +125,19 @@ use warnings;
                                 	}
                         	}
 			} elsif ( scalar(@{$dis_ref->{$id}}) == 1 ) { # Not included 
-                        	#if ( $dis_ref->{$id}[0][2] eq "scaffold" ) {
-                                #	if ( $dis_ref->{$id}[0][3] eq $seq_1 ) {
-                                #        	print OUT "discordant_split\t$id\t$dis_ref->{$id}[0][2]\tGeneA/GeneB\n";
-                                #	} elsif ( $dis_ref->{$id}[0][3] eq $seq_1_tr ) {
-                                #        	print OUT "discordant_split\t$id\t$dis_ref->$id}[0][2](reverse_complement)\tGeneA/GeneB\n";
-                                #	} elsif ( $dis_ref->{$id}[0][3] eq $seq_2 ) {
-                                #        	print OUT "discordant_split\t$id\tGeneA/GeneB\t$dis_ref->{$id}[0][2]\n";
-                                #	} elsif ( $dis_ref->{$id}[0][3] eq $seq_2_tr ) {
-                                #        	print OUT "ddiscordant_split\t$id\tGeneA/GeneB\t$dis_ref->{$id}[0][2](reverse_complement)\n";
-                                #	} else {
-                                #        	print OUT "discordant_split\t$id\tmapping orient wrong\n";
-                                #	}
-                                #	print OUT1 "$hit_1\n";
-                                #	print OUT2 "$hit_2\n";
-                        	#} else {
-                                #	print OUT "$id pairend read mapping wrong discordant read\n";
-                        	#}
+                        	if ( $dis_ref->{$id}[0][2] eq "scaffold" ) {
+                                	if ( $dis_ref->{$id}[0][3] eq $seq_1 ) {
+                                        	print OUT "discordant_split\t$id\t$dis_ref->{$id}[0][2]\t$dis_ref->{$id}[0][4](reverse_complement)\n"; print OUT1 "$hit_1\n"; print OUT2 "$hit_2\n";
+                                	} elsif ( $dis_ref->{$id}[0][3] eq $seq_1_tr ) {
+                                        	print OUT "discordant_split\t$id\t$dis_ref->{$id}[0][2](reverse_complement)\t$dis_ref->{$id}[0][4]\n"; print OUT1 "$hit_1\n"; print OUT2 "$hit_2\n";
+                               		} elsif ( $dis_ref->{$id}[0][3] eq $seq_2 ) {
+                                        	print OUT "discordant_split\t$id\t$dis_ref->{$id}[0][4](reverse_complement)\t$dis_ref->{$id}[0][2]\n"; print OUT1 "$hit_1\n"; print OUT2 "$hit_2\n";
+                                	} elsif ( $dis_ref->{$id}[0][3] eq $seq_2_tr ) {
+                                       		print OUT "discordant_split\t$id\t$dis_ref->{$id}[0][4]\t$dis_ref->{$id}[0][2](reverse_complement)\n"; print OUT1 "$hit_1\n"; print OUT2 "$hit_2\n";
+                                	} else {
+                                	       	print OUT "discordant_split\t$id\t$dis_ref->{$id}[0][2](mapping orient wrong)\t$dis_ref->{$id}[0][4](mapping orient wrong)\n";
+                                	}
+                        	}
                 	}
         	}
         	close OUT1;
@@ -151,9 +147,9 @@ use warnings;
 	
 	sub grep_singlton {
 		my ($dis_ref, $fastq_1, $fastq_2, $path, $sep) = @_;
-		open (OUT, ">>$path/read_mapped_info") || die "cannot open summary output path:$!\n";
-		open (OUT1, ">$path/singlton_split_1.txt") || die "cannot open first round singlton_1 output path:$!\n";
-		open (OUT2, ">$path/singlton_split_2.txt") || die "cannot open first round singlton_2 output path:$!\n";
+		open (OUT, ">>$path/read_mapped_info") || die "Step 2-3: cannot open summary output path:$!\n";
+		open (OUT1, ">$path/singlton_split_1.txt") || die "Step 2-3: cannot open first round singlton_1 output path:$!\n";
+		open (OUT2, ">$path/singlton_split_2.txt") || die "Step 2-3: cannot open first round singlton_2 output path:$!\n";
 	
 		foreach my $id ( keys %{$dis_ref} ) {
                 	my $header = "@".$id.$sep;

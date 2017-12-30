@@ -19,7 +19,7 @@ use warnings;
 		}
 
 		# collect mutiple hit reads or bad quality reads
-		open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5<40)' $path/tmp/${read_type}_sec.sam |") || die "cannot $read_type sam file:$!\n";
+		open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5<40)' $path/tmp/${read_type}_sec.sam |") || die "Step 3: cannot $read_type sam file:$!\n";
                 while ( <IN> ) {
                         chomp $_; my ($id, $flag, $chr, $pos, $quality, $cigar, $seq) = (split /\t/, $_)[0,1,2,3,4,5,9];
 			$id =~s/\/[\w\:\-]+$//g; $id =~s/\s[\w\:\-]+$//g; # print "#*$id\n"; # trimmed header
@@ -27,7 +27,7 @@ use warnings;
                 }
                 close IN;
 		my %mapped; # mapped read with good quality (and remove the other end of reads with multiple hits)
-                open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5>=40)' $path/tmp/${read_type}_sec.sam |") || die "cannot $read_type sam file:$!\n";
+                open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5>=40)' $path/tmp/${read_type}_sec.sam |") || die "Step 3: cannot $read_type sam file:$!\n";
                 while ( <IN> ) {
                         chomp $_; my ($id, $flag, $chr, $pos, $quality, $cigar, $seq) = (split /\t/, $_)[0,1,2,3,4,5,9];
 			$id =~s/\/[\w\:\-]+$//g; $id =~s/\s[\w\:\-]+$//g; # print "#*$id\n"; # trimmed header
@@ -43,13 +43,79 @@ use warnings;
 					# read with multiple mapping positions (>=2)
 					if ( scalar(@{$mapped{$id}{$seq}}) > 1 ) {
 						if ( $mapped{$id}{$seq}[0][2] <= $mapped{$id}{$seq}[1][2] ) { # read has multiple hits with equal quality - filtered out
-							print "${read_type}-filtered: $id show multiple hits with equal quality: $seq\n";
-							delete($dis_ref->{$id}); last;
+							if ( scalar(@{$mapped{$id}{$seq}}) == 2 ) { # two mapping hits with good quality
+
+								if ( $mapped{$id}{$seq}[0][1] eq $mapped{$id}{$seq}[1][1] ) { # if mapping start positions are identical
+									my @first; my @second; # collect mapped segments
+									while ( $mapped{$id}{$seq}[0][3] =~/([\d]+)M/gs ) { push @first, $1; }
+									while ( $mapped{$id}{$seq}[1][3] =~/([\d]+)M/gs ) { push @second, $1; }
+									if ( @first && @second ) { # mapping cigar value correct
+										my $first_sum = eval join '+', @first;
+										my $second_sum = eval join '+', @second;
+										if ( $first_sum == $second_sum ) { # if read mapping at genomic level is identical
+											my @first_num = grep {$_ < 5} @first;
+											my @second_num = grep {$_ < 5} @second;
+											if ( @first_num || @second_num ) { # clip length pass the filter cutoff: >= 4bp
+											} else {
+												print "Step 3: ${read_type}-filtered: $id show mul-hits with equal quality: clip length problem\n";
+												delete($dis_ref->{$id}); last;
+											}
+										} else {
+											print "Step 3: ${read_type}-filtered: $id show mult-hits with equal quality: read mapping at genomic level not identical\n";
+											delete($dis_ref->{$id}); last;
+										}										
+									} else {
+										print "Step 3: ${read_type}-filtered: $id show mult-hits with equal quality: cigar value is wrong\n";
+										delete($dis_ref->{$id}); last;
+									}
+								} else {
+									my @first; my @second; # collect mapped segments (exon)
+									my @first_seg; my @second_seg; # collect inteval regions (intron)
+									while ( $mapped{$id}{$seq}[0][3] =~/([\d]+)M/gs ) { push @first, $1; }
+									while ( $mapped{$id}{$seq}[0][3] =~/([\d]+)N/gs ) { push @first_seg, $1; }
+									while ( $mapped{$id}{$seq}[1][3] =~/([\d]+)M/gs ) { push @second, $1; }
+									while ( $mapped{$id}{$seq}[1][3] =~/([\d]+)N/gs ) { push @second_seg, $1; }
+									if ( @first && @second ) { # mapping cigar value correct
+										my $first_sum = eval join '+', @first; $first_sum = $first_sum + $mapped{$id}{$seq}[0][1];
+										my $second_sum = eval join '+', @second; $second_sum = $second_sum + $mapped{$id}{$seq}[1][1];
+										if ( @first_seg ) { # First: interval region present
+											if ( @second_seg ) { # Second: interval region present
+												my $first_sum_seg = eval join '+', @first_seg; $first_sum = $first_sum + $first_sum_seg;
+												my $second_sum_seg = eval join '+', @second_seg; $second_sum = $second_sum + $second_sum_seg;
+											} else {
+												my $first_sum_seg = eval join '+', @first_seg; $first_sum = $first_sum + $first_sum_seg;
+											}
+										} else {
+											if ( @second_seg ) {
+												my $second_sum_seg = eval join '+', @second_seg; $second_sum = $second_sum + $second_sum_seg;
+											}
+										}
+										if ( $first_sum == $second_sum ) { # if read mapping at genomic level is identical
+											my @first_num = grep {$_ < 5} @first;
+											my @second_num = grep {$_ < 5} @second;
+											if ( @first_num || @second_num ) { # clip length pass the filter cutoff: >= 4bp
+											} else {
+												print "Step 3: ${read_type}-filtered: $id show mul-hits with equal quality: clip length problem\n";
+												delete($dis_ref->{$id}); last;
+											}
+										} else {
+											print "Step 3: ${read_type}-filtered: $id show mult-hits with equal quality: read mapping at genomic level not identical\n";
+											delete($dis_ref->{$id}); last;
+										}
+									} else {
+										print "Step 3: ${read_type}-filtered: $id show mult-hits with equal quality: cigar value is wrong\n";
+										delete($dis_ref->{$id}); last;
+									}
+								}
+							} else {
+								print "Step 3: ${read_type}-filtered: $id show multiple hits with equal quality: $seq\n";
+								delete($dis_ref->{$id}); last;
+							}
 						}	
 					}
 					# read not primary sequence mapped - filtered out
 					if ( $mapped{$id}{$seq}[0][4] >= 256 ) { 
-						print "${read_type}-filtered: $id mapped not primary sequence: $seq\n";
+						print "Step 3: ${read_type}-filtered: $id mapped not primary sequence: $seq\n";
 						delete($dis_ref->{$id}); last;
 					}
 					# check whether read mapped to GeneA/GeneB if it has unique mapping position (tag == 1, filtered out)
@@ -69,10 +135,10 @@ use warnings;
                                 } 
                         } else {
                                 if ( exists($multiple_ref->{$id}) ) {
-                                        print "${read_type}-filtered: $id show unspecific mapping in genome alignment\n";
+                                        print "Step 3: ${read_type}-filtered: $id show unspecific mapping in genome alignment\n";
                                         delete($dis_ref->{$id});
                                 } else {
-                                        print "${read_type}: $id ($dis_ref->{$id}[0][0]-$dis_ref->{$id}[1][0]) show no mapping hits in genome alignment, but probably correct\n"; # no-splicing alignment is more sensitive than splicing
+                                        print "Step 3: ${read_type} - $id ($dis_ref->{$id}[0][0]-$dis_ref->{$id}[1][0]) show no mapping hits in genome alignment, but probably correct\n"; # no-splicing alignment is more sensitive than splicing
                                 }       
                         }       
                 }
@@ -109,13 +175,13 @@ use warnings;
 					# read with multiple mapping positions (>=2)
 					if ( scalar(@{$multiple_ref->{$id}{$seq}}) > 1 ) {
 						if ( $multiple_ref->{$id}{$seq}[0][2] <= $multiple_ref->{$id}{$seq}[1][2] ) { # read has multiple hits with equal quality - filtered out
-							print "${read_type}-filtered: $id show multiple hits with equal quality: $seq\n"; 
+							print "Step 3: ${read_type}-filtered: $id show multiple hits with equal quality: $seq\n"; 
 							delete($dis_ref->{$id}); last;
 						}
 					}
 					# read not primary sequence mapped - filtered out
 					if ( $multiple_ref->{$id}{$seq}[0][4] >= 256 ) { 
-						print "${read_type}-filtered: $id mapped not primary sequence: $seq\n";
+						print "Step 3: ${read_type}-filtered: $id mapped not primary sequence: $seq\n";
 						delete($dis_ref->{$id}); last;
 					}
 
@@ -140,7 +206,7 @@ use warnings;
                                         if ( $tag == 1 ) { delete($dis_ref->{$id}); last; }
                                 }
                         } else {
-                                print "singlton: $id - not mapped in genome\n";
+                                print "Step 3: singlton: $id - not mapped in genome\n";
                         }
                 }
 	}
@@ -158,11 +224,11 @@ use warnings;
 				} elsif ( $partner_ref->[1][1] < $mapped_ref->[0][1] and $mapped_ref->[0][1] < $partner_ref->[1][2] ) { # mapping position within geneB
 					$$tag_ref = 0;
 				} else {
-					print "${read_type}-filtered: $id_ref ($read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
+					print "Step 3: ${read_type}-filtered: $id_ref ($read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
 					$$tag_ref = 1;
 				}
 			} else {
-				print "${read_type}-filtered: $id_ref ($read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
+				print "Step 3: ${read_type}-filtered: $id_ref ($read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
 				$$tag_ref = 1;
 			}
 		} else { # geneA and geneB are in the different chromosome
@@ -170,18 +236,18 @@ use warnings;
 				if ( $partner_ref->[0][1] < $mapped_ref->[0][1] and $mapped_ref->[0][1] < $partner_ref->[0][2] ) { # mapping position within geneA
 					$$tag_ref = 0;
 				} else {
-					print "${read_type}-filtered: $id_ref ($read_ref) read mapped the same chrom but wrong gene partners, not $partner_ref->[0][3]\n";
+					print "Step 3: ${read_type}-filtered: $id_ref ($read_ref) read mapped the same chrom but wrong gene partners, not $partner_ref->[0][3]\n";
 					$$tag_ref = 1;
 				}
 			} elsif ( $mapped_ref->[0][0] eq $partner_ref->[1][0] ) { # the chromosome of mapping read == that of geneB
 				if ( $partner_ref->[1][1] < $mapped_ref->[0][1] and $mapped_ref->[0][1] < $partner_ref->[1][2] ) { # mapping position within geneB
 					$$tag_ref = 0;
 				} else {
-					print "${read_type}-filtered: $id_ref ($read_ref) read mapped the same chrom but wrong gene partners, not $partner_ref->[1][3]\n";
+					print "Step 3: ${read_type}-filtered: $id_ref ($read_ref) read mapped the same chrom but wrong gene partners, not $partner_ref->[1][3]\n";
 					$$tag_ref = 1;
 				}
 			} else {
-				print "${read_type}-filtered: $id_ref ($read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
+				print "Step 3: ${read_type}-filtered: $id_ref ($read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
 				$$tag_ref = 1;
 			}
 		}
@@ -191,7 +257,7 @@ use warnings;
                 my ($id_ref, $read_ref, $multiple_ref, $partner_ref, $tag_ref, $read_type) = @_; #Note: $read_ref and $tag_ref are two references
 
 		if ( $multiple_ref->[0][2] < 40 ) { # set mapping quality filtering
-			print "$read_type-filtered: $id_ref ($$read_ref) with bad mapping quality\n";
+			print "Step 3: $read_type-filtered: $id_ref ($$read_ref) with bad mapping quality\n";
 			$$tag_ref = 1;
 		}
 
@@ -204,11 +270,11 @@ use warnings;
 					if ( $$read_ref eq "NULL" ) { $$read_ref = $partner_ref->[1][3]; } # replace geneB to NULL
 					$$tag_ref = 0;
 				} else {
-					print "${read_type}-filtered: $id_ref ($read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
+					print "Step 3: ${read_type}-filtered: $id_ref ($read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
 					$$tag_ref = 1;
 				}
 			} else {
-				print "${read_type}-filtered: $id_ref ($read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
+				print "Step 3: ${read_type}-filtered: $id_ref ($read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
 				$$tag_ref = 1;
 			}
 		} else {	
@@ -217,7 +283,7 @@ use warnings;
 					if ( $$read_ref eq "NULL" ) { $$read_ref = $partner_ref->[0][3]; } # replace geneA to NULL
 					$$tag_ref = 0;
                         	} else {
-                                	print "${read_type}-filtered: $id_ref ($$read_ref) read mapped the same chrom but wrong gene partners, not $partner_ref->[0][3]\n";
+                                	print "Step 3: ${read_type}-filtered: $id_ref ($$read_ref) read mapped the same chrom but wrong gene partners, not $partner_ref->[0][3]\n";
                                         $$tag_ref = 1;
                                 }
                         } elsif ( $multiple_ref->[0][0] eq $partner_ref->[1][0] ) { #the chromosome of mapping read == that of geneB
@@ -225,11 +291,11 @@ use warnings;
 					if ( $$read_ref eq "NULL" ) { $$read_ref = $partner_ref->[1][3]; } # replace geneB to NULL
 					$$tag_ref = 0;
                                 } else {
-                                	print "${read_type}-filtered: $id_ref ($$read_ref) read mapped the same chrom but wrong gene partners, not $partner_ref->[1][3]\n";
+                                	print "Step 3: ${read_type}-filtered: $id_ref ($$read_ref) read mapped the same chrom but wrong gene partners, not $partner_ref->[1][3]\n";
                                         $$tag_ref = 1;
                                 }
                         } else {
-                        	print "${read_type}-filtered: $id_ref ($$read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
+                        	print "Step 3: ${read_type}-filtered: $id_ref ($$read_ref) read mapped the wrong gene partners, not $partner_ref->[0][3]/$partner_ref->[1][3]\n";
                                 $$tag_ref = 1;
                         }
 		}
