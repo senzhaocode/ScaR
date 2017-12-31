@@ -1,9 +1,9 @@
-scaffold_realign package
+ScaR package
 ========================
 
 Use scaffold realigning strategy to detect the recurrence of a list fusion transcripts across samples
 
-![Figure1](https://github.com/senzhaocode/scaffold_realign/files/1374810/Figure_1.pdf)
+![Figure1](https://github.com/senzhaocode/ScaR/files/1374810/Figure_1.pdf)
 
 ## 1. Requirements (before running program)
   
@@ -13,7 +13,7 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
   
       The executable files have been integrated in ~/bin/hisat2-2.1.0/, users do not have to download and install it independently.
       Users only need to add its path to linux environment variables before running: 
-        PATH=$PATH:/where_is_path/scaffold_map/bin/hisat2-2.0.5/
+        PATH=$PATH:/where_is_path/ScaR/bin/hisat2-2.0.5/
         export PATH
 
   1.3 HISAT2 aligner HGFM index (genome reference plus transcripts based on Ensembl GRCh38 version) 
@@ -50,9 +50,9 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
         
   1.7 Set the path of Perl library to environment variables
   
-      PERL5LIB="$PERL5LIB:/where_is_path/scaffold_map/lib"
+      PERL5LIB="$PERL5LIB:/where_is_path/ScaR/lib"
       export PERL5LIB
-      NOTE: we recommend that users add the path of perl library to .bashrc, then "source .bashrc"
+      NOTE: we recommend that users add the path of perl libraries to .bashrc, then "source .bashrc"
         
 ## 2. Usage of the "select_read.pl"
   2.1 Look at running parameters
