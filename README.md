@@ -41,7 +41,9 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
   1.6 Genomic data and annotations
   
       ~/data/Gene_hg38.txt: gene annotation file (This file has been present in ~/data when you downlod the package)
-      ~/data/ensembl_transcript.fa: the transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
+      ~/data/ensembl_transcript.fa: the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
+      ~/data/gencode_transcript.fa: the human transcriptome sequences annotated from GENCODE database (Release version 27)
+      ~/data/ucsc_transcript.fa: the human transcriptome sequences annotated from UCSC database (
       following the command
         cd ~/data
         wget "http://folk.uio.no/senz/ensembl_transcript.fa"
