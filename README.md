@@ -24,7 +24,7 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
         tar -vxf grch38_tran.tar.gz
         mv grch38_tran/genome_tran.* .
   
-  1.4 Samtools version >= 1.1 (https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2)
+  1.4 Samtools version >= 1.3 (https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2)
       
       If samtools has not been installed in the server system, users have to download, compile and install it locally.
       Then, add its path to linux environment variables before running:
