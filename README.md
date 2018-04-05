@@ -87,6 +87,10 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
       --length 48 \
       # Set the maximum length of fastq read, this option is only available when raw fastq reads are trimmed (--trimm 1)
       
+      --trans_ref ensembl
+      # (default: ensembl)
+      # The setting of annotation resources, users could choose others (e.g. "gencode" or "ucsc").
+      
       --p 8 \ 
       # (default: 8)
       # The number of threads, and make sure that it should be the same as the number of CPUs allocated in jobscript
