@@ -35,7 +35,7 @@ use Check;
 	push @usage, "	--anchor	The length of anchor for read mapping to breakpoint (defalut: 6)\n";
 	push @usage, "	--trimm		Set whether input fastq reads are trimmed (1) or not (0, as default value)\n";
 	push @usage, "	--length	Set the maximum length of fastq reads, this option is only available when raw fastq reads are trimmed (--trimm 1)\n";
-	push @usage, "	--trans_ref	Set the resource of transcript sequence data (e.g. gencode, ensembl or ucsc)\n";
+	push @usage, "	--trans_ref	Set the resource of transcript sequence data (e.g. gencode, ensembl or ucsc; default: ensembl)\n";
 	push @usage, "	--p		The number of threads, and make sure that it should be exact as the number of CPUs allocated in jobscript (defalut: 8)\n";
 	my $help;
 	my $fastq_1;
