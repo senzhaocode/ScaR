@@ -1,7 +1,7 @@
 ScaR package
 ========================
 
-Use scaffold realigning approach to detect the prevalence and recurrence of known fusion transcripts across cohort samples
+Use scaffold realigning approach to detect the prevalence and recurrence of known fusion transcripts across samples
 
 ![alt text](http://folk.uio.no/senz/Demo.png)
 
