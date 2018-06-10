@@ -58,7 +58,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
       NOTE: we recommend that users add the path of perl libraries to .bashrc, then "source .bashrc"
         
 ## 2. Usage of the "select_read.pl"
-  2.1 Look at running parameters
+  2.1 See running parameters
       
       perl select_read.pl --help
 
