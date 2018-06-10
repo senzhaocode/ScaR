@@ -1,0 +1,53 @@
+FROM biocontainers/biocontainers
+
+# Metadata
+LABEL base.image="biocontainers/biocontainers"
+LABEL software="ScaR"
+LABEL description="A scaffold realignment approach for fusion detection"
+LABEL software.version="20180601"
+LABEL tags="Genomics"
+LABEL version="v2"
+LABEL documentation=""
+LABEL website="https://github.com/senzhaocode/ScaR"
+LABEL license="GPL"
+
+# Set linux environment, including compiler, perl, python, r, samtools, hisat2
+USER biodocker
+RUN conda install -y -c conda-forge samtools=1.7 r-base 
+RUN conda install -y -c pipeliner hisat2
+
+# Set script path
+USER root
+
+RUN mkdir /ScaR && mkdir /ScaR/lib && mkdir /ScaR/examples
+ENV PATH=$PATH:/ScaR
+COPY select_read.pl evaluate.pl /ScaR/
+RUN chmod 777 /ScaR/select_read.pl
+RUN chmod 777 /ScaR/evaluate.pl
+COPY lib/*.pm /ScaR/lib/
+ENV PERL5LIB=$PERL5LIB:/ScaR/lib
+COPY examples/partner_gene_sim.pl /ScaR/examples/
+
+# Set index and reference annotation
+RUN mkdir /reference && mkdir /reference/partner_gene_sim
+COPY examples/partner_gene_sim/*.fasta /reference/partner_gene_sim/
+RUN cd /reference \
+	&& wget "ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grch38_tran.tar.gz" \
+	&& tar -xvf grch38_tran.tar.gz \
+	&& mv grch38_tran/genome_tran.* . \
+	&& wget "http://folk.uio.no/senz/ensembl_transcript.fa" \
+	&& wget "http://folk.uio.no/senz/gencode_transcript.fa" \
+	&& wget "http://folk.uio.no/senz/ucsc_transcript.fa" \
+	&& wget "http://folk.uio.no/senz/ucsc_refGene.txt" \
+	&& wget "http://folk.uio.no/senz/Gene_hg38.txt" \
+	&& rm -rf grch38_tran.tar.gz \
+	&& rm -rf grch38_tran
+
+# Final setting
+USER biodocker
+VOLUME /data
+WORKDIR /data/
+
+CMD ["perl", "/ScaR/select_read.pl"]
+CMD ["perl", "/ScaR/evaluate.pl"]
+

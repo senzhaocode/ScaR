@@ -1,0 +1,85 @@
+FROM ubuntu:16.04
+
+# Metadata
+LABEL base.image="ubuntu"
+LABEL software="ScaR"
+LABEL description="A scaffold realignment approach for fusion detection"
+LABEL software.version="20180608"
+LABEL tags="Genomics"
+LABEL version="v2"
+LABEL documentation=""
+LABEL website="https://github.com/senzhaocode/ScaR"
+LABEL license="GPL"
+
+# Set the samtools, hisat2 and r
+USER root
+
+# install compiler, library, python, perl and set environment
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
+ 	&& apt-get update -y \
+ 	&& apt-get install -y \
+		gcc \
+		g++ \
+		zlib1g-dev \
+		libbz2-dev \
+		libcurl4-openssl-dev \
+		unzip \
+		vim \
+		r-base \
+		wget \
+		python-pip \
+ 	&& apt-get clean \
+ 	&& rm -rf /var/lib/apt/lists/*
+
+# install samtools v1.7
+RUN wget https://github.com/samtools/samtools/releases/download/1.7/samtools-1.7.tar.bz2 \
+	&& tar xjf samtools-1.7.tar.bz2 \
+	&& cd samtools-1.7 \
+	&& ./configure && make \
+	&& mv samtools /usr/bin/ \
+	&& cd .. \
+	&& rm -rf samtools-1.7*
+
+# install Hisat2 v2.1.0
+RUN cd / && wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip \
+	&& unzip hisat2-2.1.0-Linux_x86_64.zip \
+	&& rm -rf hisat2-2.1.0-Linux_x86_64.zip
+ENV PATH=$PATH:/hisat2-2.1.0
+
+# install ScaR
+RUN mkdir /ScaR && mkdir /ScaR/lib && mkdir /ScaR/examples
+ENV PATH=$PATH:/ScaR
+COPY select_read.pl evaluate.pl /ScaR/
+RUN chmod 777 /ScaR/select_read.pl
+RUN chmod 777 /ScaR/evaluate.pl
+COPY lib/*.pm /ScaR/lib/
+ENV PERL5LIB=$PERL5LIB:/ScaR/lib
+COPY examples/partner_gene_sim.pl /ScaR/examples/
+
+# Set index and reference annotation
+RUN mkdir /data && chmod 777 /data
+RUN mkdir /reference && mkdir /reference/partner_gene_sim
+COPY examples/partner_gene_sim/*.fasta /reference/partner_gene_sim/
+RUN cd /reference \
+        && wget "ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grch38_tran.tar.gz" \
+        && tar -xvf grch38_tran.tar.gz \
+        && mv grch38_tran/genome_tran.* . \
+        && wget "http://folk.uio.no/senz/ensembl_transcript.fa" \
+        && wget "http://folk.uio.no/senz/gencode_transcript.fa" \
+        && wget "http://folk.uio.no/senz/ucsc_transcript.fa" \
+        && wget "http://folk.uio.no/senz/ucsc_refGene.txt" \
+        && wget "http://folk.uio.no/senz/Gene_hg38.txt" \
+        && rm -rf grch38_tran.tar.gz \
+        && rm -rf grch38_tran
+
+# Final setting
+RUN apt-get clean autoclean
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN rm -rf /var/lib/{dpkg,cache,log}
+
+VOLUME /data
+WORKDIR /data/
+
+CMD ["perl", "/ScaR/select_read.pl"]
+CMD ["perl", "/ScaR/evaluate.pl"]
+
