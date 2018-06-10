@@ -3,7 +3,7 @@ ScaR package
 
 Use scaffold realigning strategy to detect the recurrence of a list fusion transcripts across samples
 
-![Figure1](https://github.com/senzhaocode/ScaR/files/1374810/Figure_1.pdf)
+![demo](https://github.com/senzhaocode/ScaR/files/1374810/Figure_1.pdf)
 
 ## 1. Requirements (before running program)
   
