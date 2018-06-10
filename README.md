@@ -13,7 +13,7 @@ Use scaffold realigning strategy to detect the recurrence of a list fusion trans
   
       The executable files have been integrated in ~/bin/hisat2-2.1.0/, users do not have to download and install it independently.
       The only thing is to add its path to linux environment variables before running: 
-        PATH=$PATH:/where_is_path/ScaR/bin/hisat2-2.0.5/
+        PATH=$PATH:/where_is_path/ScaR/bin/hisat2-2.1.0/
         export PATH
 
   1.3 HISAT2 aligner HGFM index (genome reference plus transcripts based on Ensembl GRCh38 version) 
