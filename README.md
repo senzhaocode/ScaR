@@ -171,6 +171,11 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   - installing [Docker on Linux](https://docs.docker.com/engine/installation/linux/) 
   - installing [Docker on Mac OS](https://docs.docker.com/engine/installation/mac/) 
   - installing [Docker on Windows](https://docs.docker.com/docker-for-windows/) NOTE: We have not yet done enough testing on the Windows platform, so we would like to recieve more feedback on it.
+  6.2 Allocate computational resource to docker, e.g.
+  - Memory: 6GB
+  - CPUs: 4
+  - Swap: 1GB (ScaR does not need a large memory for running, so keep a low Swap space).
+ 
 
 ## 6. Reference
 1. Kim D, Langmead B, and Salzberg SL, HISAT: a fast spliced aligner with low memory requirements. Nature Methods 12, 357-360 (2015). [DIO:10.1038/nmeth.3317](http://www.nature.com/nmeth/journal/v12/n4/full/nmeth.3317.html)
