@@ -165,7 +165,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
         |--- "All_sample_noclip.sorted.bam" (align concatenated split reads to breakpoint scaffold sequence, done by hisat2 no-splicing alignment model)
         |--- "p.value" (Fisher exact test for mapping bias to upstream/downstream of scaffold sequence)
         
-## 6. Installation via Docker
+### 6. Installation via Docker
 
   6.1 [Install the Docker engine](https://docs.docker.com/engine/installation/) in your OS platform
       - installing [Docker on Linux](https://docs.docker.com/engine/installation/linux/) 
