@@ -170,7 +170,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   6.1 [Install the Docker engine](https://docs.docker.com/engine/installation/) in your OS platform
   - installing [Docker on Linux](https://docs.docker.com/engine/installation/linux/) 
   - installing [Docker on Mac OS](https://docs.docker.com/engine/installation/mac/) 
-  - installing [Docker on Windows](https://docs.docker.com/docker-for-windows/) NOTE: We have not yet done enough testing on the Windows platform, so we would like to recieve more feedback on it.
+  - installing [Docker on Windows](https://docs.docker.com/docker-for-windows/) (NOTE: We have not yet done enough testing on the Windows platform, so we would like to recieve more feedback on it)
 
   6.2 Allocate computational resource to docker, e.g.
   - Memory: min 4GB for ScaR running
