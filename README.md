@@ -193,9 +193,8 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   6.4 Run ScaR docker image
   
   6.4.1 Usage: `docker run -t --rm senzhao/scar perl /ScaR/select_read.pl`
-  6.4.2 Examples:  `docker run -t --rm -v /input_data_path:/data senzhao/scar perl /ScaR/select_read.pl --p 4 \`
-                   `--first test/reads_20_1.fastq \`
-                   `--second test/reads_20_2.fastq \`
+  
+  6.4.2 Run a case using the data in the "examples" folder: `docker run -t --rm -v /input_data_path:/data senzhao/scar perl /ScaR/select_read.pl --p 4 --first input/raw_1.fastq --second input/raw_2.fastq --geneA RCC1 --geneB ABHD12B --trimm 0 --scaffold input/RCC1_ABHD12B_scaff_seq.fa --input /reference --output outputs`
 
   
 
