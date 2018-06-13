@@ -181,26 +181,26 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
 
   6.3.1 Reqiurements
   - For Linux and Mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
-  - Make sure that internet is always accessible during Pulling / Building process (The implementation of dockerising is not suitable for TSD at this moment)
+  - Make sure that the internet is always accessible during Pulling / Building process (The implementation of dockerising is not suitable for TSD at this moment)
   
   6.3.2 Pull image from Docker Hub/Cloud repositories
-  - Users can pull the ScaR engine image directly from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar`. After that, check the image by typing `docker images`
+  - Users can pull the ScaR engine image directly from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar:latest`. After that, check the image by typing `docker images`
   
   6.3.2 Build image from docker container (optional)
-  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta` (If the building process fails, please try another typing `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda`). NOTE: building is a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at leat free 50G.
+  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta` (If the building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda`). NOTE: building is a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at leat free 50G.
   - After building is done, check the images by typing `docker images`
     
   6.4 Run ScaR engine image
   
-  6.4.1 Usage: `docker run -t --rm senzhao/scar perl /ScaR/select_read.pl`
+  6.4.1 Usage - display all parameters: `docker run -t --rm senzhao/scar perl /ScaR/select_read.pl`
   
   6.4.2 Run an example using the data in the "examples" folder: `docker run -t --rm -v /input_data_path/examples:/data senzhao/scar perl /ScaR/select_read.pl --p 4 --first input/raw_1.fastq --second input/raw_2.fastq --geneA RCC1 --geneB ABHD12B --trimm 0 --scaffold input/RCC1_ABHD12B_scaff_seq.fa --input /reference --output output`
-  * "-v /input_data_path/examples" - set the full path of input folder (storage of both raw reads and scaffold sequence files). Users have to define a new path for their own data.
-  * "--first input/raw_1.fastq" - set the path of the R1 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads. 
-  * "--second input/raw_2.fastq" - set the path of the R2 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads.
-  * "--scaffold input/RCC1_ABHD12B_scaff_seq.fa" - set the path of scaffold sequence file (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own scaffold sequence. 
-  * "--input /reference" - set the path of reference and annotation files (NOTE: keep it as "/reference" and never make changes)
-  * "--output output" - set the output of ScaR running (relative path referring to input folder /input_data_path/examples).
+  * "/input_data_path/examples" - set the full path of input folder (storage of both raw reads and scaffold sequence files). Users have to define a new path for their own data.
+  * "input/raw_1.fastq" - set the path of the R1 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads. 
+  * "input/raw_2.fastq" - set the path of the R2 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads.
+  * "input/RCC1_ABHD12B_scaff_seq.fa" - set the path of scaffold sequence file (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own scaffold sequence. 
+  * "/reference" - set the path of reference and annotation files (NOTE: keep it as "/reference" and never make changes)
+  * "output" - set the output of ScaR running (relative path referring to input folder /input_data_path/examples).
   
 ## 6. Reference
 1. Kim D, Langmead B, and Salzberg SL, HISAT: a fast spliced aligner with low memory requirements. Nature Methods 12, 357-360 (2015). [DIO:10.1038/nmeth.3317](http://www.nature.com/nmeth/journal/v12/n4/full/nmeth.3317.html)
