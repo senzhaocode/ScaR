@@ -187,14 +187,15 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   - Users can pull the ScaR engine image directly from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar`. After that, check the image by typing `docker images`
   
   6.3.2 Build image from docker container (optional)
-  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta` (If the building process fails, please try another typing `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda`). NOTE: building is a long process (depends on network condition, around 1-2 hours) and also needs a disk space with at leat free 50G.
+  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta` (If the building process fails, please try another typing `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda`). NOTE: building is a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at leat free 50G.
   - After building is done, check the images by typing `docker images`
     
   6.4 Run ScaR docker image
   
   6.4.1 Usage: `docker run -t --rm senzhao/scar perl /ScaR/select_read.pl`
   
-  6.4.2 Run a case using the data in the "examples" folder: `docker run -t --rm -v /input_data_path:/data senzhao/scar perl /ScaR/select_read.pl --p 4 --first input/raw_1.fastq --second input/raw_2.fastq --geneA RCC1 --geneB ABHD12B --trimm 0 --scaffold input/RCC1_ABHD12B_scaff_seq.fa --input /reference --output outputs`
+  6.4.2 Run an example using the data in the "examples" folder: `docker run -t --rm -v /input_data_path:/data senzhao/scar perl /ScaR/select_read.pl --p 4 --first input/raw_1.fastq --second input/raw_2.fastq --geneA RCC1 --geneB ABHD12B --trimm 0 --scaffold input/RCC1_ABHD12B_scaff_seq.fa --input /reference --output outputs`
+    * -v /input_data_path:/data - set the path of input files (raw reads and scaffold sequencing)
 
   
 
