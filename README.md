@@ -180,7 +180,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   6.3 Build image from docker container
 
   6.3.1 Reqiurements before building
-  - For linux and mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
+  - For Linux and Mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
   - Make sure that internet is always accessible during building process (The implementation of dockerising is not suitable for TSD at this moment)
   
   6.3.2 Build image
