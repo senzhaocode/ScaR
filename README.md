@@ -173,11 +173,14 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   - installing [Docker on Windows](https://docs.docker.com/docker-for-windows/) NOTE: We have not yet done enough testing on the Windows platform, so we would like to recieve more feedback on it.
 
   6.2 Allocate computational resource to docker, e.g.
-  - Memory: min 4GB for ScaR running.
+  - Memory: min 4GB for ScaR running
   - CPUs: 4
-  - Swap: 1GB (ScaR does not need a large memory for running, so keep a low Swap space).
+  - Swap: 1GB (ScaR does not need a large memory for running, so keep a low Swap space)
  
   6.3 Build image from docker container
+  6.3.1 Reqiurements before starting building
+    - For linux and mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
+    - Ensure that Internet is always accessible during building process
   
 
 ## 6. Reference
