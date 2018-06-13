@@ -183,7 +183,12 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   - For linux and mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
   - Make sure that internet is always accessible during building process (The implementation of dockerising is not suitable for TSD at this moment)
   
-  6.3.2 
+  6.3.2 Build image
+  - After dowloading soruce code, change to directory `cd ~/` and run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta` (If the building process fails, please try another typing `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda`)
+  - When building is done, check the images by typing `docker images`
+  
+  6.3.3 Pull image from Docker Hub/Cloud repositories
+  - If users do not get access as root or using `sudo` privilege, they can pull the images from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories. 
   
 
 ## 6. Reference
