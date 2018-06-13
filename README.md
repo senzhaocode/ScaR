@@ -204,8 +204,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
               --scaffold input/RCC1_ABHD12B_scaff_seq.fa \
               --input /reference \
               --output output
-  ```bash
-  
+  ```
   * "/input_data_path/examples" - set the full path of input folder (storage of both raw reads and scaffold sequence files). Users have to define a new path for their own data.
   * "input/raw_1.fastq" - set the path of the R1 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads. 
   * "input/raw_2.fastq" - set the path of the R2 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads.
