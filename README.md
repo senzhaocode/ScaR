@@ -188,7 +188,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   - When building is done, check the images by typing `docker images`
   
   6.3.3 Pull image from Docker Hub/Cloud repositories instead of building (optional)
-  - If users can not build ScaR engine image successfully, they can pull the image from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories. Run `docker pull senzhao/scar`.
+  - If users can not build ScaR engine image successfully, they can pull the image from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories in advances. Run `docker pull senzhao/scar`.
 
 
   
