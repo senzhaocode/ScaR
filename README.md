@@ -165,7 +165,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
         |--- "All_sample_noclip.sorted.bam" (align concatenated split reads to breakpoint scaffold sequence, done by hisat2 no-splicing alignment model)
         |--- "p.value" (Fisher exact test for mapping bias to upstream/downstream of scaffold sequence)
         
-## 6. Installation/Running via Docker
+## 5. Installation/Running via Docker
 
   6.1 [Install the Docker engine](https://docs.docker.com/engine/installation/) in your OS platform
   - installing [Docker on Linux](https://docs.docker.com/engine/installation/linux/) 
@@ -189,7 +189,13 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   
   6.3.3 Pull image from Docker Hub/Cloud repositories instead of building (optional)
   - If users can not build ScaR engine image successfully, they can pull the image from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories in advances. Run `docker pull senzhao/scar`.
-
+  
+  6.4 Run ScaR docker image
+  
+  6.4.1 Usage: `docker run -t --rm senzhao/scar perl /ScaR/select_read.pl`
+  6.4.2 Examples:  `docker run -t --rm -v /input_data_path:/data senzhao/scar perl /ScaR/select_read.pl --p 4 \`
+                   `--first test/reads_20_1.fastq \`
+                   `--second test/reads_20_2.fastq \`
 
   
 
