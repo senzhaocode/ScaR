@@ -194,7 +194,18 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   
   6.4.1 Usage - display all parameters: `docker run -t --rm senzhao/scar perl /ScaR/select_read.pl`
   
-  6.4.2 Run an example using the data in the "examples" folder: `docker run -t --rm -v /input_data_path/examples:/data senzhao/scar perl /ScaR/select_read.pl --p 4 --first input/raw_1.fastq --second input/raw_2.fastq --geneA RCC1 --geneB ABHD12B --trimm 0 --scaffold input/RCC1_ABHD12B_scaff_seq.fa --input /reference --output output`
+  6.4.2 Run an example using the data in the "examples" folder: 
+  
+  ```bash
+  docker run -t --rm -v /input_data_path/examples:/data senzhao/scar perl /ScaR/select_read.pl --p 4 \
+              --first input/raw_1.fastq \
+              --second input/raw_2.fastq \
+              --geneA RCC1 --geneB ABHD12B --trimm 0 \
+              --scaffold input/RCC1_ABHD12B_scaff_seq.fa \
+              --input /reference \
+              --output output
+  ```bash
+  
   * "/input_data_path/examples" - set the full path of input folder (storage of both raw reads and scaffold sequence files). Users have to define a new path for their own data.
   * "input/raw_1.fastq" - set the path of the R1 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads. 
   * "input/raw_2.fastq" - set the path of the R2 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads.
