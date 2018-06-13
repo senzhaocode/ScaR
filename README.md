@@ -195,13 +195,12 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   6.4.1 Usage: `docker run -t --rm senzhao/scar perl /ScaR/select_read.pl`
   
   6.4.2 Run an example using the data in the "examples" folder: `docker run -t --rm -v /input_data_path/examples:/data senzhao/scar perl /ScaR/select_read.pl --p 4 --first input/raw_1.fastq --second input/raw_2.fastq --geneA RCC1 --geneB ABHD12B --trimm 0 --scaffold input/RCC1_ABHD12B_scaff_seq.fa --input /reference --output outputs`
-  * -v /input_data_path/examples - set the full path of input folder (storage of both raw read and scaffold sequence files)
-  * --first input/raw_1.fastq - set the path of the R1 reads file in the input folder (relative path referring to input folder)
-  * --second input/raw_2.fastq - set the path of the R2 reads file in the input folder (relative path referring to input folder)
-  * --scaffold input/RCC1_ABHD12B_scaff_seq.fa - set the path of scaffold sequence file (relative path referring to input folder)
-  * --input /reference - set the path of reference and annotation files (NOTE: keep it as "/reference" and never make changes)
-
-  
+  * "-v /input_data_path/examples" - set the full path of input folder (storage of both raw read and scaffold sequence files). Users have to define a new path for their own data.
+  * "--first input/raw_1.fastq" - set the path of the R1 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads. 
+  * "--second input/raw_2.fastq" - set the path of the R2 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads.
+  * "--scaffold input/RCC1_ABHD12B_scaff_seq.fa" - set the path of scaffold sequence file (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own scaffold sequence. 
+  * "--input /reference" - set the path of reference and annotation files (NOTE: keep it as "/reference" and never make changes)
+  * "--output outputs" - set the output of ScaR running (relative path referring to input folder /input_data_path/examples). For the data structure of output folder, please refer to 3. Output results)
 
 ## 6. Reference
 1. Kim D, Langmead B, and Salzberg SL, HISAT: a fast spliced aligner with low memory requirements. Nature Methods 12, 357-360 (2015). [DIO:10.1038/nmeth.3317](http://www.nature.com/nmeth/journal/v12/n4/full/nmeth.3317.html)
