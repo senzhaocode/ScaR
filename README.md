@@ -187,8 +187,10 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   - After dowloading soruce code, change to directory `cd ~/` and run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta` (If the building process fails, please try another typing `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda`)
   - When building is done, check the images by typing `docker images`
   
-  6.3.3 Pull image from Docker Hub/Cloud repositories
-  - If users do not get access as root or using `sudo` privilege, they can pull the images from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories. 
+  6.3.3 Pull image from Docker Hub/Cloud repositories instead of building (optional)
+  - If users can not build ScaR engine image successfully, they can pull the image from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories. Run `docker pull senzhao/scar`.
+
+
   
 
 ## 6. Reference
