@@ -178,7 +178,8 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   - Swap: 1GB (ScaR does not need a large memory for running, so keep a low Swap space)
  
   6.3 Build image from docker container
-6.3.1 Reqiurements before starting building
+
+  6.3.1 Reqiurements before starting building
     - For linux and mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
     - Ensure that Internet is always accessible during building process
   
