@@ -212,6 +212,13 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   * "input/RCC1_ABHD12B_scaff_seq.fa" - set the path of scaffold sequence file (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own scaffold sequence. 
   * "/reference" - set the path of reference and annotation files (NOTE: keep it as "/reference" and never make changes)
   * "output" - set the output of ScaR running (relative path referring to the directory /input_data_path/examples).
+  
+  5.4.3 Run an example of `evalute.pl` for summarizing the number of spanning and split reads across a cohort of samples: 
+  
+  ```bash
+  docker run -t --rm -v /input_data_path/examples:/data senzhao/scar perl /ScaR/evaluate.pl \
+      --input RCC1_ABHD12B_new --output RCC1_ABHD12B_summary
+  ```
 
 ## 6. Reference
 1. Kim D, Langmead B, and Salzberg SL, HISAT: a fast spliced aligner with low memory requirements. Nature Methods 12, 357-360 (2015). [DIO:10.1038/nmeth.3317](http://www.nature.com/nmeth/journal/v12/n4/full/nmeth.3317.html)
