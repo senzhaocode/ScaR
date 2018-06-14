@@ -176,7 +176,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
 
   5.2 Allocate computational resource to docker, e.g.
   - Memory: min 4GB for ScaR running
-  - CPUs: 4
+  - CPUs: 4 (Users need to do setting based on their own hardwares)
   - Swap: 1GB (ScaR does not need a large memory for running, so keep a low Swap space)
  
   5.3 Pull / Build ScaR engine image
