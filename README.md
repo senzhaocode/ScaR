@@ -144,19 +144,19 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
       perl evaluate.pl --help
       
   4.2 An example of running:
-      Firstly, users have to create a directory that contains output folders of the samples run by `select_read.pl`, which are going for summary by `evaluate.pl`. For instance, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new`
+      Firstly, users have to create a directory that contains output folders of the samples run by `select_read.pl`, which are going for summary by `evaluate.pl`. For instance in "examples" directory, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new`
       
       perl evaluate.pl \
       
-      --input /where_is_your_path/RCC1_ABHD12B_new \
-      # Set the input path, normally it should be the output directory of running the "select_read.pl"
+      --input ~/examples/RCC1_ABHD12B_new \
+      # Set the input path
       
-      --output ~/output/RCC1_ABHD12B_summary \
+      --output ~/examples/RCC1_ABHD12B_summary \
       # Set the output directory of running "evaluate.pl"
   
-  4.3 Summary of output directory
+  4.3 Summary of output directory run by `evaluate.pl`
   
-     For example: ~/output/RCC1_ABHD12B_summary
+     For example: ~/examples/RCC1_ABHD12B_summary
       
      * **`summary.txt`** (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold sequence across samples; statistics test for mapping bias to scaffold sequence [p<.05 indicates bias])
      
