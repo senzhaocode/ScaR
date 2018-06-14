@@ -144,7 +144,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
       perl evaluate.pl --help
       
   4.2 An example of running:
-      Firstly, users have to create a directory that contains output folders of the samples run by select_read.pl. For example, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new`.
+      Firstly, users have to create a directory that contains output folders of the samples run by select_read.pl, which are going for summary by evaluate.pl. For instance, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new`
       
       perl evaluate.pl \
       
