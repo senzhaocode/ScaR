@@ -139,11 +139,12 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
     
 *: files with bold name are most important for users
 
-## 4. Summarise the number of spanning and split reads across all samples (running the evaluate.pl)
+## 4. Summarise the number of spanning and split reads across a cohort of samples (running evaluate.pl)
   4.1 Look at running parameters:
       perl evaluate.pl --help
       
   4.2 An example of running:
+      First, users have to create a directory that contains output folders of the samples run by select_read.pl. For example, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new`.
       
       perl evaluate.pl \
       
