@@ -205,13 +205,13 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
               --input /reference \
               --output output
   ```
-  * "/input_data_path/examples" - set the full path of input folder (storage of both raw reads and scaffold sequence files). Users have to define a new path for their own data.
-  * "input/raw_1.fastq" - set the path of the R1 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads. 
-  * "input/raw_2.fastq" - set the path of the R2 reads file in the input folder (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own raw reads.
-  * "input/RCC1_ABHD12B_scaff_seq.fa" - set the path of scaffold sequence file (relative path referring to input folder /input_data_path/examples). Users have to define file names of their own scaffold sequence. 
+  * "/input_data_path/examples" - set the full path of input directory (it contains both raw reads and scaffold sequence files). Users need to define a new path for their own data.
+  * "input/raw_1.fastq" - set the path of the R1 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own raw R1 reads. 
+  * "input/raw_2.fastq" - set the path of the R2 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own raw R2 reads.
+  * "input/RCC1_ABHD12B_scaff_seq.fa" - set the path of scaffold sequence file (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own scaffold sequence. 
   * "/reference" - set the path of reference and annotation files (NOTE: keep it as "/reference" and never make changes)
-  * "output" - set the output of ScaR running (relative path referring to input folder /input_data_path/examples).
-  
+  * "output" - set the output of ScaR running (relative path referring to the directory /input_data_path/examples).
+
 ## 6. Reference
 1. Kim D, Langmead B, and Salzberg SL, HISAT: a fast spliced aligner with low memory requirements. Nature Methods 12, 357-360 (2015). [DIO:10.1038/nmeth.3317](http://www.nature.com/nmeth/journal/v12/n4/full/nmeth.3317.html)
 2. Li H., Handsaker B., Wysoker A., Fennell T., Ruan J., Homer N., Marth G., Abecasis G., Durbin R. and 1000 Genome Project Data Processing Subgroup. The Sequence alignment/map (SAM) format and SAMtools. Bioinformatics, 25, 2078-9 (2009). [DOI: 10.1093/bioinformatics/btp352](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btp352)
