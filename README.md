@@ -40,12 +40,13 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
     
   1.6 Genomic data and annotations
   
-      ~/data/Gene_hg38.txt: gene annotation file (This file has been present in ~/data when you downlod the package)
-      ~/data/ensembl_transcript.fa: the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
-      ~/data/gencode_transcript.fa: the human transcriptome sequences annotated from GENCODE database (Release version 27)
-      ~/data/ucsc_transcript.fa: the human transcriptome sequences annotated from UCSC database (
+      ~/reference/Gene_hg38.txt: gene annotation file
+      ~/reference/ensembl_transcript.fa: the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
+      ~/reference/gencode_transcript.fa: the human transcriptome sequences annotated from GENCODE database (Release version 27)
+      ~/reference/ucsc_transcript.fa: the human transcriptome sequences annotated from UCSC database (Release date: Jan 2018)
       following the command
-        cd ~/data
+        cd ~/reference
+        wget "http://folk.uio.no/senz/Gene_hg38.txt"
         wget "http://folk.uio.no/senz/ensembl_transcript.fa"
         wget "http://folk.uio.no/senz/gencode_transcript.fa"
         wget "http://folk.uio.no/senz/ucsc_transcript.fa"
@@ -95,7 +96,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
       # (default: 8)
       # The number of threads, and make sure that it should be the same as the number of CPUs allocated in jobscript
       
-      --input ~/data/ \
+      --input ~/reference/ \
       # Set input path of genomic data and annotation
       
       --output ~/examples/output/ \
