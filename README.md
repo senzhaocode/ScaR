@@ -207,6 +207,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
               --input /reference \
               --output output
   ```
+  * "perl /ScaR/select_read.pl" - the running path of ScaR in docker image (keep it as this path and never make changes)
   * "/input_data_path/examples" - set the full path of input directory (it contains both raw reads and scaffold sequence files). Users need to define a new path for their own data.
   * "input/raw_1.fastq" - set the path of the R1 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own raw R1 reads. 
   * "input/raw_2.fastq" - set the path of the R2 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own raw R2 reads.
@@ -214,7 +215,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   * "/reference" - set the path of reference and annotation files (NOTE: keep it as "/reference" and never make changes)
   * "output" - set the output of ScaR running (relative path referring to the directory /input_data_path/examples).
   
-  5.4.3 Run an example of `evalute.pl` for summarizing the number of spanning and split reads across a cohort of samples: 
+  5.4.3 Run an example of `evaluate.pl` for summarizing the number of spanning and split reads across a cohort of samples: 
   Users have to create a directory that contains output folders (from `select_read.pl`) of the samples for summarizing. For instance in "examples" directory, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new`, then run `evaluate.pl` as follows.
   
   ```bash
