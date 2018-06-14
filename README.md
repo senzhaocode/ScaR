@@ -44,7 +44,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
       ~/reference/ensembl_transcript.fa: the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
       ~/reference/gencode_transcript.fa: the human transcriptome sequences annotated from GENCODE database (Release version 27)
       ~/reference/ucsc_transcript.fa: the human transcriptome sequences annotated from UCSC database (Release date: Jan 2018)
-      following the command
+      Typing the command
         cd ~/reference
         wget "http://folk.uio.no/senz/Gene_hg38.txt"
         wget "http://folk.uio.no/senz/ensembl_transcript.fa"
