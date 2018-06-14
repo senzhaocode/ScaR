@@ -18,8 +18,8 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
 
   1.3 HISAT2 aligner HGFM index (genome reference plus transcripts based on Ensembl GRCh38 version) 
       
-      Users have to download them in ~/data following the command:
-        cd ~/data
+      Users have to download them in ~/reference following the command:
+        cd ~/reference
         wget "ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grch38_tran.tar.gz"
         tar -vxf grch38_tran.tar.gz
         mv grch38_tran/genome_tran.* .
