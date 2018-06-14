@@ -167,34 +167,34 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
         
 ## 5. Installation/Running via Docker
 
-  6.1 [Install the Docker engine](https://docs.docker.com/engine/installation/) in your OS platform
+  5.1 [Install the Docker engine](https://docs.docker.com/engine/installation/) in your OS platform
   - installing [Docker on Linux](https://docs.docker.com/engine/installation/linux/) 
   - installing [Docker on Mac OS](https://docs.docker.com/engine/installation/mac/) 
   - installing [Docker on Windows](https://docs.docker.com/docker-for-windows/) (NOTE: We have not yet done enough testing on the Windows platform, so we would like to recieve more feedback on it)
 
-  6.2 Allocate computational resource to docker, e.g.
+  5.2 Allocate computational resource to docker, e.g.
   - Memory: min 4GB for ScaR running
   - CPUs: 4
   - Swap: 1GB (ScaR does not need a large memory for running, so keep a low Swap space)
  
-  6.3 Pull / Build ScaR engine image
+  5.3 Pull / Build ScaR engine image
 
-  6.3.1 Reqiurements
+  5.3.1 Reqiurements
   - For Linux and Mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
   - Make sure that the internet is always accessible during Pulling / Building process (The implementation of dockerising is not suitable for TSD at this moment)
   
-  6.3.2 Pull image from Docker Hub/Cloud repositories
+  5.3.2 Pull image from Docker Hub/Cloud repositories
   - Users can pull the ScaR engine image directly from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar:latest`. After that, check the image by typing `docker images`
   
-  6.3.2 Build image from docker container (optional)
+  5.3.2 Build image from docker container (optional)
   - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta` (If the building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda`). NOTE: building is a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at leat free 50G.
   - After building is done, check the images by typing `docker images`
     
-  6.4 Run ScaR engine image
+  5.4 Run ScaR engine image
   
-  6.4.1 Usage - display all parameters: `docker run -t --rm senzhao/scar perl /ScaR/select_read.pl`
+  5.4.1 Usage - display all parameters: `docker run -t --rm senzhao/scar perl /ScaR/select_read.pl`
   
-  6.4.2 Run an example using the data in the "examples" folder: 
+  5.4.2 Run an example using the data in the "examples" folder: 
   
   ```bash
   docker run -t --rm -v /input_data_path/examples:/data senzhao/scar perl /ScaR/select_read.pl --p 4 \
