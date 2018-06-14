@@ -189,7 +189,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   - Users can pull the ScaR engine image directly from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar:latest`. After that, check the image by typing `docker images`
   
   5.3.2 Build image from docker container (optional)
-  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta` (If the building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda`). NOTE: building is a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at leat free 50G.
+  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .` (If the building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda .`). NOTE: building is a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at leat free 50G.
   - After building is done, check the images by typing `docker images`
     
   5.4 Run ScaR engine image
