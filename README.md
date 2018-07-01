@@ -113,12 +113,12 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
       #       2. In order to ensure the specificity of breakpoint sequence, we recommend that 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
       #       3. In current version, the breakpoint sequence should be composed of cDNA (i.e. exon region). If it contains intron/intergenic sequences, the program will stop running scaffold realignment.
 
-      --user_ref ~/XXXX.fasta
+      --user_ref ~/upstream.fasta
       # User-defined transcript reference sequences, user can specify transcript reference sequences in fasta format which are not present in the default database.
       # For instance:
-      # >gene_name|transcript_name
-      # GCATATAGCGTACGCTACGCATCGACGATCGTACAGCTACTAGCACTAGTCGACCTAGCATGCT
-      # NOTE: 'gene_name' should be identical to the input of gene partner names (either GeneA or GeneB); 'transcript_name' can be defined whatever user would like but please do not use known refseq id or ensembl id for 'transcript_name'. Make sure both 'gene_name' and 'transcript_name' should be present, and are separated by '|'
+      # >RP11-599B13.3|alternative1
+      # CTTTGTGTCTTTGTCTTTATTTCTTTTCTCATTCCCTCGTCTCCACCGGGAAGGGGAGAGCCTGCGGGTGGTGTATCAGGCAGGTTCCCCTACATCTTTGGCACCCAACAC
+      # NOTE: 'RP11-599B13.3' is the gene_name and should be identical to the input of gene partner names (either GeneA or GeneB); 'alternative1' is the transcript_name and can be defined whatever user would like, but please do not use known refseq id or ensembl id for transcript_name. Make sure both 'RP11-599B13.3' and 'alternative1' should be present, and are separated by '|'
       
   2.3 Some tips for run scripts using slurm jobscript.
   
