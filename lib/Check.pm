@@ -11,7 +11,7 @@ use warnings;
 		if ( $len_1 == $len_2 ) {
 			return($len_1);
 		} else {
-			print "Step 0-1: read length of fastq file is error\n"; exit;
+			print "Step 0-1: Read length of fastq file is error\n"; exit;
 			return(0);
 		}
 	}
@@ -34,7 +34,7 @@ use warnings;
 	sub extract_scaffold { # Load scaffold seq; at current stage, only one breakpoint sequence was allowed to involve in alignment 
 		my ($read_l, $scaffold, $ref) = @_;
 		$/ = ">";
-		open (IN, "$scaffold") || die "Step 0-3: cannot load scaffold sequence dataset:$!\n";
+		open (IN, "$scaffold") || die "Step 0-3: Cannot load scaffold sequence dataset:$!\n";
 		while ( <IN> ) {
 			chomp $_; next if (! defined($_) ); next if ( $_ eq '' );
 			my @array = (split /\n/, $_);
@@ -64,7 +64,7 @@ use warnings;
 				$back_frag = $back;
 				$back_tag = $read_l - length($back);
 			}
-			if ( exists($ref->{$header}) ) { print "\nStep 0-3: Note $header have replicates in scaffold sequence list\n"; }
+			if ( exists($ref->{$header}) ) { print "\nStep 0-3: $header have replicates in scaffold sequence list\n"; }
 			$ref->{$header}[0] = [$front_tag, $front_frag]; # breakpoint seq of GeneA
 			$ref->{$header}[1] = [$back_tag, $back_frag]; # breakpoint seq of GeneB
 
@@ -79,13 +79,13 @@ use warnings;
 	}
 
 	sub judge_scaffold {
-		my ($scaffold, $tran_seq, $gene, $geneA, $geneB, $resource) = @_;
+		my ($scaffold, $tran_seq, $gene, $geneA, $geneB, $resource, $user_path) = @_;
 
 		# Load gene symbol file -- download from ensembl Biomart, Dec 4th 2016
 		my %name; 
 		my %chrom_include = ("1"=>1,"2"=>1,"3"=>1,"4"=>1,"5"=>1,"6"=>1,"7"=>1,"8"=>1,"9"=>1,"10"=>1,"11"=>1,"12"=>1,"13"=>1,"14"=>1,"15"=>1,"16"=>1,"17"=>1,"18"=>1,"19"=>1,"20"=>1,"21"=>1,"22"=>1,"X"=>1,"Y"=>1,"MT"=>1); # only consider the genes in chromosme (1..22, X, Y and MT); gene within scaffold is filtered out.
 		$/ = "\n";
-		open (IN, "cut -s -f1,5,10 $gene | sort | uniq |") || die "Step 1: cannot open gene symbol / ensembl id file:$!\n";
+		open (IN, "cut -s -f1,5,10 $gene | sort | uniq |") || die "Step 1: Cannot open gene annotation file:$!\n";
 		while ( <IN> ) {
 			chomp $_; my ($ensembl, $symbol, $chrom) = (split /\t/, $_)[0, 1, 2];
 			if ( exists($chrom_include{$chrom}) ) {
@@ -98,35 +98,35 @@ use warnings;
 		my %cdna;
 		$/ = ">"; # separator symbol
 		if ( $resource eq "ensembl" ) {
-			open (IN, "$tran_seq") || die "Step 1: cannot load ensembl transcript sequence dataset:$!\n";
+			open (IN, "$tran_seq") || die "Step 1: Cannot load ensembl transcript sequence dataset:$!\n";
 			while ( <IN> ) {
 				chomp $_; next if (! defined($_) ); next if ( $_ eq '' );
 				my @array = (split /\n/, $_);
 				my $header = shift @array; $header =~s/\>//g;
 				my ($gene, $tran) = (split /\|/, $header);
-				if (! $gene =~/ENSG/ ) { print "Step 1: gene name $gene is wrong\n"; exit; }
-				if (! $tran =~/ENST/ ) { print "Step 1: transcript name $tran is wrong\n"; exit; }
+				if (! $gene =~/ENSG/ ) { print "Step 1: gene id $gene is wrong\n"; exit; }
+				if (! $tran =~/ENST/ ) { print "Step 1: transcript id $tran is wrong\n"; exit; }
 				my $seq = join '', @array; my $len = length($seq);
 				$cdna{$gene}{$len} = [$tran, $seq]; #print "$gene $len $tran\n$seq\n"; #--testing
 			}
 			close IN;
 		} elsif ( $resource eq "gencode" ) {
-			open (IN, "$tran_seq") || die "Step 1: cannot load gencode transcript sequence dataset:$!\n";
+			open (IN, "$tran_seq") || die "Step 1: Cannot load gencode transcript sequence dataset:$!\n";
 			while ( <IN> ) {
 				chomp $_; next if (! defined($_) ); next if ( $_ eq '' );
 				my @array = (split /\n/, $_);
 				my $header = shift @array; $header =~s/\>//g;
 				my ($tran, $gene) = (split /\|/, $header)[0, 1];
 				$tran =~s/\.[\d]+$//g; $gene =~s/\.[\d]+$//g;
-				if (! $gene =~/ENSG/ ) { print "Step 1: gene name $gene is wrong\n"; exit; }
-				if (! $tran =~/ENST/ ) { print "Step 1: transcript name $tran is wrong\n"; exit; }
+				if (! $gene =~/ENSG/ ) { print "Step 1: gene id $gene is wrong\n"; exit; }
+				if (! $tran =~/ENST/ ) { print "Step 1: transcript id $tran is wrong\n"; exit; }
 				my $seq = join '', @array; my $len = length($seq);
 				$cdna{$gene}{$len} = [$tran, $seq]; #print "$gene $len $tran\n$seq\n"; #--testing
 			}
 			close IN;
 		} else {
 			my %name_tmp; # intermiddle file
-			open (UCSC, "cut -s -f2,13 $resource |") || die "Step 1: cannot load ucsc transcript annotation:$!\n";
+			open (UCSC, "cut -s -f2,13 $resource |") || die "Step 1: Cannot load ucsc transcript annotation:$!\n";
 			while ( <UCSC> ) {
 				chomp $_; my ($tran, $gene) = (split /\t/, $_)[0, 1];
 				if ( exists($name{$gene}) ) {
@@ -135,7 +135,7 @@ use warnings;
 			}
 			close UCSC;
 
-			open (IN, "$tran_seq") || die "Step 1: cannot load ucsc transcript sequence dataset:$!\n";
+			open (IN, "$tran_seq") || die "Step 1: Cannot load ucsc transcript sequence dataset:$!\n";
 			while ( <IN> ) {
 				chomp $_; next if (! defined($_) ); next if ( $_ eq '' );
 				my @array = (split /\n/, $_);
@@ -150,48 +150,166 @@ use warnings;
 			close IN;
 		}	
 
+		# see whether user-defined transcript reference sequence present
+		if ( $user_path ) {
+			open (IN, "$user_path") || die "Step 1: Cannot load user-defined transcript reference sequences:$!\n";
+			while ( <IN> ) {
+				chomp $_; next if (! defined($_) ); next if ( $_ eq '' );
+				my @array = (split /\n/, $_);
+				my $header = shift @array; $header =~s/\>//g;
+				my ($gene, $tran) = (split /\|/, $header)[0, 1];
+				if (! defined($gene) ) { print "Header of user-defined transcript references are error, please follow >gene|transcript\n"; exit; }
+				if (! defined($tran) ) { print "Header of user-defined transcript references are error, please follow >gene|transcript\n"; exit; }
+				my $seq = join '', @array; my $len = length($seq);
+				$cdna{$gene}{$len} = [$tran, $seq];
+			}
+			close IN;
+		} else {
+			print "Step1: User-defind transcript reference sequence not present, please continue\n";
+		}
+
 		$/ = "\n";
 		# Judge whether input gene names are validated in the database; and whether breakpoint sequences match to the cDNA sequences
 		my %scaff_final; # %scaff_final data structure: 
 				 # $scaff_final{"GeneA"} = [sequence, transcript_id, break_seq_geneB]
 				 # $scaff_final{"GeneB"} = [sequence, transcript_id, break_seq_geneB]
-		my $tag_scaff_A; # if == 0, scaffold sequence of geneA fails to match cDNA of geneA; if == 1, pass
-		my $tag_scaff_B; # if == 0, scaffold sequence of geneA fails to match cDNA of geneB; if == 1, pass 
-		if ( $geneA =~/ENSG/ && $geneB =~/ENSG/ )  { # gene names as ensembl id
-			if ( exists($cdna{$geneA}) ) {
-				print "Step 1: The input of $geneA as Ensembl gene id\n";	my @array; $scaff_final{$geneA} = \@array; # define the sub- data structure
-				$tag_scaff_A = &output_geneA($cdna{$geneA}, $scaffold, $scaff_final{$geneA});
-			} else {
-				print "Step 1: Ensembl gene id $geneA is not in the list, please be sure the valid gene id\n"; exit;
-			}
-
-			if ( exists($cdna{$geneB}) ) {
-				print "Step 1: The input of $geneB as Ensembl gene id\n";	my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
-				$tag_scaff_B = &output_geneB($cdna{$geneB}, $scaffold, $scaff_final{$geneB});
-			} else {
-				print "Step 1: Ensembl gene id $geneB is not in the list, please be sure the valid gene id\n"; exit;
-			}
-		} else { # gene names as gene symbol
-			if ( exists($name{$geneA}) ) {
-				if ( exists($cdna{$name{$geneA}}) ) {
-					print "Step 1: The input of $geneA as Refseq gene name\n";	my @array; $scaff_final{$geneA} = \@array; # define the sub- data structure
-					$tag_scaff_A = &output_geneA($cdna{$name{$geneA}}, $scaffold, $scaff_final{$geneA});
+		my $tag_scaff_A = 0; # if == 0, scaffold sequence of geneA fails to match cDNA of geneA; if == 1, pass; 
+		my $tag_scaff_B = 0; # if == 0, scaffold sequence of geneB fails to match cDNA of geneB; if == 1, pass; 
+		if ( $geneA =~/ENSG/ ) { # geneA names as ensembl id
+			if ( $geneB =~/ENSG/ )  { # geneB names as ensembl id
+				if ( exists($cdna{$geneA}) ) {
+					print "Step 1: $geneA is valid Ensembl gene\n";	my @array; $scaff_final{$geneA} = \@array; # define the sub- data structure
+					$tag_scaff_A = &output_geneA($cdna{$geneA}, $scaffold, $scaff_final{$geneA});
 				} else {
-					print "Step 1: Refseq gene name $geneA is not in the list, please be sure the correct gene name\n"; exit;
+					print "Step 1: $geneA is not in Ensembl database, please input the valid gene or use user-defined sequences\n";
 				}
-			} else {
-				print "Step 1: Refseq gene name $geneA is not in the list, please be sure the correct gene name\n"; exit;
-			}
 
-			if ( exists($name{$geneB}) ) {
-				if ( exists($cdna{$name{$geneB}}) ) {
-					print "Step 1: The input of $geneB as Refseq gene name\n";	my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
-					$tag_scaff_B = &output_geneB($cdna{$name{$geneB}}, $scaffold, $scaff_final{$geneB});
+				if ( exists($cdna{$geneB}) ) {
+					print "Step 1: $geneB is valid Ensembl gene\n";	my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
+					$tag_scaff_B = &output_geneB($cdna{$geneB}, $scaffold, $scaff_final{$geneB});
 				} else {
-					print "Step 1: Refseq gene name $geneB is not in the list, please be sure the correct gene name\n"; exit;
+					print "Step 1: $geneB is not in Ensembl database, please input the valid gene or use user-defined sequences\n";
 				}
-			} else {
-				print "Step 1: Refseq gene name $geneB is not in the list, please be sure the correct gene name\n"; exit;
+			} else { # geneB names as gene symbol
+				if (exists($cdna{$geneA}) ) {
+					print "Step 1: $geneA is valid Ensembl gene\n"; my @array; $scaff_final{$geneA} = \@array; # define the sub- data structure
+					$tag_scaff_A = &output_geneA($cdna{$geneA}, $scaffold, $scaff_final{$geneA});
+				} else {
+					print "Step 1: $geneA is not in Ensembl database, please input the valid gene or use user-defined sequences\n";
+				}
+
+				if ( exists($name{$geneB}) ) {
+					if ( exists($cdna{$name{$geneB}}) ) {
+						print "Step 1: $geneB is valid gene symbol\n"; my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
+						$tag_scaff_B = &output_geneB($cdna{$name{$geneB}}, $scaffold, $scaff_final{$geneB});
+						if ( $tag_scaff_B != 1 ) {
+							if ( exists($cdna{$geneB}) ) {
+								$tag_scaff_B = &output_geneB($cdna{$geneB}, $scaffold, $scaff_final{$geneB}); # define the sub- data structure
+							}
+						}
+					} else {
+						if ( exists($cdna{$geneB}) ) {
+							print "Step 1: $geneB is user-defined name\n"; my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
+							$tag_scaff_B = &output_geneB($cdna{$geneB}, $scaffold, $scaff_final{$geneB});
+						} else {
+							print "Step 1: $geneB is not in gene symbol database, please input the valid gene or use user-defined sequences\n";
+						}
+					}
+				} else {
+					if ( exists($cdna{$geneB}) ) {
+						print "Step 1: $geneB is user-defined name\n"; my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
+						$tag_scaff_B = &output_geneB($cdna{$geneB}, $scaffold, $scaff_final{$geneB});
+					} else {
+						print "Step 1: $geneB is not in gene symbol database, please input the valid gene or use user-defined sequences\n";
+					}
+				}
+			}
+		} else { # geneA names as gene symbol
+			if ( $geneB =~/ENSG/ )  { # geneB names as ensembl id
+				if ( exists($name{$geneA}) ) {
+					if ( exists($cdna{$name{$geneA}}) ) {
+						print "Step 1: $geneA is valid gene symbol\n"; my @array; $scaff_final{$geneA} = \@array; # define the sub- data structure
+						$tag_scaff_A = &output_geneA($cdna{$name{$geneA}}, $scaffold, $scaff_final{$geneA});
+						if ( $tag_scaff_A != 1 ) {
+							if ( exists($cdna{$geneA}) ) {
+								$tag_scaff_A = &output_geneA($cdna{$geneA}, $scaffold, $scaff_final{$geneA});
+							}
+						}
+					} else {
+						if ( exists($cdna{$geneA}) ) {
+							print "Step 1: $geneA is user-defined name\n"; my @array; $scaff_final{$geneA} = \@array; # define the sub- data structure
+							$tag_scaff_A = &output_geneA($cdna{$geneA}, $scaffold, $scaff_final{$geneA});
+						} else {
+							print "Step 1: $geneA is not in gene symbol database, please input the valid gene or use user-defined sequences\n";
+						}
+					}
+				} else {
+					if ( exists($cdna{$geneA}) ) {
+						print "Step 1: $geneA is user-defined name\n"; my @array; $scaff_final{$geneA} = \@array;
+						$tag_scaff_A = &output_geneA($cdna{$geneA}, $scaffold, $scaff_final{$geneA});
+					} else {
+						print "Step 1: $geneA is not in gene symbol database, please input the valid gene or use user-defined sequences\n";
+					}
+				}
+
+				if ( exists($cdna{$geneB}) ) {
+					print "Step 1: $geneB is valid Ensembl gene\n"; my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
+					$tag_scaff_B = &output_geneB($cdna{$geneB}, $scaffold, $scaff_final{$geneB});
+				} else {
+					print "Step 1: $geneB is not in Ensembl database, please input the valid gene or use user-defined sequences\n";
+				}
+			} else { # geneB names as gene symbol
+				if ( exists($name{$geneA}) ) {
+					if ( exists($cdna{$name{$geneA}}) ) {
+						print "Step 1: $geneA is valid gene symbol\n"; my @array; $scaff_final{$geneA} = \@array; # define the sub- data structure
+						$tag_scaff_A = &output_geneA($cdna{$name{$geneA}}, $scaffold, $scaff_final{$geneA});
+						if ( $tag_scaff_A != 1 ) {
+							if ( exists($cdna{$geneA}) ) {
+								$tag_scaff_A = &output_geneA($cdna{$geneA}, $scaffold, $scaff_final{$geneA});
+							}
+						}
+					} else {
+						if ( exists($cdna{$geneA}) ) {
+							print "Step 1: $geneA is user-defined name\n"; my @array; $scaff_final{$geneA} = \@array;
+							$tag_scaff_A = &output_geneA($cdna{$geneA}, $scaffold, $scaff_final{$geneA});
+						} else {
+							print "Step 1: $geneA is not in gene symbol database, please input the valid gene or use user-defined sequences\n";
+						}
+					}
+				} else {
+					if ( exists($cdna{$geneA}) ) {
+						print "Step 1: $geneA is user-defined name\n"; my @array; $scaff_final{$geneA} = \@array;
+						$tag_scaff_A = &output_geneA($cdna{$geneA}, $scaffold, $scaff_final{$geneA});
+					} else {
+						print "Step 1: $geneA is not in gene symbol database, please input the valid gene or use user-defined sequences\n"; 
+					}
+				}
+
+				if ( exists($name{$geneB}) ) {
+					if ( exists($cdna{$name{$geneB}}) ) {
+						print "Step 1: $geneB is valid gene symbol\n"; my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
+						$tag_scaff_B = &output_geneB($cdna{$name{$geneB}}, $scaffold, $scaff_final{$geneB});
+						if ( $tag_scaff_B != 1 ) {
+							if ( exists($cdna{$geneB}) ) {
+								$tag_scaff_B = &output_geneB($cdna{$geneB}, $scaffold, $scaff_final{$geneB});
+							}
+						}
+					} else {
+						if ( exists($cdna{$geneB}) ) {
+							print "Step 1: $geneB is user-defined name\n"; my @array; $scaff_final{$geneB} = \@array;
+							$tag_scaff_B = &output_geneB($cdna{$geneB}, $scaffold, $scaff_final{$geneB});
+						} else {
+							print "Step 1: $geneB is not in gene symbol database, please input the valid gene or use user-defined sequences\n";
+						}
+					}
+				} else {
+					if ( exists($cdna{$geneB}) ) {
+						print "Step 1: $geneB is user-defined name\n"; my @array; $scaff_final{$geneB} = \@array;
+						$tag_scaff_B = &output_geneB($cdna{$geneB}, $scaffold, $scaff_final{$geneB});
+					} else {
+						print "Step 1: $geneB is not in gene symbol database, please input the valid gene or use user-defined sequences\n";
+					}
+				}
 			}
 		}
 
