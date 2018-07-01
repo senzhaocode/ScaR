@@ -115,7 +115,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
 
       --user_ref ~/XXXX.fasta
       # User-defined transcript reference sequences, user can specify transcript reference sequences in fasta format which are not present in the database.
-      # For instance
+      # For instance:
       # >gene_name|transcript_name
       # GCATATAGCGTACGCTACGCATCGACGATCGTACAGCTACTAGCACTAGTCGACCTAGCATGCT
       # NOTE: 'gene_name' should be identical to the input of gene partner names (either GeneA or GeneB); 'transcript_name' can be defined whatever user would like but please do not use known refseq id or ensembl id for 'transcript_name'. Make sure both 'gene_name' and 'transcript_name' should be present, and are separated by '|'
