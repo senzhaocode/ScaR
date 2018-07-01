@@ -113,6 +113,13 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
       #       2. In order to ensure the specificity of breakpoint sequence, we recommend that 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
       #       3. In current version, the breakpoint sequence should be composed of cDNA (i.e. exon region). If it contains intron/intergenic sequences, the program will stop running scaffold realignment.
 
+      --user_ref ~/XXXX.fasta
+      # User-defined transcript reference sequences, user can specify transcript reference sequences in fasta format which are not present in the database.
+      # For instance
+      # >gene_name|transcript_name
+      # GCATATAGCGTACGCTACGCATCGACGATCGTACAGCTACTAGCACTAGTCGACCTAGCATGCT
+      # NOTE: 'gene_name' should be identical to gene partner names (either GeneA or GeneB); 'transcript_name' can be defined whatever user would like and please do not use known refseq id or ensembl id for 'transcript_name'. Make sure both 'gene_name' and 'transcript_name' should be present, and separate by '|'
+      
   2.3 Some tips for run scripts using slurm jobscript.
   
       Generally, "select_read.pl" script does not need huge memory, instead the implementation of multiple number of threads will speed up running process. For example: the setting "SBATCH --cpus-per-task=8 and SBATCH --mem-per-cpu=1G" should be much more efficient than the setting "SBATCH --cpus-per-task=4 and SBATCH --mem-per-cpu=4G"
