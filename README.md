@@ -114,7 +114,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
       #       3. In current version, the breakpoint sequence should be composed of cDNA (i.e. exon region). If it contains intron/intergenic sequences, the program will stop running scaffold realignment.
 
       --user_ref ~/XXXX.fasta
-      # User-defined transcript reference sequences, user can specify transcript reference sequences in fasta format which are not present in the database.
+      # User-defined transcript reference sequences, user can specify transcript reference sequences in fasta format which are not present in the default database.
       # For instance:
       # >gene_name|transcript_name
       # GCATATAGCGTACGCTACGCATCGACGATCGTACAGCTACTAGCACTAGTCGACCTAGCATGCT
