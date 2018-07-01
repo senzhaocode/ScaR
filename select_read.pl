@@ -35,7 +35,8 @@ use Check;
 	push @usage, "	--anchor	The length of anchor for read mapping to breakpoint (defalut: 6)\n";
 	push @usage, "	--trimm		Set whether input fastq reads are trimmed (1) or not (0, as default value)\n";
 	push @usage, "	--length	Set the maximum length of fastq reads, this option is only available when raw fastq reads are trimmed (--trimm 1)\n";
-	push @usage, "	--trans_ref	Set the resource of transcript sequence data (e.g. gencode, ensembl or ucsc; default: ensembl)\n";
+	push @usage, "	--trans_ref	Set the resource of transcript sequence data (e.g. gencode, ensembl or ucsc)\n";
+	push @usage, "	--user_ref	Set the resource of user-defined transcript sequences (optional)\n";
 	push @usage, "	--p		The number of threads, and make sure that it should be exact as the number of CPUs allocated in jobscript (defalut: 8)\n";
 	my $help;
 	my $fastq_1;
@@ -49,6 +50,7 @@ use Check;
 	my $trimm;
 	my $read_length;
 	my $trans_ref;
+	my $user_ref;
 	my $cpus;
 
 	GetOptions
@@ -65,12 +67,13 @@ use Check;
 		'trimm=i'     => \$trimm,
 	 	'length=i'    => \$read_length,
 	 	'trans_ref=s' => \$trans_ref,
+		'user_ref=s'  => \$user_ref,
         	'p=i'         => \$cpus
 	);
 	not defined $help or die @usage;
-	defined $fastq_1 or die @usage; if (! -e $fastq_1 ) { print "\n$fastq_1 is wrong path, please set correct path\n\n"; exit; }
-	defined $fastq_2 or die @usage; if (! -e $fastq_2 ) { print "\n$fastq_2 is wrong path, please set correct path\n\n"; exit; }
-	defined $scaffold or die @usage; if (! -e $scaffold ) { print "\n$scaffold is wrong path, please set correct path\n\n"; exit; }
+	defined $fastq_1 or die @usage; if (! -e $fastq_1 ) { print "\n$fastq_1 is wrong path, please set valid path\n\n"; exit; }
+	defined $fastq_2 or die @usage; if (! -e $fastq_2 ) { print "\n$fastq_2 is wrong path, please set valid path\n\n"; exit; }
+	defined $scaffold or die @usage; if (! -e $scaffold ) { print "\n$scaffold is wrong path, please set valid path\n\n"; exit; }
 	defined $geneA or die @usage;
 	defined $geneB or die @usage;
 	defined $output or die @usage;
@@ -97,7 +100,7 @@ use Check;
 			$read_length = 0;
 		} else {
 			if ( $read_length == 0 ) {
-				print "the input read length is missing or invalid, pleaes input the maximum read length\n"; exit;
+				print "The input read length is missing or invalid, pleaes input the maximum read length\n"; exit;
 			}
 		}
 	}
@@ -111,8 +114,16 @@ use Check;
 			if ( $geneA =~/^ENSG/ ) { print "Please use the gene symbol name as input when UCSC transcript sequences are implemented\n"; exit; }
 			if ( $geneB =~/^ENSG/ ) { print "Please use the gene symbol name as input when UCSC transcript sequences are implemented\n"; exit; }
 		} else {
-			print "The input transcript sequeuce resource is not correct, please use ensembl, gencode and ucsc\n"; exit;
+			print "The transcript sequeuce resource does not exists, please use the valid resource (e.g. ensembl, gencode or ucsc)\n"; exit;
 		}
+	}
+
+	if ( defined($user_ref) ) { # judge the setting of user defined transcript reference 
+		if (! -e "$user_ref" ) {
+			print "User defined transcript reference sequences do not exist, please set the valid path\n\n"; exit;
+		}
+	} else {
+		$user_ref = ""; # no user-defined reference sequence presence
 	}
 	
 	if (! defined($cpus) ) { $cpus = 8; } # set the default number of threads to run script (default: 8)
@@ -136,11 +147,11 @@ print "#########################################################################
 	# calculate the read length
 	# Note: we recommend not trimming raw reads
 	if (! $read_length ) { $read_length = Check::read_length($fastq_1, $fastq_2); }
-	if (! $read_length ) { print "\nStep 0-1: read length of fastq file is error, please use RNA-seq fastq file\n"; exit; }
+	if (! $read_length ) { print "\nStep 0-1: Read length of fastq file is error, please set valid RNA-seq fastq file\n"; exit; }
 
 	# judge the header name of fastq -- most likely three possibilities: " ", "/" and "end" 
 	my $header_sep = Check::judge_header($fastq_1, $fastq_2);
-	if ( $header_sep eq "end" ) { print "\nStep 0-2: the header of fastq file is error, please make sure the fastq format is correct\n"; exit; }
+	if ( $header_sep eq "end" ) { print "\nStep 0-2: The header of fastq file is error, please make sure the fastq format is valid\n"; exit; }
 	
 	# Exteact scaffold sequence 
 	#***/ $read_length => read length of fastq format
@@ -165,24 +176,25 @@ print "#########################################################################
 			#	$ref_sequence->{"GeneB"} = [sequence_of_longest_transcript_of_GeneB, ensembl_id_of_longest_transcript_of_GeneB, breakpoint_sequence_of_GeneB] 
 
 			print "\n###########################################################################################\n";
-			print "# Step 1: check and build GeneA-GeneB-scaffold sequence for realigning of breakpoint $name #\n";
+			print "# Step 1: Check and build GeneA-GeneB-scaffold sequence for realigning of breakpoint $name #\n";
 			print "############################################################################################\n";
 
 			my $tran_seq; # set annotation input path
 			my $tag_scaff_geneA; my $tag_scaff_geneB; my $ref_sequence;
 			if ( $trans_ref eq "ensembl" ) {
 				$tran_seq = "$input/ensembl_transcript.fa"; # cdna mRNA sequences from ensmbl resource
-				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($scaff_seq{$name}, $tran_seq, $gene, $geneA, $geneB, "ensembl");
+				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($scaff_seq{$name}, $tran_seq, $gene, $geneA, $geneB, "ensembl", $user_ref);
 			} elsif ( $trans_ref eq "gencode" ) {
 				$tran_seq = "$input/gencode_transcript.fa"; # cdna mRNA sequences from Gencode resource
-				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($scaff_seq{$name}, $tran_seq, $gene, $geneA, $geneB, "gencode");
+				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($scaff_seq{$name}, $tran_seq, $gene, $geneA, $geneB, "gencode", $user_ref);
 			} elsif ( $trans_ref eq "ucsc" ) {
 				$tran_seq = "$input/ucsc_transcript.fa"; # cdna mRNA sequences from ucsc resource
 				my $ucsc_name = "$input/ucsc_refGene.txt"; # UCSC gene name and transcript id annotation
-				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($scaff_seq{$name}, $tran_seq, $gene, $geneA, $geneB, $ucsc_name);
+				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($scaff_seq{$name}, $tran_seq, $gene, $geneA, $geneB, $ucsc_name, $user_ref);
 			}
 			my $breakpoint_scaffold; # $breakpoint_scaffold => breakpoint position in scaffold sequence (xxxxx|yyyyy: the position of the first y)
-	
+
+			#assmble the cDNA and scaffold sequence
 			if ( $tag_scaff_geneA == 1 ) {
 				if ( $tag_scaff_geneB == 1 ) {
 					# judge whether the breakpoint sequence is duplicate or unique
@@ -202,7 +214,7 @@ print "#########################################################################
 					$breakpoint_scaffold = length($ref_sequence->{$geneA}[2])+1;
 					# output the GeneA, GeneB and breakpoint together as a fasta file (reference for running alignment)
 					my $transA = $ref_sequence->{$geneA}[1]; my $transB = $ref_sequence->{$geneB}[1]; # use transcript Ensembl_id (the longest one) as file name
-					open (OUT, ">$output/$name/scaffold_${transA}_${breakpoint_scaffold}_${transB}_${read_length}_seq.fa") || die "Step 1: cannot open this path for scaffold sequence:$!\n";
+					open (OUT, ">$output/$name/scaffold_${transA}_${breakpoint_scaffold}_${transB}_${read_length}_seq.fa") || die "Step 1: Cannot open this path for scaffold sequence:$!\n";
 					print OUT ">$geneA\n";
 					print OUT "$ref_sequence->{$geneA}[0]\n";
 					print OUT ">$geneB\n";
@@ -210,16 +222,15 @@ print "#########################################################################
 					print OUT ">scaffold\n"; # Pls note: always use "scaffold" as the name
 					print OUT "$ref_sequence->{$geneA}[2]", "$ref_sequence->{$geneB}[2]\n";
 					close OUT;
-
-					print "Step 1: The position of breakpoint split in the sequence is $breakpoint_scaffold, and continues the next step\n";
+					print "Step 1: The position of breakpoint split in the sequence is at $breakpoint_scaffold, and continues the next step\n";
 				} else {
-					print "Step 1: The downstream part of scaffold sequence does not match the cDNA sequence of $geneB, running stop here for $name\n"; next;
+					print "Step 1: Downstream of scaffold does not match the transcript of $geneB and stop here for $name, or use user-defined sequence\n"; next;
 				}
 			} else {
 				if ( $tag_scaff_geneB == 1 ) {
-					print "Step 1: The upstream part of scaffold sequence does not match the cDNA sequence of $geneA, running stop here for $name\n"; next;
+					print "Step 1: Upstream of scaffold does not match the transcript of $geneA and stop here for $name, or use user-defined sequence\n"; next;
 				} else {
-					print "Step 1: Both upstream and downstream part of scaffold sequence do not match the cDNA sequence of $geneA and $geneB, running stop here for $name\n"; next;
+					print "Step 1: Upstream and downstream of scaffold do not match the transcripts of $geneA and $geneB and stop here for $name, or use user-defined sequence\n"; next;
 				}
 			}
 
@@ -267,7 +278,7 @@ print "#########################################################################
 			if ( %discordant ) {
 				First_output::grep_discordant(\%discordant, $fastq_1, $fastq_2, "$output/$name/", $header_sep);
 			} else {
-				print "Step 2-3: no discordant split reads mapped the scaffold\n";
+				print "Step 2-3: No discordant split reads mapped the scaffold\n";
 			}
 
 			if ( %singlton ) {
@@ -291,10 +302,6 @@ print "#########################################################################
 			print "# step 3: Realign the select reads to the whole genome (test for specificity)      #\n";
 			print "# (Splicing aligning model applied) for breakpoint $name aligning 		  #\n";
 			print "####################################################################################\n";
-			#load the cDNA sequence
-			my @partner; #data structure -- collect cDNA sequences of transcriptome
-			Fusion_gene::cDNA(\@partner, $gene, $geneA, $geneB); 
-
 			#Filtering using genome realignment strategy
 			if (! -z "$output/$name/read_mapped_info" ) { #whether read_mapped_info is zero
 				my %read; #reload the discordant/singlton split reads info file in the step3
@@ -323,12 +330,16 @@ print "#########################################################################
 				##################################
 				# print the final spanning reads #
 				##################################
+				#load the gene structure	
+				my @partner; # data structure -- collect cDNA sequences of transcriptome
+				my ($geneA_pos_tag, $geneB_pos_tag) = Fusion_gene::cDNA(\@partner, $gene, $geneA, $geneB); 
+
 				my %multiple = (); # collect multiple hit reads for discordant_split / singlton_split / spanning
 				my $type = 'spanning';
 				if ( exists($read{$type}) ) {
 					my $spa_flag = system("hisat2 -p $cpus --no-unal --no-softclip --secondary -k 600 -x $genome_index -q -U $output/$name/${type}_1.txt,$output/$name/${type}_2.txt -S $output/$name/tmp/${type}_sec.sam");
 					$spa_flag == 0 or die "Step 3-1 Hisat2 maps spanning_1 and spanning_2 to genome fails\n";
-					Genome_align::discordant_specif($read{$type}, $multiple{$type}, "$output/$name/", \@partner, "spanning", $header_sep);
+					Genome_align::discordant_specif($read{$type}, $multiple{$type}, "$output/$name/", \@partner, "spanning", $header_sep, $geneA_pos_tag, $geneB_pos_tag);
 					if ( %{$read{$type}} ) {
 						open (OUT1, ">$output/$name/final_spanning_1.txt") || die "Step 3-1: cannot output the final 1st spanning:$!\n";
 						open (OUT2, ">$output/$name/final_spanning_2.txt") || die "Step 3-1: cannot output the final 2nd spanning:$!\n";
@@ -355,7 +366,7 @@ print "#########################################################################
 				if ( exists($read{$type}) ) {
 					my $dis_flag = system("hisat2 -p $cpus --no-unal --no-softclip --secondary -k 600 -x $genome_index -q -U $output/$name/${type}_1.txt,$output/$name/${type}_2.txt -S $output/$name/tmp/${type}_sec.sam");
 					$dis_flag == 0 or die "Step 3-2 Hisat2 maps discordant_split_1 and discordant_split_2 to genome fails\n";
-					Genome_align::discordant_specif($read{$type}, $multiple{$type}, "$output/$name/", \@partner, "discordant_split", $header_sep);
+					Genome_align::discordant_specif($read{$type}, $multiple{$type}, "$output/$name/", \@partner, "discordant_split", $header_sep, $geneA_pos_tag, $geneB_pos_tag);
 					if ( %{$read{$type}} ) {
 						open (OUT1, ">$output/$name/final_split_1.txt") || die "Step 3-2: cannot output the final 1st discordant split:$!\n";
 						open (OUT2, ">$output/$name/final_split_2.txt") || die "Step 3-2: cannot output the final 2nd discordant split:$!\n";
@@ -379,7 +390,7 @@ print "#########################################################################
 				if ( exists($read{$type}) ) {
 					my $sing_flag = system("hisat2 -p $cpus --no-unal --no-softclip --secondary -k 600 -x $genome_index -q -U $output/$name/${type}_1.txt,$output/$name/${type}_2.txt -S $output/$name/tmp/${type}_sec.sam");
 					$sing_flag == 0 or die "Step 3-3 Hisat2 maps singlton_split_1 and singlton_split_2 to genome fails\n";
-					Genome_align::singlton_specif($read{$type}, $multiple{$type}, "$output/$name", \@partner, "singlton_split", $header_sep);
+					Genome_align::singlton_specif($read{$type}, $multiple{$type}, "$output/$name", \@partner, "singlton_split", $header_sep, $geneA_pos_tag, $geneB_pos_tag);
 					if ( %{$read{$type}} ) {
 						open (OUT1, ">>$output/$name/final_split_1.txt") || die "Step 3-3: cannot output the final 1st singlton split:$!\n";
 						open (OUT2, ">>$output/$name/final_split_2.txt") || die "Step 3-3: cannot output the final 2nd singlton split:$!\n";
