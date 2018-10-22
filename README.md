@@ -118,7 +118,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
       # For instance:
       # >RP11-599B13.3|alternative1
       # CTTTGTGTCTTTGTCTTTATTTCTTTTCTCATTCCCTCGTCTCCACCGGGAAGGGGAGAGCCTGCGGGTGGTGTATCAGGCAGGTTCCCCTACATCTTTGGCACCCAACAC
-      # NOTE: 'RP11-599B13.3' is the gene_name and should be identical to the input of gene partner names (either GeneA or GeneB); 'alternative1' is the transcript_name and can be defined as user would like (please do not use known refseq id or ensembl id for user-defined transcript_name). Make sure both 'RP11-599B13.3' and 'alternative1' should be present together, and are separated by '|'
+      # NOTE: 'RP11-599B13.3' is the gene_name and should be identical to the input of gene partner names (either GeneA or GeneB); 'alternative1' is the transcript_name and can be defined as user would like (please do not use symbol '_' in user-defined transcript_name). Make sure both 'RP11-599B13.3' and 'alternative1' should be present together, and are separated by '|'
       
   2.3 Some tips for run scripts using slurm jobscript.
   
