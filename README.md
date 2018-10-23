@@ -96,7 +96,7 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
       # (default: 8)
       # The number of threads, and make sure that it should be the same as the number of CPUs allocated in jobscript
       
-      --input ~/reference/ \
+      --anno ~/reference/ \
       # Set input path of genomic data and annotation
       
       --output ~/examples/output/ \
