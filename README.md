@@ -1,7 +1,7 @@
 ScaR package
 ========================
 
-Use scaffold realigning approach to detect the prevalence and recurrence of known fusion transcripts across samples
+Use scaffold re-aligning approach to detect the prevalence and recurrence of known fusion transcripts across samples
 
 ![alt text](http://folk.uio.no/senz/Demo.png)
 
@@ -11,8 +11,8 @@ Use scaffold realigning approach to detect the prevalence and recurrence of know
   
   1.2 HISAT2 version 2.1.0 (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip)
   
-      The executable files have been integrated in ~/bin/hisat2-2.1.0/, users do not have to download and install it independently.
-      The only thing is to add its path to linux environment variables before running: 
+      The binary files have been integrated in ~/bin/hisat2-2.1.0/, users do not have to download and install it independently.
+      Please add its path to linux environment variables before running: 
         PATH=$PATH:/where_is_path/ScaR/bin/hisat2-2.1.0/
         export PATH
 
