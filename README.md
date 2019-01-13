@@ -70,12 +70,12 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       # fastq file path for the second end of paired-end reads
       
       --geneA RCC1 --geneB ABHD12B \
-      # fusion partner gene names (Refseq gene symbol and Ensembl id are accepted)
+      # fusion partner gene names (Refseq gene symbol and Ensembl id are accepted currently)
       
       --anchor 6 \ 
       # (default: 6)
       # Set the length of anchor. The minimum number of bases is required to match to geneA/geneB region in the scaffold sequence.
-      # If users want to more specificity of read mapping, just increase this value.
+      # Users can increase this value for more specificity of read mapping.
       
       --trimm 0 \
       # (default: 0)
@@ -86,11 +86,11 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       
       --trans_ref ensembl
       # (default: ensembl)
-      # The setting of annotation resources, users could choose others (e.g. "gencode" or "ucsc").
+      # The setting of annotation resources, users could choose other options (e.g. "gencode" or "ucsc").
       
       --p 8 \ 
       # (default: 8)
-      # The number of threads, and make sure that it should be the same as the number of CPUs allocated in jobscript
+      # The number of threads for running in parallel. 
       
       --anno ~/reference/ \
       # Set input path of genomic data and annotation
@@ -99,26 +99,23 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       # Output directory
       
       --scaffold ~/examples/input/RCC1_ABHD12B_scaff_seq.fa \
-      # Fusion scaffold sequences, users can extract them from raw output files of de novo fusion finders (e.g. deFuse, fusioncatcher, SOAPfuse). A list of candidate sequences in fasta format are accepted. 
+      # Fusion scaffold sequences, users can extract these breakpoint sequences from raw output files of de novo fusion finders (e.g. deFuse, fusioncatcher, SOAPfuse). A list of candidate sequences in fasta format are accepted. 
       # For instance:
       #	>alt_0
       #	XXXXXXXXXXXXXXXXXX|YYYYYYYYYYYYYYYY
       #	>alt_1
       #	XXXXXXXXXXXXXXXXXX*YYYYYYYYYYYYYYY
       # NOTE: 1. It only accepts '*' or '|' as a separator for breakpoint sequences. Sequences 'XXXXXXXXXXX' and 'YYYYYYYYY' should correspond to geneA and geneB, respectively.
-      #       2. In order to ensure the specificity of breakpoint sequence, we recommend that 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
-      #       3. In current version, the breakpoint sequence should be composed of cDNA (i.e. exon region). If it contains intron/intergenic sequences, the program will stop running scaffold realignment.
+      #       2. In order to ensure the specificity of breakpoint sequences matching to the reference, we recommend that 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
+      #       3. In general, the breakpoint sequences are composed of cDNAs (i.e. exon region). If users would like to detect the fusion sequences including intron/intergenic region, they have to set user-defined reference sequences , please see the usage of parameter "--user_ref".
 
       --user_ref ~/upstream.fasta
-      # User-defined transcript reference sequences, user can specify transcript reference sequences in fasta format which are not present in the default database.
+      # User-defined reference sequences, user can specify transcript reference sequences (or genomic sequences) in fasta format which are not present in the default database.
       # For instance:
       # >RP11-599B13.3|alternative1
       # CTTTGTGTCTTTGTCTTTATTTCTTTTCTCATTCCCTCGTCTCCACCGGGAAGGGGAGAGCCTGCGGGTGGTGTATCAGGCAGGTTCCCCTACATCTTTGGCACCCAACAC
-      # NOTE: 'RP11-599B13.3' is the gene_name and should be identical to the input of gene partner names (either GeneA or GeneB); 'alternative1' is the transcript_name and can be defined as user would like (please do not use symbol '_' in user-defined transcript_name). Make sure both 'RP11-599B13.3' and 'alternative1' should be present together, and are separated by '|'
-      
-  2.3 Some tips for run scripts using slurm jobscript.
-  
-      Generally, "select_read.pl" script does not need huge memory, instead the implementation of multiple number of threads will speed up running process. For example: the setting "SBATCH --cpus-per-task=8 and SBATCH --mem-per-cpu=1G" should be much more efficient than the setting "SBATCH --cpus-per-task=4 and SBATCH --mem-per-cpu=4G"
+      # NOTE: 'RP11-599B13.3' is the gene_name and should be identical to the input of gene partner names (either GeneA or GeneB); 'alternative1' is the transcript_name and can be defined as user would like (please never use symbol '_' in user-defined transcript_name). Make sure both 'RP11-599B13.3' and 'alternative1' shoudl be present together, and are separated by '|'.
+    
       
 ## 3. Output results
   For example: ~/examples/output/
