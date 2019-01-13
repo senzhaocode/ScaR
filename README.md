@@ -121,22 +121,16 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   For example: ~/examples/output/
   
   * `scaffold_*_seq.fa` (cDNA sequences of geneA and geneB, and breakpoint sequence of scaffold in fasta format)
-  * `hisats_noclip.sorted.bam` (BAM file: done by Hisat2 no-splicing alignment model)
-  * `discordant_split_1.txt, discordant_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other maps to cDNA sequences of geneA/geneB -- extracted from hisats_noclip.sorted.bam)
-  * `singlton_split_1.txt, singlton_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other shows no mapping to cDNA sequences of geneA/geneB -- extracted from hisats_noclip.sorted.bam)
-  * `spanning_1.txt, spanning_2.txt` (paired-end reads in fastq format: one-end maps to cDNA sequence of geneA; the other maps to cDNA sequence of geneB -- extracted from hisats_noclip.sorted.bam)
+  * `hisats_noclip.sorted.bam` (BAM file: done by no-splicing alignment model)
+  * `discordant_split_1.txt, discordant_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other maps to cDNA sequences of geneA/geneB)
+  * `singlton_split_1.txt, singlton_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other shows no mapping to cDNA sequences of geneA/geneB)
+  * `spanning_1.txt, spanning_2.txt` (paired-end reads in fastq format: one-end maps to cDNA sequence of geneA; the other maps to cDNA sequence of geneB)
   * `read_mapped_info` (mapping summary of discordant/singlton split reads and spanning reads)
   * **`*final_read_mapped_info`** (mapping summary of filtered discordant/singlton split reads and filtered spanning reads)
-  * **`*final_split_1.txt, final_split_2.txt`** (paired-end reads in fastq format: combine discordant and singlton split reads after filtering out unspecific read mapping at the genome level)
-  * `final_spanning_1.txt, final_spanning_1.txt` (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping at the genome level)
-  * **`*final_spanning_noclip.sorted.bam`** (show spanning reads mapped to scaffold sequence, done by hisat2 no-splicing alignment model) # If there are no spanning reads, the "final_spanning_noclip.sorted.bam" is not present.
-  * **`*final_split_noclip.sorted.bam`** (show filtered discordant and singlton split reads mapped to scaffold sequence, done by hisat2 no-splicing alignment model) # If there are no discordant/singlton split reads, the "final_split_noclip.sorted.bam" is not present.
-  * `tmp` folder (if users want to look at more detail of processing steps):
-  
-    * `hisats_noclip.sam` (SAM format of "hisats_noclip.sorted.bam")
-    * `spanning_sec.sam` (align "spanning_1.txt, spanning_2.txt" to genome reference, done by hisat2 splicing alignment model)
-    * `discordant_split_sec.sam` (align "discordant_split_1.txt, discordant_split_2.txt" to genome reference, done by hisat2 splicing alignment model)
-    * `singlton_split_sec.sam` (align "singlton_split_1.txt, singlton_split_2.txt" to genome reference, done by hisat2 splicing alignment model)
+  * **`*final_split_1.txt, final_split_2.txt`** (paired-end reads in fastq format: combine discordant and singlton split reads after filtering out unspecific read mapping)
+  * **`final_spanning_1.txt, final_spanning_1.txt`** (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping)
+  * **`*final_spanning_noclip.sorted.bam`** (collect spanning reads mapped to scaffold sequence, done by no-splicing alignment model) # If there are no spanning reads, the "final_spanning_noclip.sorted.bam" is not present.
+  * **`*final_split_noclip.sorted.bam`** (collect filtered discordant and singlton split reads mapped to scaffold sequence, done by no-splicing alignment model) # If there are no discordant/singlton split reads, the "final_split_noclip.sorted.bam" is not present.
     
 *: files with bold name are most important for users
 
@@ -145,7 +139,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       perl evaluate.pl --help
       
   4.2 An example of running:
-      Users have to create a directory that contains output folders (from `select_read.pl`) of the samples for summarizing. For instance in "examples" directory, if RCC1_ABHD12B_new folder is not present, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new/2593c05a-cc77-46d5-b2d2-51485fd6a221`, then run `evaluate.pl` as follows.
+      Users have to create a directory that contains outputs from `select_read.pl` for summarizing. For instance in "examples" directory, if RCC1_ABHD12B_new folder is not present, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new/2593c05a-cc77-46d5-b2d2-51485fd6a221`, then run `evaluate.pl` as follows.
       
       perl evaluate.pl \
       
@@ -159,13 +153,13 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
      For example: ~/examples/RCC1_ABHD12B_summary
       
-     * **`summary.txt`** (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold sequence across samples; statistics test for mapping bias to scaffold sequence [p<.05 indicates bias])
+     * **`summary.txt`** (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold sequence across samples; statistics test for mapping distribution bias to scaffold sequence [p<.05 indicates bias])
      
      * **`alt_1`** (concatenate split reads across all samples, and make alignment)
      
         |--- "All_sample_split_1.txt, All_sample_split_2.txt" (concatenate discordant/singlton split reads across all samples)
         |--- "All_sample_noclip.sorted.bam" (align concatenated split reads to breakpoint scaffold sequence, done by hisat2 no-splicing alignment model)
-        |--- "p.value" (Fisher exact test for mapping bias to upstream/downstream of scaffold sequence)
+        |--- "p.value" (Fisher exact test for mapping distribution bias to upstream/downstream of scaffold sequence)
         
 ## 5. Installation/Running via Docker
 
