@@ -177,13 +177,13 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
 
   5.3.1 Reqiurements
   - For Linux and Mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
-  - Make sure that the internet is always accessible during Pulling / Building process (The implementation of dockerising is not suitable for TSD at this moment)
+  - Make sure that the internet is always accessible during Pulling / Building process.
   
   5.3.2 Pull image from Docker Hub/Cloud repositories
   - Users can pull the ScaR engine image directly from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar:latest`. After that, check the image by typing `docker images`
   
   5.3.2 Build image from docker container (optional)
-  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .` (If the building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda .`). NOTE: building is a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at leat free 50G.
+  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .` (If the building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda .`). NOTE: building is a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at least free 50G.
   - After building is done, check the images by typing `docker images`
     
   5.4 Run ScaR engine image
@@ -201,16 +201,16 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
               --anno /reference \
               --output output
   ```
-  * "perl /ScaR/select_read.pl" - the running path of ScaR in docker image (keep it as this path and never make changes)
+  * "perl /ScaR/select_read.pl" - the running path of ScaR in docker image (keep it as this path and never make change)
   * "/input_data_path/examples" - set the full path of input directory (it contains both raw reads and scaffold sequence files). Users need to define a new path for their own data.
-  * "input/raw_1.fastq" - set the path of the R1 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own raw R1 reads. 
-  * "input/raw_2.fastq" - set the path of the R2 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own raw R2 reads.
+  * "input/raw_1.fastq" - set the path of the R1 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own raw R1 read. 
+  * "input/raw_2.fastq" - set the path of the R2 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own raw R2 read.
   * "input/RCC1_ABHD12B_scaff_seq.fa" - set the path of scaffold sequence file (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own scaffold sequence. 
   * "/reference" - set the path of reference and annotation files (NOTE: keep it as "/reference" and never make changes)
   * "output" - set the output of ScaR running (relative path referring to the directory /input_data_path/examples).
   
   5.4.3 Run an example of `evaluate.pl` for summarizing the number of spanning and split reads across a cohort of samples: 
-  Users have to create a directory that contains output folders (from `select_read.pl`) of the samples for summarizing. For instance in "examples" directory, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new`, then run `evaluate.pl` as follows.
+  Users have to create a directory that contains output from `select_read.pl` for summarizing. For instance in "examples" directory, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new`, then run `evaluate.pl` as follows.
   
   ```bash
   docker run -t --rm -v /input_data_path/examples:/data senzhao/scar perl /ScaR/evaluate.pl \
