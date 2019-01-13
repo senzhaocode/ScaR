@@ -40,16 +40,12 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
     
   1.6 Genomic data and annotations
   
-      ~/reference/Gene_hg38.txt: gene annotation file
-      ~/reference/ensembl_transcript.fa: the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
-      ~/reference/gencode_transcript.fa: the human transcriptome sequences annotated from GENCODE database (Release version 27)
-      ~/reference/ucsc_transcript.fa: the human transcriptome sequences annotated from UCSC database (Release date: Jan 2018)
-      Typing the command
+      Typing the command and download these files
         cd ~/reference
-        wget "http://folk.uio.no/senz/Gene_hg38.txt"
-        wget "http://folk.uio.no/senz/ensembl_transcript.fa"
-        wget "http://folk.uio.no/senz/gencode_transcript.fa"
-        wget "http://folk.uio.no/senz/ucsc_transcript.fa"
+        wget "http://folk.uio.no/senz/Gene_hg38.txt" -- gene annotation file
+        wget "http://folk.uio.no/senz/ensembl_transcript.fa" -- the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
+        wget "http://folk.uio.no/senz/gencode_transcript.fa" -- the human transcriptome sequences annotated from GENCODE database (Release version 27)
+        wget "http://folk.uio.no/senz/ucsc_transcript.fa" -- the human transcriptome sequences annotated from UCSC database (Release date: Jan 2018)
         wget "http://folk.uio.no/senz/ucsc_refGene.txt"
         
   1.7 Set the path of Perl library to environment variables
