@@ -11,14 +11,14 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
   1.2 HISAT2 version 2.1.0 (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip)
   
-      The binary files have been integrated in ~/bin/hisat2-2.1.0/, users do not have to download and install it independently.
+      The binary files have been integrated in ~/bin/hisat2-2.1.0/, users do not need to download and install it independently.
       Please add its path to linux environment variables before running: 
         PATH=$PATH:/where_is_path/ScaR/bin/hisat2-2.1.0/
         export PATH
 
   1.3 HISAT2 aligner HGFM index (genome reference plus transcripts based on Ensembl GRCh38 version) 
       
-      Users have to download them in ~/reference following the command:
+      Users have to download and transfer in ~/reference following the command:
         cd ~/reference
         wget "ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grch38_tran.tar.gz"
         tar -vxf grch38_tran.tar.gz
