@@ -40,7 +40,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
     
   1.6 Genomic data and annotations
   
-      Typing the command and download these files
+      Type the command and download these files
         cd ~/reference
         wget "http://folk.uio.no/senz/Gene_hg38.txt" -- gene annotation file
         wget "http://folk.uio.no/senz/ensembl_transcript.fa" -- the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
