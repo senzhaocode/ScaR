@@ -128,7 +128,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   * `read_mapped_info` (mapping summary of discordant/singlton split reads and spanning reads)
   * **`*final_read_mapped_info`** (mapping summary of filtered discordant/singlton split reads and filtered spanning reads)
   * **`*final_split_1.txt, final_split_2.txt`** (paired-end reads in fastq format: combine discordant and singlton split reads after filtering out unspecific mapping)
-  * **`final_spanning_1.txt, final_spanning_1.txt`** (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping)
+  * **`*final_spanning_1.txt, final_spanning_1.txt`** (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping)
   * **`*final_spanning_noclip.sorted.bam`** (collect spanning reads mapped to scaffold sequence, done by no-splicing alignment model). If there are no spanning reads, the "final_spanning_noclip.sorted.bam" is not present.
   * **`*final_split_noclip.sorted.bam`** (collect filtered discordant and singlton split reads mapped to scaffold sequence, done by no-splicing alignment model). If there are no discordant/singlton split reads, the "final_split_noclip.sorted.bam" is not present.
   * **`*summary_read_mapping_support.txt`** (summary and comparison of read supports for discordant split and spanning reads after filtering out unspecific mapping)
