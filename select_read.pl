@@ -24,21 +24,21 @@ use Check;
 	push @usage, "Usage: ".basename($0)." [options]\n";
 	push @usage, "Retrieve discordant (and singlton) split reads that support a given fusion breakpoint.\n";
 	push @usage, "	--help		Displays this information\n";
-	push @usage, "	--first		fastq file path for 1st end of paired-end reads\n";
-	push @usage, "	--second	fastq file path for 2nd end of paired-end reads\n";
-	push @usage, "	--geneA		Name of upstream gene partner (Gene_symbol/Ensembl_id is accpeted, but never mix them together)\n";
-	push @usage, "	--geneB		Name of downstream gene partner (Gene_symbol/Ensembl_id is accepted, but never mix them together)\n";
+	push @usage, "	--first		Fastq file path for 1st end of paired-end reads\n"
+	push @usage, "	--second	Fastq file path for 2nd end of paired-end reads\n";
+	push @usage, "	--geneA		Name of upstream gene partner (Gene_symbol or Ensembl_id is accpeted)\n";
+	push @usage, "	--geneB		Name of downstream gene partner (Gene_symbol or Ensembl_id is accepted)\n";
 	push @usage, "	--scaffold	A list of fusion scaffold sequences in fasta format, e.g\n", 
 		     "			>scaffold1\n",
 		     "			GCTCTATGAAATTGCA|AACAAAGAGAGGGTCA\n",
 		     "			>scaffold2\n",
 		     "			GCTCTATGAAATTGCA*AACAAAGAGAGGGTCA\n";
-	push @usage, "	--anno		Set annotation files for running script: e.g. /script_path/data/\n";
+	push @usage, "	--anno		Set the directory of annotation files: e.g. /script_path/data/\n";
 	push @usage, "	--output	Output Directory\n";
 	push @usage, "	--anchor	The length of anchor for read mapping to breakpoint (defalut: 6)\n";
 	push @usage, "	--trimm		Set whether input fastq reads are trimmed (1) or not (0, as default value)\n";
 	push @usage, "	--length	Set the maximum length of fastq reads, this option is only available when raw fastq reads are trimmed (--trimm 1)\n";
-	push @usage, "	--trans_ref	Set the resource of transcript sequence data (e.g. gencode, ensembl or ucsc)\n";
+	push @usage, "	--trans_ref	Set the resource of transcript sequence data (e.g. gencode, ensembl or ucsc, default: ensembl)\n";
 	push @usage, "	--user_ref	Set the resource of user-defined transcript sequences (optional)\n";
 	push @usage, "	--p		The number of threads, and make sure that it should be exact as the number of CPUs allocated in jobscript (defalut: 8)\n";
 	my $help;
