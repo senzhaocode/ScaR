@@ -10,9 +10,9 @@ use warnings;
 		open (IN, "awk -F '\t' -v OFS='\t' '(\$3!=\$7 && \$7!=\"=\" && \$5>=0 && \$8>0)' $sam_file/tmp/hisats_noclip.sam | ") || die "Step2-2 spanning read mapping: cannot run awk 1:$!\n";
 		while ( <IN> ) {
 			chomp $_; #
-			my ($name, $flag, $one_match, $one_pos, $value, $other_match, $other_pos, $seq) = (split /\t/, $_)[0,1,2,3,4,6,7,9];
+			my ($name, $flag, $one_match, $one_pos, $value, $other_match, $other_pos, $seq, $quality) = (split /\t/, $_)[0,1,2,3,4,6,7,9,10];
 			$name =~s/\/[\w\:\-]+$//g; $name =~s/\s[\w\:\-]+$//g; # trimmed header
-			push @{$spanning_read{$name}}, [$one_pos, "spanning", $one_match, $seq, $other_match, $flag];
+			push @{$spanning_read{$name}}, [$one_pos, "spanning", $one_match, $seq, $other_match, $flag, $quality];
 		}
 		close IN;
 		
@@ -63,7 +63,7 @@ use warnings;
 		open (IN, "awk -F '\t' -v OFS='\t' '(\$3!=\$7 && \$7!=\"=\" && \$5>=40 && \$8>0)' $sam_file/tmp/hisats_noclip.sam | grep 'caffold' |") || die "Step2-2 discordant-split read mapping: cannot run awk 1:$!\n";
 		while ( <IN> ) {
 			chomp $_; #
-			my ($name, $flag, $one_match, $one_pos, $other_match, $other_pos, $seq) = (split /\t/, $_)[0,1,2,3,6,7,9];
+			my ($name, $flag, $one_match, $one_pos, $other_match, $other_pos, $seq, $quality) = (split /\t/, $_)[0,1,2,3,6,7,9,10];
 			$name =~s/\/[\w\:\-]+$//g; $name =~s/\s[\w\:\-]+$//g; # trimmed header
 			my $string = ""; # record mismatching information
 			if ( $_ =~/MD\:Z\:([\w\^]+)/ ) { 
@@ -75,15 +75,15 @@ use warnings;
 
 			if ( $one_match eq "scaffold" ) {
 				if ( $num_mis < 6 ) { # the default setting -- mismatching number
-					push @{$discordant_split{$name}}, [$one_pos, "discordant_split", $one_match, $seq, $other_match, $flag]; # read across breakpoint
+					push @{$discordant_split{$name}}, [$one_pos, "discordant_split", $one_match, $seq, $other_match, $flag, $quality]; # read across breakpoint
 				} else {
-					push @{$discordant_split{$name}}, [$one_pos, "mismatch_fail", $one_match, $seq, $other_match, $flag]; # read with many mismatch base
+					push @{$discordant_split{$name}}, [$one_pos, "mismatch_fail", $one_match, $seq, $other_match, $flag, $quality]; # read with many mismatch base
 				}
 			} elsif ( $other_match eq "scaffold" ) {
 				if ( $num_mis < 6 ) { # the default setting -- mismatching number
-					push @{$discordant_split{$name}}, [$other_pos, "discordant_split", $one_match, $seq, $other_match, $flag]; # read across breakpoint
+					push @{$discordant_split{$name}}, [$other_pos, "discordant_split", $one_match, $seq, $other_match, $flag, $quality]; # read across breakpoint
 				} else {
-					push @{$discordant_split{$name}}, [$other_pos, "mismatch_fail", $one_match, $seq, $other_match, $flag]; # read with many mismatch base
+					push @{$discordant_split{$name}}, [$other_pos, "mismatch_fail", $one_match, $seq, $other_match, $flag, $quality]; # read with many mismatch base
 				}
 			} else {
 				print "Step2-2 discoardant-split reads mapping: no hit matches to scaffold (one mapping to GeneA/GeneB; the other mapping to scaffold)\n";
@@ -162,7 +162,7 @@ use warnings;
 		open (IN, "awk  -F '\t' -v OFS='\t' '(\$7==\"=\" && \$8>0 && \$5>=40 && \$9!=0)' $sam_file/tmp/hisats_noclip.sam | grep 'caffold' |") || die "Step2-2 discordant-split read mapping: cannot run awk 2:$!\n";
 		while ( <IN> ) {
 			chomp $_; #
-			my ($name, $flag, $one_match, $one_pos, $other_match, $other_pos, $seq) = (split /\t/, $_)[0,1,2,3,6,7,9];
+			my ($name, $flag, $one_match, $one_pos, $other_match, $other_pos, $seq, $quality) = (split /\t/, $_)[0,1,2,3,6,7,9,10];
 			$name =~s/\/[\w\:\-]+$//g; $name =~s/\s[\w\:\-]+$//g; # trimmed header
 			my $string = ""; # record mismatching information
 			if ( $_ =~/MD\:Z\:([\w\^]+)/ ) {
@@ -174,9 +174,9 @@ use warnings;
 
 			if ( $one_match eq "scaffold" ) { 
 				if ( $num_mis < 6 ) { # the default setting -- mismatching number
-					push @{$discordant_split_scaffold{$name}}, [$one_pos, "discordant_split", $one_match, $seq, $other_match, $flag]; # read across breakpoint
+					push @{$discordant_split_scaffold{$name}}, [$one_pos, "discordant_split", $one_match, $seq, $other_match, $flag, $quality]; # read across breakpoint
 				} else {
-					push @{$discordant_split_scaffold{$name}}, [$one_pos, "mismatch_fail", $one_match, $seq, $other_match, $flag]; # read with many mismatch base
+					push @{$discordant_split_scaffold{$name}}, [$one_pos, "mismatch_fail", $one_match, $seq, $other_match, $flag, $quality]; # read with many mismatch base
 				}
 			} else {
 				print "Step2-2 discordant-split read mapping: no hit matches to scaffold (both read mapped to scaffold)\n";
@@ -280,7 +280,7 @@ use warnings;
 		open (IN, "awk -F '\t' -v OFS='\t' '(\$7==\"=\" && \$3==\"scaffold\" && \$5>=40 && \$8>0 && \$9==0 && (\$2==73 || \$2==89 || \$2==137 || \$2==153))' $sam_file/tmp/hisats_noclip.sam |") || die "cannot run awk singlton script:$!\n";
         	while ( <IN> ) {
                 	chomp $_; #
-                	my ($name, $one_match, $one_pos, $other_match, $other_pos, $seq) = (split /\t/, $_)[0,2,3,6,7,9];
+                	my ($name, $flag, $one_match, $one_pos, $other_match, $other_pos, $seq, $quality) = (split /\t/, $_)[0,1,2,3,6,7,9,10];
 			$name =~s/\/[\w\:\-]+$//g; $name =~s/\s[\w\:\-]+$//g; # trimmed header
 			my $string = ""; # record mismatching information
                         if ( $_ =~/MD\:Z\:([\w\^]+)/ ) {
@@ -293,7 +293,7 @@ use warnings;
                 	if ( $one_match eq "scaffold" ) {
                         	if ( ($one_pos+$archor) <= $breakpoint_scaffold and $breakpoint_scaffold <= ($one_pos+$read_length-$archor) ) { # read cross breakpoint: get extension (2, -2) -- not applied yet
 					if ( $num_mis < 6 ) {
-                                		push @{$dis_ref->{$name}}, [$one_pos, "singlton_split", $one_match, $seq];
+                                		push @{$dis_ref->{$name}}, [$one_pos, "singlton_split", $one_match, $seq, $flag, $quality];
                                 		# print "singlton: $name\t$singlton{$name}[0][0]\t$singlton{$name}[0][1]\n";
                                 	} else {
 						print "Step2-2 singleton-split read mapping: $name fails to meet criteria because of many mismatches in alignment\n";

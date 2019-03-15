@@ -5,7 +5,7 @@ use warnings;
 	sub discordant_specif {
 		my ($dis_ref, $multiple_ref, $path, $gene, $read_type, $sep, $a_pos_tag, $b_pos_tag) = @_; #read_type: spanning / discordant
 		foreach my $id ( keys %{$dis_ref} ) {
-			my $com = "@".$id.$sep;
+			my $com = "@".$id."/"; #please do not use $sep, we have to set the header in end with '/'
 			my $hit_1 = `grep "$com" -A 3 $path/${read_type}_1.txt`; chomp $hit_1;
                         my $hit_2 = `grep "$com" -A 3 $path/${read_type}_2.txt`; chomp $hit_2;
                         my $seq_1 = (split /\n/, $hit_1)[1]; my $seq_1_tr = $seq_1; $seq_1_tr =~tr/ATCG/TAGC/; $seq_1_tr = reverse($seq_1_tr);
@@ -191,7 +191,7 @@ use warnings;
 	sub singlton_specif {
 		my ($dis_ref, $multiple_ref, $path, $gene, $read_type, $sep, $a_pos_tag, $b_pos_tag) = @_;
 		foreach my $id ( keys %{$dis_ref} ) {
-			my $com = "@".$id.$sep;
+			my $com = "@".$id."/"; # Please do not use $sep, we have to set the header in end with '/'
                         my $hit_1 = `grep "$com" -A 3 $path/${read_type}_1.txt`; chomp $hit_1;
                         my $hit_2 = `grep "$com" -A 3 $path/${read_type}_2.txt`; chomp $hit_2;
                         my $seq_1 = (split /\n/, $hit_1)[1]; my $seq_1_tr = $seq_1; $seq_1_tr =~tr/ATCG/TAGC/; $seq_1_tr = reverse($seq_1_tr);

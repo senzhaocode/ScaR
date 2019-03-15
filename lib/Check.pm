@@ -4,8 +4,17 @@ use warnings;
 
 	sub read_length {
 		my ($fastq_1, $fastq_2) = @_;
-		my $tmp_1 = `head -n 2 $fastq_1`; chomp $tmp_1; my $seq_1 = (split /\n/, $tmp_1)[1];
-		my $tmp_2 = `head -n 2 $fastq_2`; chomp $tmp_2; my $seq_2 = (split /\n/, $tmp_2)[1];
+		my $tmp_1; my $tmp_2; my $seq_1; my $seq_2; # set judgement
+		if ( $fastq_1 =~/\.gz/ ) { # compresssed format for the first end
+			$tmp_1 = `zcat $fastq_1 | head -n 2`; chomp $tmp_1; $seq_1 = (split /\n/, $tmp_1)[1];
+		} else { # uncompressed format for the first end
+			$tmp_1 = `head -n 2 $fastq_1`; chomp $tmp_1; $seq_1 = (split /\n/, $tmp_1)[1];
+		}
+		if ( $fastq_2 =~/\.gz/ ) { # compresssed format for the second end
+			$tmp_2 = `zcat $fastq_2 | head -n 2`; chomp $tmp_2; $seq_2 = (split /\n/, $tmp_2)[1];
+		} else { # uncompressed format for the second end
+			$tmp_2 = `head -n 2 $fastq_2`; chomp $tmp_2; $seq_2 = (split /\n/, $tmp_2)[1];
+		}
 		my $len_1 = length($seq_1); my $len_2 = length($seq_2);
 
 		if ( $len_1 == $len_2 ) {
@@ -17,13 +26,18 @@ use warnings;
 	}
 
 	sub judge_header {
-		my ($fastq_1, $fastq_2) = @_;
-		my $tmp_1 = `head -n 2 $fastq_1`; chomp $tmp_1; my $name_1 = (split /\n/, $tmp_1)[0]; # header of first_end
+		my ($fastq) = @_;
+		my $tmp; my $name; # set judgement
+		if ( $fastq =~/\.gz/ ) { # compresssed format
+			$tmp = `zcat $fastq | head -n 2`; chomp $tmp; $name = (split /\n/, $tmp)[0]; # header of first_end
+		} else { # uncompressed format
+			$tmp = `head -n 2 $fastq`; chomp $tmp; $name = (split /\n/, $tmp)[0]; # header of first_end
+		}
 
-		if ( $name_1 =~/\s/ ) {
+		if ( $name =~/\s/ ) {
 			return(" ");
 		} else {
-			if ( $name_1 =~/\// ) {
+			if ( $name =~/\// ) {
 				return("/");
 			} else {
 				return("end");
