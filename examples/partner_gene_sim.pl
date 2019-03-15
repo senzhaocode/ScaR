@@ -20,8 +20,8 @@ use Check;
 	push @usage, "Usage: ".basename($0)." [options]\n";
 	push @usage, "Retrieve discordant (and singlton) split reads that support a given fusion breakpoint.\n";
 	push @usage, "	--help		Displays this information\n";
-	push @usage, "	--first		fastq file path for 1st end of paired-end reads\n";
-	push @usage, "	--second	fastq file path for 2nd end of paired-end reads\n";
+	push @usage, "	--first		Raw fastq file or compressed fastq (.fastq.gz) file for 1st end of paired-end reads\n";
+	push @usage, "	--second	Raw fastq file or compressed fastq (.fastq.gz) file for 2nd end of paired-end reads\n";
 	push @usage, "	--geneA		Name of upstream gene partner (Gene_symbol/Ensembl_id is accpeted, but never mix them together)\n";
 	push @usage, "	--geneB		Name of downstream gene partner (Gene_symbol/Ensembl_id is accepted, but never mix them together)\n";
 	push @usage, "	--scaffold	A list of fusion scaffold sequences in fasta format, e.g\n", 
@@ -154,9 +154,11 @@ print "#########################################################################
 	if (! $read_length ) { print "\nStep 0-1: Read length of fastq file is error, please set valid RNA-seq fastq file\n"; exit; }
 
 	# judge the header name of fastq -- most likely three possibilities: " ", "/" and "end" 
-	my $header_sep = Check::judge_header($fastq_1, $fastq_2);
-	if ( $header_sep eq "end" ) { print "\nStep 0-2: The header of fastq file is error, please make sure the fastq format is valid\n"; exit; }
-	
+	my $header_sep = Check::judge_header($fastq_1);
+	if ( $header_sep eq "end" ) { print "\nStep 0-2: The header of fastq_1 file is error, please make sure the fastq format is valid\n"; exit; }
+	$header_sep = Check::judge_header($fastq_2);
+	if ( $header_sep eq "end" ) { print "\nStep 0-2: The header of fastq_2 file is error, please make sure the fastq format is valid\n"; exit; }
+
 	# Exteact scaffold sequence 
 	#***/ $read_length => read length of fastq format
 	#***/ $scaffold => scaffold sequence path
