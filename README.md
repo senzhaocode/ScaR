@@ -64,10 +64,10 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       perl select_read.pl \
       
       --first ~/examples/input/raw_1.fastq \ 
-      # fastq file path for the first end of paired-end reads
+      # Raw fastq or compressed fastq (.fastq.gz) file for the first end of paired-end reads
       
       --second ~/examples/input/raw_2.fastq \
-      # fastq file path for the second end of paired-end reads
+      # Raw fastq or compressed fastq (.fastq.gz) file path for the second end of paired-end reads
       
       --geneA RCC1 --geneB ABHD12B \
       # fusion partner gene names (Refseq gene symbol and Ensembl id are accepted currently)
