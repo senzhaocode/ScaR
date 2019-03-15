@@ -2,6 +2,10 @@
 ###########################################################################################################################
 # Select_read.pl is perl script to detect the recurrence of known fusion transcripts using scaffold realignment strategy 
 # Before you start it, please read manual first: perl select_read.pl --help
+# The script was created in Nov. 11 2016, 
+# The second modification in Nov 26 2017 (update annotation), 
+# The third modification in Dec 2nd, 2017 (resolve anchor problem for read mapping to scafflod),
+# The forth modification in June, 2018 (add --user_ref parameter, allow user-defined transcript sequences as input),
 ###########################################################################################################################
 use strict;
 use warnings;
@@ -20,8 +24,8 @@ use Check;
 	push @usage, "Usage: ".basename($0)." [options]\n";
 	push @usage, "Retrieve discordant (and singlton) split reads that support a given fusion breakpoint.\n";
 	push @usage, "	--help		Displays this information\n";
-	push @usage, "	--first		Fastq file path for 1st end of paired-end reads\n";
-	push @usage, "	--second	Fastq file path for 2nd end of paired-end reads\n";
+	push @usage, "	--first		Raw fastq file or compressed fastq (.fastq.gz) file for 1st end of paired-end reads\n";
+	push @usage, "	--second	Raw fastq file or compressed fastq (.fastq.gz) file for 2nd end of paired-end reads\n";
 	push @usage, "	--geneA		Name of upstream gene partner (Gene_symbol or Ensembl_id is accpeted)\n";
 	push @usage, "	--geneB		Name of downstream gene partner (Gene_symbol or Ensembl_id is accepted)\n";
 	push @usage, "	--scaffold	A list of fusion scaffold sequences in fasta format, e.g\n", 
@@ -54,15 +58,15 @@ use Check;
 
 	GetOptions
 	(
-		'help'        => \$help,
-        'first=s'     => \$fastq_1,
-        'second=s'    => \$fastq_2,
-        'geneA=s'     => \$geneA,
-        'geneB=s'     => \$geneB,
+        	'help'        => \$help,
+        	'first=s'     => \$fastq_1,
+        	'second=s'    => \$fastq_2,
+        	'geneA=s'     => \$geneA,
+        	'geneB=s'     => \$geneB,
 		'scaffold=s'  => \$scaffold,
 		'anno=s'     => \$input,
-        'output=s'    => \$output,
-        'anchor=i'    => \$anchor,
+        	'output=s'    => \$output,
+        	'anchor=i'    => \$anchor,
 		'trimm=i'     => \$trimm,
 	 	'length=i'    => \$read_length,
 	 	'trans_ref=s' => \$trans_ref,
@@ -148,10 +152,12 @@ print "#########################################################################
 	if (! $read_length ) { $read_length = Check::read_length($fastq_1, $fastq_2); }
 	if (! $read_length ) { print "\nStep 0-1: Read length of fastq file is error, please set valid RNA-seq fastq file\n"; exit; }
 
-	# judge the header name of fastq -- most likely three possibilities: " ", "/" and "end" 
-	my $header_sep = Check::judge_header($fastq_1, $fastq_2);
-	if ( $header_sep eq "end" ) { print "\nStep 0-2: The header of fastq file is error, please make sure the fastq format is valid\n"; exit; }
-	
+	# judge the header name of fastq -- most likely three possibilities: " ", "/" and "end"
+	my $header_sep = Check::judge_header($fastq_1);
+	if ( $header_sep eq "end" ) { print "\nStep 0-2: The header of fastq_1 file is error, please make sure the fastq format is valid\n"; exit; }
+	$header_sep = Check::judge_header($fastq_2);
+	if ( $header_sep eq "end" ) { print "\nStep 0-2: The header of fastq_2 file is error, please make sure the fastq format is valid\n"; exit; }	
+
 	# Exteact scaffold sequence 
 	#***/ $read_length => read length of fastq format
 	#***/ $scaffold => scaffold sequence path
