@@ -202,9 +202,9 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   ```
   * "perl /ScaR/select_read.pl" - the running path of ScaR in docker image (NOTE: keep it as this path)
   * "/input_data_path/examples" - set the full path of input directory (it contains both raw reads and scaffold sequence files). Users need to define a new path for their own data.
-  * "input/raw_1.fastq" - set the path of the R1 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own R1 reads. 
-  * "input/raw_2.fastq" - set the path of the R2 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own R2 reads.
-  * "input/RCC1_ABHD12B_scaff_seq.fa" - set the path of scaffold sequence file (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own scaffold sequences. 
+  * "input/raw_1.fastq" - set the path of the R1 reads file in the input directory (relative path referring to input directory /input_data_path/examples). users need to define file name of their own R1 reads. 
+  * "input/raw_2.fastq" - set the path of the R2 reads file in the input directory (relative path referring to input directory /input_data_path/examples). users need to define file name of their own R2 reads.
+  * "input/RCC1_ABHD12B_scaff_seq.fa" - set the path of scaffold sequence file (relative path referring to input directory /input_data_path/examples). users need to define file name of their own scaffold sequences. 
   * "/reference" - the path of reference and annotation files in docker image (NOTE: keep it as "/reference")
   * "output" - set the output of ScaR running (relative path referring to the directory /input_data_path/examples).
   
