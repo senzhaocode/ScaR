@@ -10,7 +10,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   1.1 Perl version >= 5.10.2
   
   1.2 HISAT2 version 2.1.0 (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip)
-  
+      
       The binary files have been integrated in ~/bin/hisat2-2.1.0/, please add the path to linux environment variables before running: 
         PATH=$PATH:/where_is_path/ScaR/bin/hisat2-2.1.0/
         export PATH
@@ -63,25 +63,24 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       perl select_read.pl \
       
       --first ~/examples/input/raw_1.fastq \ 
-      # Raw fastq or compressed fastq (.fastq.gz) file for the first end of paired-end reads
+      # Raw or compressed fastq (.fastq.gz) file for the first end of paired-end reads
       
       --second ~/examples/input/raw_2.fastq \
-      # Raw fastq or compressed fastq (.fastq.gz) file path for the second end of paired-end reads
+      # Raw or compressed fastq (.fastq.gz) file for the second end of paired-end reads
       
       --geneA RCC1 --geneB ABHD12B \
-      # fusion partner gene names (Refseq gene symbol and Ensembl id are accepted currently)
+      # Fusion partner gene names (Refseq gene symbol and Ensembl id are accepted currently)
       
       --anchor 6 \ 
       # (default: 6)
       # Set the length of anchor. The minimum number of bases is required to match to geneA/geneB region in the scaffold sequence.
-      # Users can increase this value for more specificity of read mapping.
       
       --trimm 0 \
       # (default: 0)
-      # Set whether raw input fastq reads are trimmed (1) or not (0)
+      # Set whether the input fastq reads are trimmed (1) or not (0)
       
       --length 48 \
-      # Set the maximum length of fastq read, this option is only available when raw fastq reads are trimmed (--trimm 1)
+      # Set the maximum value of fastq read length, this option is only active when raw fastq reads are trimmed (--trimm 1)
       
       --trans_ref ensembl
       # (default: ensembl)
@@ -92,19 +91,19 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       # The number of threads for running in parallel. 
       
       --anno ~/reference/ \
-      # Set input path of genomic data and annotation
+      # Set the path of genomic data and annotation
       
       --output ~/examples/output/ \
       # Output directory
       
       --scaffold ~/examples/input/RCC1_ABHD12B_scaff_seq.fa \
-      # Fusion scaffold sequences, users can extract these breakpoint sequences from raw output files of de novo fusion finders (e.g. deFuse, fusioncatcher, SOAPfuse). A list of candidate sequences in fasta format are accepted. 
+      # Fusion scaffold sequences, users can extract the breakpoint sequences from outputs of de novo fusion finders (e.g. deFuse, fusioncatcher, SOAPfuse). Candidate sequences in fasta format are accepted. 
       # For instance:
       #	>alt_0
       #	XXXXXXXXXXXXXXXXXX|YYYYYYYYYYYYYYYY
       #	>alt_1
       #	XXXXXXXXXXXXXXXXXX*YYYYYYYYYYYYYYY
-      # NOTE: 1. It only accepts '*' or '|' as a separator for breakpoint sequences. Sequences 'XXXXXXXXXXX' and 'YYYYYYYYY' should correspond to geneA and geneB, respectively.
+      # NOTE: 1. It only accepts '*' or '|' as a separator for breakpoint sequences. 'XXXXXXXXXXX' and 'YYYYYYYYY' correspond to the sequences from geneA and geneB, respectively.
       #       2. In order to ensure the specificity of breakpoint sequences matching to the reference, we recommend that 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
       #       3. In general, the breakpoint sequences are composed of cDNAs (i.e. exon region). If users would like to detect the fusion sequences including intron/intergenic region, they have to set user-defined reference sequences , please see the usage of parameter "--user_ref".
 
@@ -113,7 +112,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       # For instance:
       # >RP11-599B13.3|alternative1
       # CTTTGTGTCTTTGTCTTTATTTCTTTTCTCATTCCCTCGTCTCCACCGGGAAGGGGAGAGCCTGCGGGTGGTGTATCAGGCAGGTTCCCCTACATCTTTGGCACCCAACAC
-      # NOTE: 'RP11-599B13.3' is the gene_name and should be identical to the input of gene partner names (either GeneA or GeneB); 'alternative1' is the transcript_name and can be defined as user would like (please never use symbol '_' in user-defined transcript_name). Make sure both 'RP11-599B13.3' and 'alternative1' shoudl be present together, and are separated by '|'.
+      # NOTE: 'RP11-599B13.3' is the gene name and should be identical to the input of gene partner names (either GeneA or GeneB); 'alternative1' is the transcript name (please avoid using symbol '_' in user-defined transcript name). Make sure both 'RP11-599B13.3' and 'alternative1' are present together, and separated by '|'.
     
       
 ## 3. Output results
@@ -122,20 +121,20 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   * `scaffold_*_seq.fa` (cDNA sequences of geneA and geneB, and breakpoint sequence of scaffold in fasta format)
   * `hisats_noclip.sorted.bam` (BAM file: done by no-splicing alignment model)
   * `discordant_split_1.txt, discordant_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other maps to cDNA sequences of geneA/geneB)
-  * `singlton_split_1.txt, singlton_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other shows no mapping to cDNA sequences of geneA/geneB)
+  * `singlton_split_1.txt, singlton_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other has no mapping to cDNA sequences of geneA/geneB)
   * `spanning_1.txt, spanning_2.txt` (paired-end reads in fastq format: one-end maps to cDNA sequence of geneA; the other maps to cDNA sequence of geneB)
   * `read_mapped_info` (mapping summary of discordant/singlton split reads and spanning reads)
   * **`*final_read_mapped_info`** (mapping summary of filtered discordant/singlton split reads and filtered spanning reads)
-  * **`*final_split_1.txt, final_split_2.txt`** (paired-end reads in fastq format: combine discordant and singlton split reads after filtering out unspecific mapping)
+  * **`*final_split_1.txt, final_split_2.txt`** (paired-end reads in fastq format: merge discordant and singlton split reads after filtering out unspecific mapping)
   * **`*final_spanning_1.txt, final_spanning_1.txt`** (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping)
-  * **`*final_spanning_noclip.sorted.bam`** (collect spanning reads mapped to scaffold sequence, done by no-splicing alignment model). If there are no spanning reads, the "final_spanning_noclip.sorted.bam" is not present.
-  * **`*final_split_noclip.sorted.bam`** (collect filtered discordant and singlton split reads mapped to scaffold sequence, done by no-splicing alignment model). If there are no discordant/singlton split reads, the "final_split_noclip.sorted.bam" is not present.
-  * **`*summary_read_mapping_support.txt`** (summary and comparison of read supports for discordant split and spanning reads after filtering out unspecific mapping)
+  * **`*final_spanning_noclip.sorted.bam`** (filtered spanning reads mapped to scaffold sequence). If there are no spanning reads, the "final_spanning_noclip.sorted.bam" is not present.
+  * **`*final_split_noclip.sorted.bam`** (filtered discordant and singlton split reads mapped to scaffold sequence). If there are no discordant/singlton split reads, the "final_split_noclip.sorted.bam" is not present.
+  * **`*summary_read_mapping_support.txt`** (comparison of read supports for discordant split and spanning reads before/after filtering out unspecific mapping)
     
-*: files with bold name are most important for users
+*: files with bold name are important for users
 
 ## 4. Summarise the number of spanning and split reads across a cohort of samples (running evaluate.pl)
-  4.1 Look at running parameters:
+  4.1 See running parameters:
       perl evaluate.pl --help
       
   4.2 An example of running:
@@ -153,13 +152,13 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
      For example: ~/examples/RCC1_ABHD12B_summary
       
-     * **`summary.txt`** (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold sequence across samples; statistics test for mapping distribution bias to scaffold sequence [p<.05 indicates bias])
+     * **`summary.txt`** (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold sequence across a cohort of samples; statistics test for mapping distribution bias to scaffold sequence [p<.05 indicates bias])
      
-     * **`alt_1`** (concatenate split reads across all samples, and make alignment)
+     * **`alt_1`** (concatenate split reads across a cohort of samples, and make alignment)
      
-        |--- "All_sample_split_1.txt, All_sample_split_2.txt" (concatenate discordant/singlton split reads across all samples)
-        |--- "All_sample_noclip.sorted.bam" (align concatenated split reads to breakpoint scaffold sequence, done by hisat2 no-splicing alignment model)
-        |--- "p.value" (Fisher exact test for mapping distribution bias to upstream/downstream of scaffold sequence)
+        |--- "All_sample_split_1.txt, All_sample_split_2.txt" (paired-end discordant/singlton split reads concatenated across all samples)
+        |--- "All_sample_noclip.sorted.bam" (align the concatenated split reads to scaffold sequence)
+        |--- "p.value" (fisher exact test for mapping distribution bias to upstream/downstream of scaffold sequence)
         
 ## 5. Installation/Running via Docker
 
@@ -170,8 +169,8 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
 
   5.2 Allocate computational resource to docker, e.g.
   - Memory: min 4GB for ScaR running
-  - CPUs: 4 (Users need to do setting based on their own hardwares)
-  - Swap: 1GB (ScaR does not need a large memory for running, so keep a low Swap space)
+  - CPUs: 4 (Users have to set up based on their own hardwares)
+  - Swap: 1GB (ScaR does not need a large memory for running, so keep a small mount of Swap space)
  
   5.3 Pull / Build ScaR engine image
 
@@ -183,7 +182,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   - Users can pull the ScaR engine image directly from DockerHub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar:latest`. After that, check the image by typing `docker images`
   
   5.3.2 Build image from docker container (optional)
-  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .` (If the building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda .`). NOTE: building is a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at least free 50G.
+  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .` (If this building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda .`). NOTE: building is a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at least free 50G.
   - After building is done, check the images by typing `docker images`
     
   5.4 Run ScaR engine image
@@ -201,12 +200,12 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
               --anno /reference \
               --output output
   ```
-  * "perl /ScaR/select_read.pl" - the running path of ScaR in docker image (keep it as this path and never make change)
+  * "perl /ScaR/select_read.pl" - the running path of ScaR in docker image (NOTE: keep it as this path)
   * "/input_data_path/examples" - set the full path of input directory (it contains both raw reads and scaffold sequence files). Users need to define a new path for their own data.
-  * "input/raw_1.fastq" - set the path of the R1 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own raw R1 read. 
-  * "input/raw_2.fastq" - set the path of the R2 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own raw R2 read.
-  * "input/RCC1_ABHD12B_scaff_seq.fa" - set the path of scaffold sequence file (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own scaffold sequence. 
-  * "/reference" - set the path of reference and annotation files (NOTE: keep it as "/reference" and never make changes)
+  * "input/raw_1.fastq" - set the path of the R1 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own R1 reads. 
+  * "input/raw_2.fastq" - set the path of the R2 reads file in the input directory (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own R2 reads.
+  * "input/RCC1_ABHD12B_scaff_seq.fa" - set the path of scaffold sequence file (relative path referring to input directory /input_data_path/examples). Users need to define file name of their own scaffold sequences. 
+  * "/reference" - the path of reference and annotation files in docker image (NOTE: keep it as "/reference")
   * "output" - set the output of ScaR running (relative path referring to the directory /input_data_path/examples).
   
   5.4.3 Run an example of `evaluate.pl` for summarizing the number of spanning and split reads across a cohort of samples: 
