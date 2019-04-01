@@ -11,14 +11,13 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
   1.2 HISAT2 version 2.1.0 (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip)
   
-      The binary files have been integrated in ~/bin/hisat2-2.1.0/, users do not need to download and install it independently.
-      Please add its path to linux environment variables before running: 
+      The binary files have been integrated in ~/bin/hisat2-2.1.0/, please add the path to linux environment variables before running: 
         PATH=$PATH:/where_is_path/ScaR/bin/hisat2-2.1.0/
         export PATH
 
   1.3 HISAT2 aligner HGFM index (genome reference plus transcripts based on Ensembl GRCh38 version) 
       
-      Users have to download and transfer in ~/reference following the command:
+      Users have to download the index files in ~/reference following the command:
         cd ~/reference
         wget "ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grch38_tran.tar.gz"
         tar -vxf grch38_tran.tar.gz
@@ -26,15 +25,15 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
   1.4 Samtools version >= 1.3 (https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2)
       
-      If samtools has not been installed in the server system, users have to download, compile and install it locally.
-      Then, add its path to linux environment variables before running:
+      If samtools has not been installed in the system, users have to download and install it locally.
+      Then, add the path to linux environment variables before running:
         PATH=$PATH:/where_is_path_samtools
         export PATH
  
   1.5 R version >= 3.0.3 (https://cran.r-project.org)
       
-      If R has not been installed in the server system, users have to donwload and install it locally.
-      Then, add it path to linux environment variables before running:
+      If R has not been installed in the system, users have to donwload and install it locally.
+      Then, add the' path to linux environment variables before running:
         PATH=$PATH:/where_is_path/R
         export PATH
     
@@ -48,7 +47,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
         wget "http://folk.uio.no/senz/ucsc_transcript.fa" -- the human transcriptome sequences annotated from UCSC database (Release date: Jan 2018)
         wget "http://folk.uio.no/senz/ucsc_refGene.txt"
         
-  1.7 Set the path of Perl library to environment variables
+  1.7 Set the path of Perl libraries to environment variables
   
       PERL5LIB="$PERL5LIB:/where_is_path/ScaR/lib"
       export PERL5LIB
