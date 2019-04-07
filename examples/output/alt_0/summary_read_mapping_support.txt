@@ -1,0 +1,6 @@
+# summary of read mapping support #
+===================================
+* Num (proportion) of discordant split reads unique mapping to RCC1 and scaffold: 0 / 0 (0)
+* Num (proportion) of discordant split reads unique mapping to ABHD12B and scaffold: 11 / 11 (1)
+* Num (proportion) of spanning read pairs unique mapping to RCC1 and ABHD12B: 16 / 16 (1)
+
