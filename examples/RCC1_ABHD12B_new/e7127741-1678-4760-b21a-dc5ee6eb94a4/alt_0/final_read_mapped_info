@@ -1,0 +1,7 @@
+spanning	UNC13-SN749:365:C526UACXX:4:1312:20061:6010	ABHD12B(reverse_complement)	RCC1
+spanning	UNC13-SN749:365:C526UACXX:4:1306:10445:52353	RCC1	ABHD12B(reverse_complement)
+spanning	UNC13-SN749:365:C526UACXX:4:1302:4985:94719	ABHD12B(reverse_complement)	RCC1
+discordant_split	UNC13-SN749:365:C526UACXX:4:2303:1842:31702	ABHD12B(reverse_complement)	scaffold
+discordant_split	UNC13-SN749:365:C526UACXX:4:2213:11155:82853	ABHD12B(reverse_complement)	scaffold
+discordant_split	UNC13-SN749:365:C526UACXX:4:1115:4518:39730	scaffold	ABHD12B(reverse_complement)
+discordant_split	UNC13-SN749:365:C526UACXX:4:2313:16061:50189	scaffold	ABHD12B(reverse_complement)
