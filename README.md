@@ -154,10 +154,10 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       
      * **`summary.txt`** (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold sequence across a cohort of samples; statistics test for mapping distribution bias to scaffold sequence [p<.05 indicates bias])
      
-     * **`alt_1`** (concatenate split reads across a cohort of samples, and make alignment)
+     * **`alt_0`** (concatenate split reads across a cohort of samples, and make an alignment)
      
         |--- "All_sample_split_1.txt, All_sample_split_2.txt" (paired-end discordant/singlton split reads concatenated across all samples)
-        |--- "All_sample_noclip.sorted.bam" (align the concatenated split reads to scaffold sequence)
+        |--- "All_sample_noclip.sorted.bam" (align the concatenated split reads to scaffold sequence, user can visualize this bam file uisng scaffold_ENST00000373833_49_ENST00000337334_48_seq.fa as reference by IGV)
         |--- "p.value" (fisher exact test for mapping distribution bias to upstream/downstream of scaffold sequence)
         
 ## 5. Installation/Running via Docker
