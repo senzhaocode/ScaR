@@ -1,0 +1,5 @@
+@HD	VN:1.0	SO:unsorted
+@SQ	SN:RCC1	LN:2424
+@SQ	SN:ABHD12B	LN:1708
+@SQ	SN:scaffold	LN:96
+@PG	ID:hisat2	PN:hisat2	VN:2.1.0	CL:"/hisat2-2.1.0/hisat2-align-s --wrapper basic-0 -p 1 --no-spliced-alignment --no-softclip -x test_summary/alt_1/index -q --passthrough -1 test_summary/alt_1/All_sample_split_1.txt -2 test_summary/alt_1/All_sample_split_2.txt"
