@@ -138,7 +138,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       perl evaluate.pl --help
       
   4.2 An example of running:
-      Users have to create a directory that contains outputs from `select_read.pl` for summarizing. For instance in "examples" directory, if RCC1_ABHD12B_new folder is not present, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new/2593c05a-cc77-46d5-b2d2-51485fd6a221`, then run `evaluate.pl` as follows.
+      Users have to create a directory that contains outputs from `select_read.pl` for summarizing. For instance in "examples" directory, if RCC1_ABHD12B_new folder is not present, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new/`, then run `evaluate.pl` as follows.
       
       perl evaluate.pl \
       
@@ -209,7 +209,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   * "output" - set the output of ScaR running (relative path referring to the directory /input_data_path/examples).
   
   5.4.3 Run an example of `evaluate.pl` for summarizing the number of spanning and split reads across a cohort of samples: 
-  Users have to create a directory that contains output from `select_read.pl` for summarizing. For instance in "examples" directory, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new`, then run `evaluate.pl` as follows.
+  Users have to create a directory that contains output from `select_read.pl` for summarizing. For instance in "examples" directory, if RCC1_ABHD12B_new folder is not present, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new/`, then run `evaluate.pl` as follows.
   
   ```bash
   docker run -t --rm -v /input_data_path/examples:/data senzhao/scar perl /ScaR/evaluate.pl \
