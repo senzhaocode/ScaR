@@ -192,24 +192,24 @@ use warnings;
 		if ( $geneA =~/ENSG/ ) { # geneA names as ensembl id
 			if ( $geneB =~/ENSG/ )  { # geneB names as ensembl id
 				if ( exists($cdna{$geneA}) ) {
-					print "Step 1: $geneA is valid Ensembl gene\n";	my @array; $scaff_final{$geneA} = \@array; # define the sub- data structure
+					print "Step 1: $geneA is valid gene\n";	my @array; $scaff_final{$geneA} = \@array; # define the sub- data structure
 					$tag_scaff_A = &output_geneA($cdna{$geneA}, $scaffold, $scaff_final{$geneA});
 				} else {
-					print "Step 1: $geneA is not in Ensembl database, please input the valid gene or use user-defined sequences\n";
+					print "Step 1: $geneA is not in database, please input the valid gene or use user-defined sequences\n";
 				}
 
 				if ( exists($cdna{$geneB}) ) {
-					print "Step 1: $geneB is valid Ensembl gene\n";	my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
+					print "Step 1: $geneB is valid gene\n";	my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
 					$tag_scaff_B = &output_geneB($cdna{$geneB}, $scaffold, $scaff_final{$geneB});
 				} else {
-					print "Step 1: $geneB is not in Ensembl database, please input the valid gene or use user-defined sequences\n";
+					print "Step 1: $geneB is not in database, please input the valid gene or use user-defined sequences\n";
 				}
 			} else { # geneB names as gene symbol
 				if (exists($cdna{$geneA}) ) {
-					print "Step 1: $geneA is valid Ensembl gene\n"; my @array; $scaff_final{$geneA} = \@array; # define the sub- data structure
+					print "Step 1: $geneA is valid gene\n"; my @array; $scaff_final{$geneA} = \@array; # define the sub- data structure
 					$tag_scaff_A = &output_geneA($cdna{$geneA}, $scaffold, $scaff_final{$geneA});
 				} else {
-					print "Step 1: $geneA is not in Ensembl database, please input the valid gene or use user-defined sequences\n";
+					print "Step 1: $geneA is not in database, please input the valid gene or use user-defined sequences\n";
 				}
 
 				if ( exists($name{$geneB}) ) {
@@ -267,10 +267,10 @@ use warnings;
 				}
 
 				if ( exists($cdna{$geneB}) ) {
-					print "Step 1: $geneB is valid Ensembl gene\n"; my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
+					print "Step 1: $geneB is valid gene\n"; my @array; $scaff_final{$geneB} = \@array; # define the sub- data structure
 					$tag_scaff_B = &output_geneB($cdna{$geneB}, $scaffold, $scaff_final{$geneB});
 				} else {
-					print "Step 1: $geneB is not in Ensembl database, please input the valid gene or use user-defined sequences\n";
+					print "Step 1: $geneB is not in database, please input the valid gene or use user-defined sequences\n";
 				}
 			} else { # geneB names as gene symbol
 				if ( exists($name{$geneA}) ) {

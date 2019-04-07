@@ -92,8 +92,8 @@ use warnings;
 		close IN;
 	
 		foreach my $name ( keys %discordant_split ) {
-                	if ( scalar(@{$discordant_split{$name}}) == 2 ) { # if one end of read show jumpping between scaffold and GeneA / GeneB (in fact -- spanning read);
-                        	if ( $discordant_split{$name}[0][1] eq "discordant_split" and $discordant_split{$name}[1][1] eq "discordant_split" ) {
+			if ( scalar(@{$discordant_split{$name}}) == 2 ) { # if one end of read show jumpping between scaffold and GeneA / GeneB (in fact -- spanning read);
+				if ( $discordant_split{$name}[0][1] eq "discordant_split" and $discordant_split{$name}[1][1] eq "discordant_split" ) {
 
 					# if the $discordant_split{$name}[0] is scaffold sequence
 					if ( $discordant_split{$name}[0][2] eq "scaffold" ) {
@@ -151,11 +151,11 @@ use warnings;
 							print "Step2-2 discordant-split read mapping: $name matched to geneA or geneB with wrong gene name\n";
 						}
 					}
-                        	} else {
-                                	print "Step2-2 discordant-split read mapping: $name does not meet criteria because of many mismatches in alignment\n";
-                        	}
-                	} 
-        	}
+				} else {
+					print "Step2-2 discordant-split read mapping: $name does not meet criteria because of many mismatches in alignment\n";
+				}
+			} 
+		}
 
 		my %discordant_split_scaffold; # for both reads mapped to scaffold
 		#*****/2. mapping quality >=40; ($7=="=" -- discordant: both reads mapped to scaffold)
@@ -185,8 +185,8 @@ use warnings;
 		close IN;
 
 		foreach my $name ( keys %discordant_split_scaffold ) {
-                	if ( scalar(@{$discordant_split_scaffold{$name}}) == 2 ) {
-                        	if ( $discordant_split_scaffold{$name}[0][1] eq "discordant_split" and $discordant_split_scaffold{$name}[1][1] eq "discordant_split" ) {
+			if ( scalar(@{$discordant_split_scaffold{$name}}) == 2 ) {
+				if ( $discordant_split_scaffold{$name}[0][1] eq "discordant_split" and $discordant_split_scaffold{$name}[1][1] eq "discordant_split" ) {
 
 					my $length_read_first = length($discordant_split_scaffold{$name}[0][3]); # read length of $discordant_split_scaffold{$name}[0]
 					my $length_read_second = length($discordant_split_scaffold{$name}[1][3]); # read length of $discordant_split_scaffold{$name}[1]
@@ -243,10 +243,10 @@ use warnings;
 
 					}
 				} else {
-                                	print "Step2-2 discordant-split read mapping: $name does not meet criteria because of many mismatches in alignment (both scaffold)\n";
-                        	}
-                	} else {
-                        	if ( $discordant_split_scaffold{$name}[0][1] eq "discordant_split" ) {
+					print "Step2-2 discordant-split read mapping: $name does not meet criteria because of many mismatches in alignment (both scaffold)\n";
+				}
+			} else {
+				if ( $discordant_split_scaffold{$name}[0][1] eq "discordant_split" ) {
 					if ( $discordant_split_scaffold{$name}[0][2] eq "scaffold" and $discordant_split_scaffold{$name}[0][4] eq "scaffold" ) {
 						my $length_read_first = length($discordant_split_scaffold{$name}[0][3]); #
 						if ( ($discordant_split_scaffold{$name}[0][0] + $length_read_first) - $breakpoint_scaffold >= $archor ) { # meet anchor requirement 
@@ -265,11 +265,11 @@ use warnings;
 					} else {
 						print "Step2-2 discordant-split read mapping: $name fails to meet criteria because of no scaffold mapping (only scaffold)\n";
 					}
-                        	} else {
-                                	print "Step2-2 discordant-split read mapping: $name fails to meet criteria because of many mismatches in alignment (only scaffold)\n";
-                       		}
-                	}
-        	}
+				} else {
+					print "Step2-2 discordant-split read mapping: $name fails to meet criteria because of many mismatches in alignment (only scaffold)\n";
+				}
+			}
+		}
 	}
 
 	sub Singlton {
@@ -278,33 +278,33 @@ use warnings;
 		# select mapped singlton split read (one mapping to scaffold; the other no mapping hit)
 		#*****/ mapping quality >= 40; ($9=0 -- singlton mapped; $2=73|89|137|153 -- singlton mapping feature filtering) /
 		open (IN, "awk -F '\t' -v OFS='\t' '(\$7==\"=\" && \$3==\"scaffold\" && \$5>=40 && \$8>0 && \$9==0 && (\$2==73 || \$2==89 || \$2==137 || \$2==153))' $sam_file/tmp/hisats_noclip.sam |") || die "cannot run awk singlton script:$!\n";
-        	while ( <IN> ) {
-                	chomp $_; #
-                	my ($name, $flag, $one_match, $one_pos, $other_match, $other_pos, $seq, $quality) = (split /\t/, $_)[0,1,2,3,6,7,9,10];
+		while ( <IN> ) {
+			chomp $_; #
+			my ($name, $flag, $one_match, $one_pos, $other_match, $other_pos, $seq, $quality) = (split /\t/, $_)[0,1,2,3,6,7,9,10];
 			$name =~s/\/[\w\:\-]+$//g; $name =~s/\s[\w\:\-]+$//g; # trimmed header
 			my $string = ""; # record mismatching information
-                        if ( $_ =~/MD\:Z\:([\w\^]+)/ ) {
-                                $string = $1;
-                        } else {
-                                print "Step2-2 singleton-split read mapping: $name mismatch string contains unexpected symbols\n";
-                        }
-                        $string =~s/\^[A-Za-z]+//g; $string =~s/[0-9]+//g; my $num_mis = length($string); # the number of mismatch nucleatides (SNPs+Indels) in read mapping
+			if ( $_ =~/MD\:Z\:([\w\^]+)/ ) {
+				$string = $1;
+			} else {
+				print "Step2-2 singleton-split read mapping: $name mismatch string contains unexpected symbols\n";
+			}
+			$string =~s/\^[A-Za-z]+//g; $string =~s/[0-9]+//g; my $num_mis = length($string); # the number of mismatch nucleatides (SNPs+Indels) in read mapping
 
-                	if ( $one_match eq "scaffold" ) {
-                        	if ( ($one_pos+$archor) <= $breakpoint_scaffold and $breakpoint_scaffold <= ($one_pos+$read_length-$archor) ) { # read cross breakpoint: get extension (2, -2) -- not applied yet
+			if ( $one_match eq "scaffold" ) {
+				if ( ($one_pos+$archor) <= $breakpoint_scaffold and $breakpoint_scaffold <= ($one_pos+$read_length-$archor) ) { # read cross breakpoint: get extension (2, -2) -- not applied yet
 					if ( $num_mis < 6 ) {
-                                		push @{$dis_ref->{$name}}, [$one_pos, "singlton_split", $one_match, $seq, $flag, $quality];
-                                		# print "singlton: $name\t$singlton{$name}[0][0]\t$singlton{$name}[0][1]\n";
-                                	} else {
+						push @{$dis_ref->{$name}}, [$one_pos, "singlton_split", $one_match, $seq, $flag, $quality];
+						# print "singlton: $name\t$singlton{$name}[0][0]\t$singlton{$name}[0][1]\n";
+					} else {
 						print "Step2-2 singleton-split read mapping: $name fails to meet criteria because of many mismatches in alignment\n";
 					}
-                        	} else {
-                                	print "Step2-2 singleton-split read mapping: $name fails to meet criteria because of anchor length: (scaffold =|====|=)\n";
-                        	}
-                	} else {
-                        	print "Step2-2 singleton-split read mapping: no hit matches to scaffold (one to scaffold; the other unmapped)\n";
-                	}
-        	}
-        	close IN;
+				} else {
+					print "Step2-2 singleton-split read mapping: $name fails to meet criteria because of anchor length: (scaffold =|====|=)\n";
+				}
+			} else {
+				print "Step2-2 singleton-split read mapping: no hit matches to scaffold (one to scaffold; the other unmapped)\n";
+			}
+		}
+		close IN;
 	}
 1;
