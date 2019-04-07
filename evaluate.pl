@@ -1,10 +1,8 @@
 #!/usr/bin/perl -w
-
 ########################################################################################################################################################
 # Evaluate.pl is perl script that concatenates split read across all samples and evaluate the read coverage and distribution that cross the breakpoint 
-# Before you start evaluate.pl, you have to run Select_read.pl first
-# The script was created in March 10, 2017, and modified in Sept 13, 2017
-# The second modification in Oct 22, 2018 (remove the bug in user-defined transcript sequence name)
+# Author: Sen ZHAO, t.cytotoxic@gmail.com
+# evaluate.pl uses the outputs of Select_read.pl as inputs. Before you start evaluate.pl, please run Select_read.pl first
 ########################################################################################################################################################
 use strict;
 use warnings;
@@ -18,7 +16,7 @@ use File::Spec;
 	push @usage, "Usage: ".basename($0)." [options]\n";
 	push @usage, "Evaluate split reads that support a given fusion breakpoint.\n";
 	push @usage, "  --help          Displays this information\n";
-	push @usage, "  --input         Set input path for running the script: this path is the output path of running Select_read.pl (it should contain all the samples that you are going to evaluate)\n";
+	push @usage, "  --input         Set input path for running the script: this path is the output path of Select_read.pl (it should contain all the samples that you are going to evaluate)\n";
 	push @usage, "  --output        Set output path for running the script\n";
 
 	my $help;
@@ -76,7 +74,7 @@ use File::Spec;
 									$break_num{$break}{$seq_length} = [$break_start, $read_length, $tmp, $sequence];
 									#print "Breakpoint_sequence: $break\t$seq_length\t$break_start, $read_length, $tmp, $sequence\n";
 								} else {
-									print "scaffold name have been changed, please apply original one: scaffold_TRANSCRIPTION1*_XX_TRANSCRIPTION2*_YY_seq.fa\n"; exit;
+									print "scaffold name has been changed, please implement original one: scaffold_TRANSCRIPTION1*_XX_TRANSCRIPTION2*_YY_seq.fa\n"; exit;
 								}
 							} else {
 								print "scaffold name is not correct, it contain unexpected symbol '_' in user-defined transcription name\n"; exit;
@@ -180,7 +178,9 @@ use File::Spec;
 	}
 	print OUT "\n";
 
-########sub function##########
+	################
+	# sub function #
+	################
 	sub access_distribution {
 		my ($scaffold_length, $break_start, $read_length, $path) = @_;
 		my %collect; # collect the read names 
@@ -247,3 +247,4 @@ use File::Spec;
 		}
 	}
 
+	#----- End ------#

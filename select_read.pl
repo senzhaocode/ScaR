@@ -1,11 +1,8 @@
 #!/usr/bin/perl -w
 ###########################################################################################################################
 # Select_read.pl is perl script to detect the recurrence of known fusion transcripts using scaffold realignment strategy 
+# Author: Sen ZHAO, t.cytotoxic@gmail.com
 # Before you start it, please read manual first: perl select_read.pl --help
-# The script was created in Nov. 11 2016, 
-# The second modification in Nov 26 2017 (update annotation), 
-# The third modification in Dec 2nd, 2017 (resolve anchor problem for read mapping to scafflod),
-# The forth modification in June, 2018 (add --user_ref parameter, allow user-defined transcript sequences as input),
 ###########################################################################################################################
 use strict;
 use warnings;
@@ -40,7 +37,7 @@ use Check;
 	push @usage, "	--length	Set the maximum length of fastq reads, this option is only available when raw fastq reads are trimmed (--trimm 1)\n";
 	push @usage, "	--trans_ref	Set the resource of transcript sequence data (e.g. gencode, ensembl or ucsc, default: ensembl)\n";
 	push @usage, "	--user_ref	Set the resource of user-defined transcript sequences (optional)\n";
-	push @usage, "	--p		The number of threads, and make sure that it should be exact as the number of CPUs allocated in jobscript (defalut: 8)\n";
+	push @usage, "	--p		The number of threads, and it is generally no more than the totol number of CPU cores allocated in one node (defalut: 8)\n";
 	my $help;
 	my $fastq_1;
 	my $fastq_2;
@@ -58,20 +55,20 @@ use Check;
 
 	GetOptions
 	(
-        	'help'        => \$help,
-        	'first=s'     => \$fastq_1,
-        	'second=s'    => \$fastq_2,
-        	'geneA=s'     => \$geneA,
-        	'geneB=s'     => \$geneB,
+		'help'        => \$help,
+		'first=s'     => \$fastq_1,
+		'second=s'    => \$fastq_2,
+		'geneA=s'     => \$geneA,
+		'geneB=s'     => \$geneB,
 		'scaffold=s'  => \$scaffold,
 		'anno=s'     => \$input,
-        	'output=s'    => \$output,
-        	'anchor=i'    => \$anchor,
+		'output=s'    => \$output,
+		'anchor=i'    => \$anchor,
 		'trimm=i'     => \$trimm,
-	 	'length=i'    => \$read_length,
-	 	'trans_ref=s' => \$trans_ref,
+		'length=i'    => \$read_length,
+		'trans_ref=s' => \$trans_ref,
 		'user_ref=s'  => \$user_ref,
-        	'p=i'         => \$cpus
+		'p=i'         => \$cpus
 	);
 	not defined $help or die @usage;
 	defined $fastq_1 or die @usage; if (! -e $fastq_1 ) { print "\n$fastq_1 is wrong path, please set valid path\n\n"; exit; }
@@ -278,7 +275,7 @@ print "#########################################################################
 
 			print "#########################################################################################\n";
 			print "# Step 2-3: Extract discordant and singlton split read from raw fastq file              #\n";
-			print "# (parse fastq file, grep the reads that could be aligned to breakpoint sequence $name) #\n";
+			print "# (Extract the reads that are aligned to breakpoint sequence $name)                     #\n";
 			print "#########################################################################################\n";
 			if ( %discordant ) {
 				First_output::grep_discordant(\%discordant, $fastq_1, $fastq_2, "$output/$name/", $header_sep);
@@ -289,13 +286,13 @@ print "#########################################################################
 			if ( %singlton ) {
 				First_output::grep_singlton(\%singlton, $fastq_1, $fastq_2, "$output/$name/", $header_sep);
 			} else {
-				print "Step 2-3: no singlton split reads mapped the scaffold\n";
+				print "Step 2-3: No singlton split reads mapped the scaffold\n";
 			}
 
 			if ( %spanning ) {
 				First_output::grep_spanning(\%spanning, $fastq_1, $fastq_2, "$output/$name/", $header_sep);
 			} else {
-				print "Step 2-3: no spanning reads mapped the scaffold\n";
+				print "Step 2-3: No spanning reads mapped the scaffold\n";
 			}
 
 			if (! -e "$output/$name/read_mapped_info" ) { `cat <> $output/$name/read_mapped_info`; } # if read_mapped_info not presence, create one with empty
@@ -325,10 +322,10 @@ print "#########################################################################
 
         			open (IN, "cut -s -f1-4 $output/$name/read_mapped_info |") || die "Step 3-0: wrong read output for read_mapped_info:$!\n";
         			while ( <IN> ) {
-                			chomp $_; next if ( $_ =~/wrong/ );
-					my ($type, $name, $first_hit, $second_hit) = (split /\t/, $_)[0,1,2,3];
-                			$read{$type}{$name}[0][0] = $first_hit; # name
-                			$read{$type}{$name}[1][0] = $second_hit; # name
+						chomp $_; next if ( $_ =~/wrong/ );
+						my ($type, $name, $first_hit, $second_hit) = (split /\t/, $_)[0,1,2,3];
+						$read{$type}{$name}[0][0] = $first_hit; # name
+						$read{$type}{$name}[1][0] = $second_hit; # name
         			}
         			close IN;
 
@@ -342,7 +339,7 @@ print "#########################################################################
 				my %multiple = (); # collect multiple hit reads for discordant_split / singlton_split / spanning
 				my $type = 'spanning';
 				if ( exists($read{$type}) ) {
-					my $spa_flag = system("hisat2 -p $cpus --no-unal --secondary -k 600 -x $genome_index -q -U $output/$name/${type}_1.txt,$output/$name/${type}_2.txt -S $output/$name/tmp/${type}_sec.sam");
+					my $spa_flag = system("hisat2 -p $cpus --no-unal --no-softclip --secondary -k 600 -x $genome_index -q -U $output/$name/${type}_1.txt,$output/$name/${type}_2.txt -S $output/$name/tmp/${type}_sec.sam");
 					$spa_flag == 0 or die "Step 3-1 Hisat2 maps spanning_1 and spanning_2 to genome fails\n";
 					Genome_align::discordant_specif($read{$type}, $multiple{$type}, "$output/$name/", \@partner, "spanning", $header_sep, $geneA_pos_tag, $geneB_pos_tag);
 					if ( %{$read{$type}} ) {
@@ -483,3 +480,4 @@ print "#########################################################################
 		}
 	}
 
+	#---- End ----#
