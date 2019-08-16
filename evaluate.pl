@@ -16,8 +16,8 @@ use File::Spec;
 	push @usage, "Usage: ".basename($0)." [options]\n";
 	push @usage, "Evaluate split reads that support a given fusion breakpoint.\n";
 	push @usage, "  --help          Displays this information\n";
-	push @usage, "  --input         Set input path for running the script: this path is the output path of Select_read.pl (it should contain all the samples that you are going to evaluate)\n";
-	push @usage, "  --output        Set output path for running the script\n";
+	push @usage, "  --input         Set input path: it is the output path of select_read.pl (it contains all the samples that you are going to evaluate)\n";
+	push @usage, "  --output        Set output path\n";
 
 	my $help;
 	my $input;
@@ -34,7 +34,8 @@ use File::Spec;
 
 	# setup output folder status
 	if ( -e $output ) {
-		`rm -r $output/*`; print "\nwarning: $output exists, and the old files will be re-written\n";
+		`rm -r $output/`; print "\nwarning: $output exists, and the previous files will be over-written\n";
+		`mkdir $output`;
 	} else {
 		`mkdir $output`;
 	}
@@ -110,7 +111,8 @@ use File::Spec;
 	foreach my $break ( keys %break_num ) { # $break represent name of unique breakpoint
 		my @array = sort {$a <=> $b} keys %{$break_num{$break}}; # Get all the key %{$break_num{$break}} (scaffold sequence length);
 
-		my $upstream = 0; my $downstream = 0; my $pvalue = "NULL";
+		my $upstream = 0; my $downstream = 0; my $middlestream = 0; 
+		my $fisher_pvalue = "NULL"; my $chisq_pvalue = "NULL";
 		if ( scalar(@array) == 1 ) { # only one unique scaffold sequence, indicating samples with the same read length
 			# cp the scaffold sequence to the output folder
 			`cp $break_num{$break}{$array[0]}[2] $output/$break`;
@@ -130,7 +132,7 @@ use File::Spec;
 				
 				# set the three parameters
 				# transfer the three parameters: scaffold_length, the start position of breakpoint site, read_length, output_path
-				($upstream, $downstream, $pvalue) = &access_distribution($array[0], $break_num{$break}{$array[0]}[0], $break_num{$break}{$array[0]}[1], "$output/$break"); 
+				($upstream, $middlestream, $downstream, $fisher_pvalue, $chisq_pvalue) = &access_distribution($array[0], $break_num{$break}{$array[0]}[0], $break_num{$break}{$array[0]}[1], "$output/$break"); 
 			}
 		} else { # there are more than one scaffold sequence, indicating samples with various read length
 			`cp $break_num{$break}{$array[-1]}[2] $output/$break`; # put the longest scaffold as reference candidate
@@ -150,14 +152,14 @@ use File::Spec;
 				
 				# set the three parameters
 				# transfer the three parameters: scaffold_length, the start position of breakpoint site, read_length, output_path
-				($upstream, $downstream, $pvalue) = &access_distribution($array[-1], $break_num{$break}{$array[-1]}[0], $break_num{$break}{$array[0]}[1], "$output/$break"); 
+				($upstream, $middlestream, $downstream, $fisher_pvalue, $chisq_pvalue) = &access_distribution($array[-1], $break_num{$break}{$array[-1]}[0], $break_num{$break}{$array[0]}[1], "$output/$break"); 
 			}
 		}
 		open (OUT, ">$output/$break/p.value") || die "cannot output pvalue:$!\n";
-		print OUT "Num_mapped_upstream\tNum_mapped_downstream\tp.value(Fisher_test)\n";
-		print OUT "$upstream\t$downstream\t$pvalue\n";
+		print OUT "Num_mapped_upstream\tNum_mapped_downstream\tp.value(Fisher_test)\tp.value(Chisq_test)\n";
+		print OUT "$upstream\t$downstream\t$fisher_pvalue\t$chisq_pvalue\n";
 		close OUT;
-		$summary_pvalue{$break} = [$upstream, $downstream, $pvalue];
+		$summary_pvalue{$break} = [$upstream, $downstream, $fisher_pvalue, $chisq_pvalue, $middlestream];
 	}
 
 	# final print the output #
@@ -174,7 +176,7 @@ use File::Spec;
 	}
 	print OUT "Statistics_summary(split_reads)";
 	foreach my $break ( sort {$a cmp $b} keys %summary_pvalue ) {
-		print OUT "\t$summary_pvalue{$break}[0]|$summary_pvalue{$break}[1]: $summary_pvalue{$break}[2]";
+		print OUT "\t$summary_pvalue{$break}[0]|$summary_pvalue{$break}[1]: $summary_pvalue{$break}[2](fisher exact test), $summary_pvalue{$break}[3](chisq test)";
 	}
 	print OUT "\n";
 
@@ -203,7 +205,7 @@ use File::Spec;
 					push @{$ref{"downstream"}}, $name;
 				} elsif ( $middle <= $break_start ) {
 					push @{$ref{"upstream"}}, $name;
-				}
+				} 
 			} elsif ( scalar(@{$collect{$name}}) == 2 ) {
 				if ( $collect{$name}[0][0] < $collect{$name}[1][0] ) { # start point: first element < second element
 					my $middle = ($collect{$name}[0][0] + $collect{$name}[1][0] + length($collect{$name}[1][1]))/2;
@@ -211,20 +213,20 @@ use File::Spec;
 						push @{$ref{"downstream"}}, $name;
 					} elsif ( $middle <= $break_start ) {
 						push @{$ref{"upstream"}}, $name;
-					}
+					} 
 				} else {
 					my $middle = ($collect{$name}[1][0] + $collect{$name}[0][0] + length($collect{$name}[0][1]))/2;
 					if ( $middle > $break_start ) {
 						push @{$ref{"downstream"}}, $name;
 					} elsif ( $middle <= $break_start ) {
 						push @{$ref{"upstream"}}, $name;
-					}
+					} 
 				}
 			}
 		}
 
 		#run statistical anaylses
-		my $up = 0; my $down = 0; my $p;
+		my $up = 0; my $down = 0; my $middle = 0; my $p;
 		if ( exists($ref{"upstream"}) ) {
 			if ( exists($ref{"downstream"}) ) {
 				$up = scalar(@{$ref{"upstream"}});
@@ -237,13 +239,20 @@ use File::Spec;
 				$down = scalar(@{$ref{"downstream"}});
 			}
 		}
+		if ( exists($ref{"middle"}) ) { $middle = scalar(@{$ref{"middle"}}); }
 
 		if ( $up == 0 && $down == 0 ) { #if no reads mapped to scaffold, please cancel the statistical test
-			return($up, $down, "NA"); # please reture NA for pvalue
+			return($up, $middle, $down, "NA", "NA"); # please reture NA for pvalue
 		} else {
-			`echo "a=$up; b=$down; a1=round(($up+$down)*($break_start/$scaffold_length), digits=0); b1=round(($up+$down)*(1-$break_start/$scaffold_length), digits=0); ab=matrix(c(a,b,a1,b1),nrow=2); c=fisher.test(ab); write.table(c\$ p.value, file='$path/p.value', row.names=F, col.names=F); sessionInfo()" | R --vanilla --slave`;
-			my $p = `head -n 1 $path/p.value`; chomp $p;
-			return($up, $down, $p);
+			`echo "a=$up; b=$down; a1=round(($up+$down)*(($break_start-1)/$scaffold_length), digits=0); b1=round(($up+$down)*(1-($break_start-1)/$scaffold_length), digits=0); ab=matrix(c(a,b,a1,b1),nrow=2); c=fisher.test(ab); write.table(c\$ p.value, file='$path/fisher_p.value', row.names=F, col.names=F); sessionInfo()" | R --vanilla --slave`;
+			my $fisher_p = `head -n 1 $path/fisher_p.value`; chomp $fisher_p;
+			if ( ($up + $down) > 9 ) {
+				`echo "a=$up; b=$down; a1=round(($up+$down)*(($break_start-1)/$scaffold_length), digits=1); b1=round(($up+$down)*(1-($break_start-1)/$scaffold_length), digits=1); c=chisq.test(c(a,b), p=c(a1,b1), rescale.p=T); write.table(c\$ p.value, file='$path/chisq_p.value', row.names=F, col.names=F); sessionInfo()" | R --vanilla --slave`;
+			} else {
+				`echo "a=$up; b=$down; a1=round(($up+$down)*(($break_start-1)/$scaffold_length), digits=1); b1=round(($up+$down)*(1-($break_start-1)/$scaffold_length), digits=1); c=chisq.test(c(a,b), p=c(a1,b1), rescale.p=T, simulate.p.value=T, B=100000); write.table(c\$ p.value, file='$path/chisq_p.value', row.names=F, col.names=F); sessionInfo()" | R --vanilla --slave`;
+			}
+			my $chisq_p = `head -n 1 $path/chisq_p.value`; chomp $chisq_p;
+			return($up, $middle, $down, $fisher_p, $chisq_p);
 		}
 	}
 
