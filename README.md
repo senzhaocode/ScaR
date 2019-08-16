@@ -40,11 +40,11 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
       Type the command and download these files
         cd ~/reference
-        wget "http://folk.uio.no/senz/GRCh38.primary_assembly.genome.fa" -- whole genome sequences (build GRCh38 version)
-        wget "http://folk.uio.no/senz/Gene_hg38.txt" -- gene annotation file
-        wget "http://folk.uio.no/senz/ensembl_transcript.fa" -- the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
-        wget "http://folk.uio.no/senz/gencode_transcript.fa" -- the human transcriptome sequences annotated from GENCODE database (Release version 27)
-        wget "http://folk.uio.no/senz/ucsc_transcript.fa" -- the human transcriptome sequences annotated from UCSC database (Release date: Nov 2018)
+        wget "http://folk.uio.no/senz/GRCh38.primary_assembly.genome.fa" #-- whole genome sequences (build GRCh38 version)
+        wget "http://folk.uio.no/senz/Gene_hg38.txt" #-- gene annotation file
+        wget "http://folk.uio.no/senz/ensembl_transcript.fa" #-- the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
+        wget "http://folk.uio.no/senz/gencode_transcript.fa" #-- the human transcriptome sequences annotated from GENCODE database (Release version 27)
+        wget "http://folk.uio.no/senz/ucsc_transcript.fa" #-- the human transcriptome sequences annotated from UCSC database (Release date: Nov 2018)
         wget "http://folk.uio.no/senz/ucsc_refGene.txt"
         
   1.7 Set the path of Perl libraries to environment variables
@@ -60,43 +60,43 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
 
   2.2 An example of running:
       
-      perl select_read.pl \
+      perl select_read.pl
       
-      --first ~/examples/input/raw_1.fastq \ 
+      --first ~/examples/input/raw_1.fastq 
       # Raw or compressed fastq (.fastq.gz) file for the 1st end of paired-end reads
       
-      --second ~/examples/input/raw_2.fastq \
+      --second ~/examples/input/raw_2.fastq 
       # Raw or compressed fastq (.fastq.gz) file for the 2nd end of paired-end reads
       
-      --geneA RCC1 --geneB ABHD12B \
+      --geneA RCC1 --geneB ABHD12B 
       # Fusion partner gene names (Refseq gene symbol and Ensembl id are accepted)
       
-      --anchor 6 \ 
+      --anchor 6 
       # (default: 6)
       # Set the length of anchor. The minimum number of bases is required to match to geneA/geneB region in the scaffold sequence.
       
-      --trimm 0 \
+      --trimm 0 
       # (default: 0)
       # Set whether the input fastq reads are trimmed (1) or not (0)
       
-      --length 48 \
+      --length 48 
       # Set the maximum length of sequencing read, this option is only active when raw fastq reads are trimmed (--trimm 1)
       
       --trans_ref ensembl
       # (default: ensembl)
       # The setting of annotation resources, users could choose other options (e.g. "gencode" or "ucsc").
       
-      --p 8 \ 
+      --p 8 
       # (default: 8)
       # The number of threads for running in parallel. 
       
-      --anno ~/reference/ \
-      # Set the path of genomic data and annotation
+      --anno ~/reference/ 
+      # Set the path of genomic, transcriptomic sequences and annotations
       
-      --output ~/examples/output/ \
+      --output ~/examples/output/ 
       # Output directory
       
-      --scaffold ~/examples/input/RCC1_ABHD12B_scaff_seq.fa \
+      --scaffold ~/examples/input/RCC1_ABHD12B_scaff_seq.fa 
       # A list of fusion scaffold sequences in fasta format (if --scaffold is active, --coordinate should be inactivated)
       # For instance:
       #	>alt_0
@@ -107,10 +107,10 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       #       2. To ensure the specificity of breakpoint sequences matching to the reference, we recommend that 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
       #       3. In general, the breakpoint sequences are composed of cDNAs (i.e. exon region). If users would like to detect the fusion sequences including intron/intergenic region, they have to set user-defined reference sequences, please see the usage of parameter "--user_ref".
 
-      --coordinate "chr1:34114119|chr2:65341523,chr1:3412125|chr2:65339145" \
+      --coordinate "chr1:34114119|chr2:65341523,chr1:3412125|chr2:65339145"
       # Set genomic junction coodinates (build GRCh38) of breakpoint sites for GeneA and GeneB (if --coordinate is active, --scaffold should be inactivated)
       
-      --user_ref ~/upstream.fasta \
+      --user_ref ~/upstream.fasta
       # User-defined reference sequences, users can specify transcript reference sequences (or genomic sequences) in fasta format which are not present in the default database.
       # For instance:
       # >RP11-599B13.3|alternative1
@@ -143,12 +143,12 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   4.2 An example of running:
       Users have to create a directory that contains outputs from `select_read.pl` for summarizing. For instance in "examples" directory, if RCC1_ABHD12B_new folder is not present, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new/`, then run `evaluate.pl` as follows.
       
-      perl evaluate.pl \
+      perl evaluate.pl 
       
-      --input ~/examples/RCC1_ABHD12B_new \
+      --input ~/examples/RCC1_ABHD12B_new 
       # Set the input path
       
-      --output ~/examples/RCC1_ABHD12B_summary \
+      --output ~/examples/RCC1_ABHD12B_summary 
       # Set the output directory of running "evaluate.pl"
   
   4.3 Summary of output directory run by `evaluate.pl`
@@ -161,7 +161,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
      
         |--- "All_sample_split_1.txt, All_sample_split_2.txt" (paired-end discordant/singlton split reads concatenated across all samples)
         |--- "All_sample_noclip.sorted.bam" (align the concatenated split reads to scaffold sequence, user can visualize this bam file uisng scaffold_ENST00000373833_49_ENST00000337334_48_seq.fa as reference by IGV)
-        |--- "p.value" (fisher exact test for mapping distribution bias to upstream/downstream of scaffold sequence)
+        |--- "p.value" (fisher exact test and chi-squred test for mapping distribution bias to upstream/downstream of scaffold sequence)
         
 ## 5. Installation/Running via Docker
 
@@ -179,13 +179,12 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
 
   5.3.1 Reqiurements
   - For Linux and Mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
-  - Make sure that the internet is always accessible during Pulling / Building process.
   
   5.3.2 Pull image from Docker Hub/Cloud repositories
   - Users can pull the ScaR engine image directly from Docker Hub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar:latest`. After that, check the image by typing `docker images`
   
   5.3.2 Build image from docker container (optional)
-  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .` (If this building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda .`). NOTE: building is a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at least free 50G.
+  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .` (If this building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda .`). NOTE: building may take a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at least free 50G.
   - After building is done, check the images by typing `docker images`
     
   5.4 Run ScaR engine image
