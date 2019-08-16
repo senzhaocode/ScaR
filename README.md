@@ -201,6 +201,14 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
               --scaffold input/RCC1_ABHD12B_scaff_seq.fa \
               --anno /reference \
               --output output
+              
+  docker run -t --rm -v /input_data_path/examples:/data senzhao/scar perl /ScaR/select_read.pl --p 4 \
+              --first input/raw_1.fastq \
+              --second input/raw_2.fastq \
+              --geneA RCC1 --geneB ABHD12B --trimm 0 \
+              --coordinate "chr1:28508159|chr14:50901829" \
+              --anno /reference \
+              --output output
   ```
   * "perl /ScaR/select_read.pl" - the running path of ScaR in docker image (NOTE: keep it as this path)
   * "/input_data_path/examples" - set the full path of input directory (it contains both raw reads and scaffold sequence files). Users need to define a new path for their own data.
