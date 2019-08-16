@@ -40,6 +40,7 @@ RUN cd /reference \
 	&& wget "http://folk.uio.no/senz/ucsc_transcript.fa" \
 	&& wget "http://folk.uio.no/senz/ucsc_refGene.txt" \
 	&& wget "http://folk.uio.no/senz/Gene_hg38.txt" \
+	&& wget "http://folk.uio.no/senz/GRCh38.primary_assembly.genome.fa" \
 	&& rm -rf grch38_tran.tar.gz \
 	&& rm -rf grch38_tran
 
