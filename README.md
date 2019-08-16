@@ -3,7 +3,7 @@ ScaR package
 
 Use scaffold re-aligning approach to detect the prevalence and recurrence of known fusion transcripts across samples
 
-![alt text](http://folk.uio.no/senz/demo.png)
+![alt text]()
 
 ## 1. Requirements (before running program)
   
