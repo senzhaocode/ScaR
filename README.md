@@ -11,7 +11,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
   1.2 HISAT2 version 2.1.0 (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip)
       
-      The binary files have been integrated in ~/bin/hisat2-2.1.0/, please add the path to linux environment variables before running: 
+      The binary files have been integrated in ~/bin/hisat2-2.1.0/, and please add the path to linux environment variables before running: 
         PATH=$PATH:/where_is_path/ScaR/bin/hisat2-2.1.0/
         export PATH
 
@@ -32,8 +32,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
  
   1.5 R version >= 3.0.3 (https://cran.r-project.org)
       
-      If R has not been installed in the system, users have to donwload and install it locally.
-      Then, add the' path to linux environment variables before running:
+      Please add the path to linux environment variables before running (if necessary):
         PATH=$PATH:/where_is_path/R
         export PATH
     
@@ -41,10 +40,11 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
       Type the command and download these files
         cd ~/reference
+        wget "http://folk.uio.no/senz/GRCh38.primary_assembly.genome.fa" -- whole genome sequences (build GRCh38 version)
         wget "http://folk.uio.no/senz/Gene_hg38.txt" -- gene annotation file
         wget "http://folk.uio.no/senz/ensembl_transcript.fa" -- the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
         wget "http://folk.uio.no/senz/gencode_transcript.fa" -- the human transcriptome sequences annotated from GENCODE database (Release version 27)
-        wget "http://folk.uio.no/senz/ucsc_transcript.fa" -- the human transcriptome sequences annotated from UCSC database (Release date: Jan 2018)
+        wget "http://folk.uio.no/senz/ucsc_transcript.fa" -- the human transcriptome sequences annotated from UCSC database (Release date: Nov 2018)
         wget "http://folk.uio.no/senz/ucsc_refGene.txt"
         
   1.7 Set the path of Perl libraries to environment variables
@@ -63,13 +63,13 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       perl select_read.pl \
       
       --first ~/examples/input/raw_1.fastq \ 
-      # Raw or compressed fastq (.fastq.gz) file for the first end of paired-end reads
+      # Raw or compressed fastq (.fastq.gz) file for the 1st end of paired-end reads
       
       --second ~/examples/input/raw_2.fastq \
-      # Raw or compressed fastq (.fastq.gz) file for the second end of paired-end reads
+      # Raw or compressed fastq (.fastq.gz) file for the 2nd end of paired-end reads
       
       --geneA RCC1 --geneB ABHD12B \
-      # Fusion partner gene names (Refseq gene symbol and Ensembl id are accepted currently)
+      # Fusion partner gene names (Refseq gene symbol and Ensembl id are accepted)
       
       --anchor 6 \ 
       # (default: 6)
@@ -80,7 +80,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       # Set whether the input fastq reads are trimmed (1) or not (0)
       
       --length 48 \
-      # Set the maximum value of fastq read length, this option is only active when raw fastq reads are trimmed (--trimm 1)
+      # Set the maximum length of sequencing read, this option is only active when raw fastq reads are trimmed (--trimm 1)
       
       --trans_ref ensembl
       # (default: ensembl)
@@ -97,18 +97,21 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       # Output directory
       
       --scaffold ~/examples/input/RCC1_ABHD12B_scaff_seq.fa \
-      # Fusion scaffold sequences, users can extract the breakpoint sequences from outputs of de novo fusion finders (e.g. deFuse, fusioncatcher, SOAPfuse). Candidate sequences in fasta format are accepted. 
+      # A list of fusion scaffold sequences in fasta format (if --scaffold is active, --coordinate should be inactivated)
       # For instance:
       #	>alt_0
       #	XXXXXXXXXXXXXXXXXX|YYYYYYYYYYYYYYYY
       #	>alt_1
       #	XXXXXXXXXXXXXXXXXX*YYYYYYYYYYYYYYY
       # NOTE: 1. It only accepts '*' or '|' as a separator for breakpoint sequences. 'XXXXXXXXXXX' and 'YYYYYYYYY' correspond to the sequences from geneA and geneB, respectively.
-      #       2. In order to ensure the specificity of breakpoint sequences matching to the reference, we recommend that 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
-      #       3. In general, the breakpoint sequences are composed of cDNAs (i.e. exon region). If users would like to detect the fusion sequences including intron/intergenic region, they have to set user-defined reference sequences , please see the usage of parameter "--user_ref".
+      #       2. To ensure the specificity of breakpoint sequences matching to the reference, we recommend that 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
+      #       3. In general, the breakpoint sequences are composed of cDNAs (i.e. exon region). If users would like to detect the fusion sequences including intron/intergenic region, they have to set user-defined reference sequences, please see the usage of parameter "--user_ref".
 
-      --user_ref ~/upstream.fasta
-      # User-defined reference sequences, user can specify transcript reference sequences (or genomic sequences) in fasta format which are not present in the default database.
+      --coordinate "chr1:34114119|chr2:65341523,chr1:3412125|chr2:65339145" \
+      # Set genomic junction coodinates (build GRCh38) of breakpoint sites for GeneA and GeneB (if --coordinate is active, --scaffold should be inactivated)
+      
+      --user_ref ~/upstream.fasta \
+      # User-defined reference sequences, users can specify transcript reference sequences (or genomic sequences) in fasta format which are not present in the default database.
       # For instance:
       # >RP11-599B13.3|alternative1
       # CTTTGTGTCTTTGTCTTTATTTCTTTTCTCATTCCCTCGTCTCCACCGGGAAGGGGAGAGCCTGCGGGTGGTGTATCAGGCAGGTTCCCCTACATCTTTGGCACCCAACAC
@@ -129,7 +132,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   * **`*final_spanning_1.txt, final_spanning_1.txt`** (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping)
   * **`*final_spanning_noclip.sorted.bam`** (filtered spanning reads mapped to scaffold sequence). If there are no spanning reads, the "final_spanning_noclip.sorted.bam" is not present.
   * **`*final_split_noclip.sorted.bam`** (filtered discordant and singlton split reads mapped to scaffold sequence). If there are no discordant/singlton split reads, the "final_split_noclip.sorted.bam" is not present.
-  * **`*summary_read_mapping_support.txt`** (comparison of read supports for discordant split and spanning reads before/after filtering out unspecific mapping)
+  * **`*summary_read_mapping_support.txt`** (comparison of read number and fraction of discordant split and spanning reads before/after filtering out unspecific mapping)
     
 *: files with bold name are important for users
 
