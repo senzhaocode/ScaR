@@ -65,7 +65,41 @@ use warnings;
 						print OUT2 "@"."$id/2\n$seq_1_tr\n+\n$seq_1_qual\n";
 					#}
 				} else {
-					print "spanning\t$id has incorrect flag value\n";
+					if ( $dis_ref->{$id}[0][5] == 83 ) { # judge the flag of first element = 1st end (reverse complement)
+						print OUT "spanning\t$id\t$dis_ref->{$id}[0][2](reverse_complement)\t$dis_ref->{$id}[1][2]\n";
+						print OUT1 "@"."$id/1\n$seq_1_tr\n+\n$seq_1_qual\n";
+						print OUT2 "@"."$id/2\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+					} elsif ( $dis_ref->{$id}[0][5] == 99 ) { # judge the flag of first element = 1st end
+						print OUT "spanning\t$id\t$dis_ref->{$id}[0][2]\t$dis_ref->{$id}[1][2](reverse complement)\n";
+						print OUT1 "@"."$id/1\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+						print OUT2 "@"."$id/2\n$seq_2_tr\n+\n$seq_2_qual\n";
+					} elsif ( $dis_ref->{$id}[0][5] == 163 ) { # judge the flag of first element = 2nd end
+						print OUT "spanning\t$id\t$dis_ref->{$id}[1][2](reverse_complement)\t$dis_ref->{$id}[0][2]\n";
+						print OUT1 "@"."$id/1\n$seq_2_tr\n+\n$seq_2_qual\n";
+						print OUT2 "@"."$id/2\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+					} elsif ( $dis_ref->{$id}[0][5] == 147 ) { # judge the flag of first element = 2nd end (reverse complement)
+						print OUT "spanning\t$id\t$dis_ref->{$id}[1][2]\t$dis_ref->{$id}[0][2](reverse complement)\n";
+						print OUT1 "@"."$id/1\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+						print OUT2 "@"."$id/2\n$seq_1_tr\n+\n$seq_1_qual\n";
+					} elsif ( $dis_ref->{$id}[0][5] == 67 ) { # judge the flag of first element = 1st end
+						print OUT "spanning\t$id\t$dis_ref->{$id}[0][2]\t$dis_ref->{$id}[1][2]\n";
+						print OUT1 "@"."$id/1\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+						print OUT2 "@"."$id/2\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+					} elsif ( $dis_ref->{$id}[0][5] == 115 ) { # judge the flag of first element = 1st end (reverse complement)
+						print OUT "spanning\t$id\t$dis_ref->{$id}[0][2](reverse_complement)\t$dis_ref->{$id}[1][2](reverse_complement)\n";
+						print OUT1 "@"."$id/1\n$seq_1_tr\n+\n$seq_1_qual\n";
+						print OUT2 "@"."$id/2\n$seq_2_tr\n+\n$seq_2_qual\n";
+					} elsif ( $dis_ref->{$id}[0][5] == 131 ) { # judge the flag of first element = 2nd end
+						print OUT "spanning\t$id\t$dis_ref->{$id}[1][2]\t$dis_ref->{$id}[0][2]\n";
+						print OUT1 "@"."$id/1\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+						print OUT2 "@"."$id/2\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+					} elsif ( $dis_ref->{$id}[0][5] == 179 ) { # judge the flag of first element = 2nd end (reverse complement)
+						print OUT "spanning\t$id\t$dis_ref->{$id}[1][2](reverse_complement)\t$dis_ref->{$id}[0][2](reverse_complement)\n";
+						print OUT1 "@"."$id/1\n$seq_2_tr\n+\n$seq_2_qual\n";
+						print OUT2 "@"."$id/2\n$seq_1_tr\n+\n$seq_1_qual\n";
+					} else {
+						print "spanning\t$id has incorrect flag value\n";
+					}
 				}
 			}
 		}

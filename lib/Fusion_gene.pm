@@ -11,12 +11,17 @@ use warnings;
 		open (IN, "cut -s -f1,3,4,5,9,10 $path | sort | uniq |") || die "Step 3: cannot open this path for cDNA path:$!\n";
 		while ( <IN> ) {
 			chomp $_; my ($gene_en, $start, $end, $symbol, $type, $chr) = (split /\t/, $_)[0,1,2,3,4,5];
-			next if (! exists($chrom_include{$chr}) );
 			if (! defined($gene_en) ) { $gene_en = ""; }
 			if (! defined($symbol) ) { $symbol = ""; }
 
+			if ( exists($gene_name{$symbol}) ) {
+				if ( exists($chrom_include{$chr}) ) {
+					$gene_name{$symbol} = [$chr, $start, $end];
+				}
+			} else {
+				$gene_name{$symbol} = [$chr, $start, $end];
+			}
 			$ensembl{$gene_en} = [$chr, $start, $end];
-			$gene_name{$symbol} = [$chr, $start, $end];
 		}
 		close IN;
 
