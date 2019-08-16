@@ -1,7 +1,8 @@
 #!/usr/bin/perl -w
 ###########################################################################################################################
-# partner_gene_sim.pl is perl script for detecting the recurrence of known fusion transcripts using simulation datasets 
-# Before you start it, please read manual: perl partner_gene_sim.pl --help
+# partner_gene_sim_v6.pl is perl script for detecting the recurrence of known fusion transcripts using simulation datasets 
+# Author: Sen ZHAO, t.cytotoxic@gmail.com
+# Before you start it, please read manual: perl partner_gene_sim_v6.pl --help
 ###########################################################################################################################
 use strict;
 use warnings;
@@ -14,6 +15,7 @@ use First_output;
 use Fusion_gene;
 use Genome_align;
 use Check;
+use Simulate;
 
 	# setup option parameters in the script command line -- for RNA-seq analyses
 	my @usage;
@@ -22,21 +24,22 @@ use Check;
 	push @usage, "	--help		Displays this information\n";
 	push @usage, "	--first		Raw fastq file or compressed fastq (.fastq.gz) file for 1st end of paired-end reads\n";
 	push @usage, "	--second	Raw fastq file or compressed fastq (.fastq.gz) file for 2nd end of paired-end reads\n";
-	push @usage, "	--geneA		Name of upstream gene partner (Gene_symbol/Ensembl_id is accpeted, but never mix them together)\n";
-	push @usage, "	--geneB		Name of downstream gene partner (Gene_symbol/Ensembl_id is accepted, but never mix them together)\n";
-	push @usage, "	--scaffold	A list of fusion scaffold sequences in fasta format, e.g\n", 
+	push @usage, "	--geneA		Name of upstream gene partner (Gene_symbol/Ensembl_id is accpeted)\n";
+	push @usage, "	--geneB		Name of downstream gene partner (Gene_symbol/Ensembl_id is accepted)\n";
+	push @usage, "	--scaffold	A list of fusion scaffold sequences in fasta format (if --scaffold is active, --coordinate should be silent), e.g\n", 
 		     "			>scaffold1\n",
 		     "			GCTCTATGAAATTGCA|AACAAAGAGAGGGTCA\n",
 		     "			>scaffold2\n",
 		     "			GCTCTATGAAATTGCA*AACAAAGAGAGGGTCA\n";
+	push @usage, "	--coordinate	Set genomic coodinates of breakpoints for GeneA and GeneB (if --coordinate is active, --scaffold should be silent), e.g. \"chr1:34114119|chr2:65341523,chr1:3412125|chr2:65339145\"\n";
 	push @usage, "	--anno		Set annotation files for running script: e.g. /script_path/data/\n";
 	push @usage, "	--output	Output Directory\n";
 	push @usage, "	--anchor	The length of anchor for read mapping to breakpoint (defalut: 6)\n";
-	push @usage, "	--trimm		Set whether input fastq reads are trimmed (1) or not (0, as default value)\n";
+	push @usage, "	--trimm		Set whether input fastq reads are trimmed (1) or not (default: 0)\n";
 	push @usage, "	--length	Set the maximum length of fastq reads, this option is only available when raw fastq reads are trimmed (--trimm 1)\n";
-	push @usage, "	--trans_ref	Set the resource of transcript sequence data (e.g. gencode, ensembl or ucsc)\n";
-	push @usage, "	--user_ref	Set the resource of user-defined transcript sequences (optional)\n";
-	push @usage, "	--p		The number of threads, and make sure that it should be exact as the number of CPUs allocated in jobscript (defalut: 8)\n";
+	push @usage, "	--trans_ref	Set the resource of transcript sequence data (e.g. gencode, ensembl or ucsc, default: ensembl)\n";
+	push @usage, "	--user_ref	Set the path of user-defined transcript sequences (optional)\n";
+	push @usage, "	--p		The number of threads, and it is generally no more than the totol number of CPU cores allocated in one node (defalut: 8)\n";
 	push @usage, "	--sim		Set the path of fusion transcript sequence used for simulating in silico RNA-seq data\n";
 
 	my $help;
@@ -45,6 +48,7 @@ use Check;
 	my $geneA;
 	my $geneB;
 	my $scaffold;
+	my $coordinate;
 	my $input;
 	my $output;
 	my $anchor;
@@ -63,7 +67,8 @@ use Check;
 		'geneA=s'     => \$geneA,
 		'geneB=s'     => \$geneB,
 		'scaffold=s'  => \$scaffold,
-		'anno=s'     => \$input,
+		'anno=s'      => \$input,
+		'coordinate=s' => \$coordinate,
 		'output=s'    => \$output,
 		'anchor=i'    => \$anchor,
 		'trimm=i'     => \$trimm,
@@ -76,7 +81,23 @@ use Check;
 	not defined $help or die @usage;
 	defined $fastq_1 or die @usage; if (! -e $fastq_1 ) { print "\n$fastq_1 is wrong path, please set valid path\n\n"; exit; }
 	defined $fastq_2 or die @usage; if (! -e $fastq_2 ) { print "\n$fastq_2 is wrong path, please set valid path\n\n"; exit; }
-	defined $scaffold or die @usage; if (! -e $scaffold ) { print "\n$scaffold is wrong path, please set valid path\n\n"; exit; }
+	if ( defined($scaffold) ) {
+		if ( defined($coordinate) ) {
+			print "\n--scaffold and --coordinate can not be used together, please choose either one of them\n"; exit;
+		} else {
+			if (! -e $scaffold ) { 
+				print "\n$scaffold has wrong path, please set the correct path\n\n"; exit; 
+			}
+		}
+	} else {
+		if ( defined($coordinate) ) { 
+			if (! $coordinate =~/[\w]+\:[\d]+\|[\w]+\:[\d]+/ ) {
+				print "\n$coordinate format is wrong, please set --coordinate in correct format\n\n"; exit;
+			}
+		} else {
+			print "\nUser needs to activate either --scaffold or --coordinate paramter\n"; exit;
+		}
+	}
 	defined $geneA or die @usage;
 	defined $geneB or die @usage;
 	defined $output or die @usage;
@@ -93,6 +114,8 @@ use Check;
 				if (! -e "$input/genome_tran.6.ht2" ) { print "\nHisat2 index file $input/genome_tran.6.ht2 does not exist\n\n"; exit; }
 				if (! -e "$input/genome_tran.7.ht2" ) { print "\nHisat2 index file $input/genome_tran.7.ht2 does not exist\n\n"; exit; }
 				if (! -e "$input/genome_tran.8.ht2" ) { print "\nHisat2 index file $input/genome_tran.8.ht2 does not exist\n\n"; exit; }
+				if (! -e "$input/GRCh38.primary_assembly.genome.fa" ) { print "\nGenomic sequence file $input/GRCh38.primary_assembly.genome.fa does not exist\n\n"; exit; }
+				if (! -e "$input/simulated_148.txt" ) { print "\nFile for simulation of 148 synthetic fusion transcript does not exist\n\n"; exit; }
 	defined $dir or die @usage; if (! -e "$dir/${geneA}_${geneB}.fasta" ) { print "Fusion transcript sequences of $geneA and $geneB do not exists\n\n"; exit; }
 	if (! defined($anchor) ) { $anchor = 6; } # set min size to match margin of upstream / downstream in breakpoint sequence (default: 6 bp)
 	if (! defined($read_length) ) { $read_length = 0; }
@@ -144,6 +167,38 @@ use Check;
 	} else {
 		`mkdir $output`;
 	}
+	
+	# LOAD synthetic fusion transcrips for simulation analyses #
+	my %simulate_symbol; # get the genomic information of synthetic funsion transcripts gene symbol
+	my %simulate_ensembl; # get the genomic information of synthetic funsion transcripts gene ensembl id
+	my $synthetic_path = "$input/simulated_148.txt";
+	Simulate::load(\%simulate_symbol, \%simulate_ensembl, $synthetic_path);
+	my @linshi; # tmp @array
+	if ( defined($coordinate) ) {
+		foreach my $one (split /\,/, $coordinate) {
+			$one =~s/^[\s]+//; $one =~s/[\s]+$//;
+			my ($geneA_pos, $geneB_pos) = (split /\|/, $one)[0, 1];
+			if ( defined($geneA_pos) and defined($geneB_pos) ) {
+				$geneA_pos =~s/[\s]+//; $geneB_pos =~s/[\s]+//;
+				my ($chromA, $posA) = (split /\:/, $geneA_pos)[0, 1];
+				my ($chromB, $posB) = (split /\:/, $geneB_pos)[0, 1];
+				if ( exists($simulate_symbol{$geneA}{$geneB}) ) {
+					if ( $simulate_symbol{$geneA}{$geneB}[0] eq 'neg' ) { # upstream gene negative strand
+						$posA = $posA + 1;
+					}
+					if ( $simulate_symbol{$geneA}{$geneB}[2] eq 'pos' ) { # downstream gene positive strand
+						$posB = $posB + 1;
+					}
+					my $string = $chromA.":".$posA."|".$chromB.":".$posB; push @linshi, $string;
+				} else {
+					print "Input format of $geneA and $geneB genomic coordinates are not correct, please input the right format\n"; exit;
+				}
+			} else {
+				print "Input format of $geneA and $geneB genomic coordinates are not correct, please input the right format\n"; exit;
+			}
+		}
+		$coordinate = join ',', @linshi;
+	}
 
 print "############################################################################################\n";
 print "# Step 0: quality control of  the input scaffold sequence / gene symbol name / read length #\n";
@@ -167,7 +222,24 @@ print "#########################################################################
 			# $scaff_seq{$name}[1] = [$tag, $sequence_downstream];	($tag==0: $sequence_downstream == read_length; $tag > 0: $sequence_downstream < read_length)
 			# $scaff_seq{$name}[2] = [$tag, $sequence_upstream_reverse_complement];  ($tag==0: $sequence_upstream_reverse_complement == read_length; $tag > 0: $sequence_upstream_reverse_complement < read_length)
 			# $scaff_seq{$name}[3] = [$tag, $sequence_downstream_reverse_complement];  ($tag==0: $sequence_downstream_reverse_complement == read_length; $tag > 0: $sequence_downstream_reverse_complement < read_length)
-	Check::extract_scaffold($read_length, $scaffold, \%scaff_seq);
+	if ( defined($scaffold) ) {
+		Check::extract_scaffold($read_length, $scaffold, \%scaff_seq);
+	} else {
+		if ( defined($coordinate) ) { # use genomic coordinate to target the fusion sequence
+			my $genomic_seq = "$input/GRCh38.primary_assembly.genome.fa"; # genomic sequences from GRCh38 version
+			if ( $trans_ref eq "ensembl" ) {
+				my $tran_seq = "$input/ensembl_transcript.fa"; # cdna mRNA sequences from ensmbl resource
+				Check::extract_coordinate($gene, $geneA, $geneB, $read_length, $coordinate, \%scaff_seq, "ensembl", $tran_seq, $genomic_seq);
+			} elsif ( $trans_ref eq "gencode" ) {
+				my $tran_seq = "$input/gencode_transcript.fa"; # cdna mRNA sequences from Gencode resource
+				Check::extract_coordinate($gene, $geneA, $geneB, $read_length, $coordinate, \%scaff_seq, "gencode", $tran_seq, $genomic_seq);
+			} elsif ( $trans_ref eq "ucsc" ) {
+				my $tran_seq = "$input/ucsc_transcript.fa"; # cdna mRNA sequences from ucsc resource
+				my $ucsc_name = "$input/ucsc_refGene.txt"; # UCSC gene name and transcript id annotation
+				Check::extract_coordinate($gene, $geneA, $geneB, $read_length, $coordinate, \%scaff_seq, $ucsc_name, $tran_seq, $genomic_seq);
+			}
+		}
+	}
 
 	my %uniq_break; # record whether the value (sequence) in %scaff_seq is unique;
 	if ( %scaff_seq ) {
@@ -180,6 +252,17 @@ print "#########################################################################
 			#***/ $ref_sequence (point to \%scaff_final in module Check::judge_scaffold)
 			#	$ref_sequence->{"GeneA"} = [sequence_of_longest_transcript_of_GeneA, ensembl_id_of_longest_transcript_of_GeneA, breakpoint_sequence_of_GeneA] 
 			#	$ref_sequence->{"GeneB"} = [sequence_of_longest_transcript_of_GeneB, ensembl_id_of_longest_transcript_of_GeneB, breakpoint_sequence_of_GeneB] 
+			my $ref_hash = $scaff_seq{$name}; # transfer a HASH reference 
+			if ( defined($coordinate) ) { 
+				my ($header_name, $header_posA, $header_posB, $accession) = (split /_/, $name)[0, 1, 2, 3];
+				if ( $simulate_symbol{$geneA}{$geneB}[0] eq 'neg' ) { # upstream gene negative strand
+					$header_posA = $header_posA - 1;
+				}
+				if ( $simulate_symbol{$geneA}{$geneB}[2] eq 'pos' ) { # downstream gene positive strand
+					$header_posB = $header_posB - 1;
+				}
+				$name = $header_name."_".$header_posA."_".$header_posB."_".$accession;
+			}
 
 			print "\n###########################################################################################\n";
 			print "# Step 1: Check and build GeneA-GeneB-scaffold sequence for realigning of breakpoint $name #\n";
@@ -189,45 +272,83 @@ print "#########################################################################
 			my $tag_scaff_geneA; my $tag_scaff_geneB; my $ref_sequence;
 			if ( $trans_ref eq "ensembl" ) {
 				$tran_seq = "$input/ensembl_transcript.fa"; # cdna mRNA sequences from ensmbl resource
-				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($scaff_seq{$name}, $tran_seq, $gene, $geneA, $geneB, "ensembl", $user_ref);
+				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($ref_hash, $tran_seq, $gene, $geneA, $geneB, "ensembl", $user_ref);
 			} elsif ( $trans_ref eq "gencode" ) {
 				$tran_seq = "$input/gencode_transcript.fa"; # cdna mRNA sequences from Gencode resource
-				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($scaff_seq{$name}, $tran_seq, $gene, $geneA, $geneB, "gencode", $user_ref);
+				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($ref_hash, $tran_seq, $gene, $geneA, $geneB, "gencode", $user_ref);
 			} elsif ( $trans_ref eq "ucsc" ) {
 				$tran_seq = "$input/ucsc_transcript.fa"; # cdna mRNA sequences from ucsc resource
 				my $ucsc_name = "$input/ucsc_refGene.txt"; # UCSC gene name and transcript id annotation
-				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($scaff_seq{$name}, $tran_seq, $gene, $geneA, $geneB, $ucsc_name, $user_ref);
+				($tag_scaff_geneA, $tag_scaff_geneB, $ref_sequence) = Check::judge_scaffold($ref_hash, $tran_seq, $gene, $geneA, $geneB, $ucsc_name, $user_ref);
 			}
 			my $breakpoint_scaffold; # $breakpoint_scaffold => breakpoint position in scaffold sequence (xxxxx|yyyyy: the position of the first y)
 
 			#assmble the cDNA and scaffold sequence
 			if ( $tag_scaff_geneA == 1 ) {
 				if ( $tag_scaff_geneB == 1 ) {
-					# judge whether the breakpoint sequence is duplicate or unique
-					my $sequence = $ref_sequence->{$geneA}[2].$ref_sequence->{$geneB}[2];
-					if ( exists($uniq_break{$sequence}) ) { print "Step 1: $name has a duplicate breakpoint sequence\n"; next; } else { $uniq_break{$sequence} = 1; } # if it's duplicate one, go back the loop
+					# whether the transcript references of partner GeneA and GeneB are specified
+					if ( defined($dir) ) {
+						$/ = "\>"; my %given_ref;
+						open (IN, "$dir/${geneA}_${geneB}.fasta") || die "Step 1: cannot open the path for reference sequences of GeneA and GeneB:$!\n";
+						while ( <IN> ) {
+							chomp $_; my $line = $_; next if ( $line eq "" );
+							my ($header, $seq) = (split /\n/, $line)[0, 1]; $header =~s/\>//;
+							$given_ref{$header} = $seq;
+						}
+						close IN;
+						$/ = "\n";
 
-					# create a folder named as the given breakpoint (if breakpoint sequence not duplicate one)
-					if ( -e "$output/$name" ) {
-						`rm -r $output/$name/*`; print "\nWRANINGS: $output/$name exists, and the old file will be re-written\n";
-						`mkdir $output/$name/tmp`;
-					} else {
-						`mkdir $output/$name`;
-						`mkdir $output/$name/tmp`;
+						# output the GeneA, GeneB and breakpoint together as a fasta file (reference for running alignment)
+						my $scaffold_geneA_part; my $scaffold_geneB_part; my $transA; my $transB;
+						for ( my $i = 0; $i < scalar(@{$ref_sequence->{$geneA}[2]}); $i++ ) {
+							if ( $given_ref{$geneA} =~/$ref_sequence->{$geneA}[2][$i]/ ) { 
+								$scaffold_geneA_part = $ref_sequence->{$geneA}[2][$i]; 
+								$transA = $ref_sequence->{$geneA}[1][$i]; last; 
+							}
+							if ( $ref_sequence->{$geneA}[2][$i] =~/$given_ref{$geneA}/ ) {
+								$scaffold_geneA_part = $given_ref{$geneA};
+								$transA = $ref_sequence->{$geneA}[1][$i]; last;
+							}
+						}
+						for ( my $i = 0; $i < scalar(@{$ref_sequence->{$geneB}[2]}); $i++ ) {
+							if ( $given_ref{$geneB} =~/$ref_sequence->{$geneB}[2][$i]/ ) { 
+								$scaffold_geneB_part = $ref_sequence->{$geneB}[2][$i]; 
+								$transB = $ref_sequence->{$geneB}[1][$i]; last; 
+							}
+							if ( $ref_sequence->{$geneB}[2][$i] =~/$given_ref{$geneB}/ ) {
+								$scaffold_geneB_part = $given_ref{$geneB};
+								$transB = $ref_sequence->{$geneB}[1][$i]; last;
+							}
+						}
+
+						if ( defined($scaffold_geneA_part) and defined($scaffold_geneB_part) ) {
+							# judge whether the breakpoint sequence is duplicate or unique
+							my $sequence = $scaffold_geneA_part.$scaffold_geneB_part;
+							if ( exists($uniq_break{$sequence}) ) { print "Step 1: $name has a duplicate breakpoint sequence\n"; next; } else { $uniq_break{$sequence} = 1; } # if it's duplicate one, go back the loop
+
+							# create a folder named as the given breakpoint (if breakpoint sequence not duplicate one)
+							if ( -e "$output/$name" ) {
+								`rm -r $output/$name/*`; print "\nWRANINGS: $output/$name exists, and the old file will be re-written\n";
+								`mkdir $output/$name/tmp`;
+							} else {
+								`mkdir $output/$name`;
+								`mkdir $output/$name/tmp`;
+							}
+
+							# the start position of breakpoint site in the sequence
+							$breakpoint_scaffold = length($scaffold_geneA_part)+1;
+
+							`cat $dir/${geneA}_${geneB}.fasta > $output/$name/scaffold_${transA}_${breakpoint_scaffold}_${transB}_${read_length}_seq.fa`;
+							open (OUT, ">>$output/$name/scaffold_${transA}_${breakpoint_scaffold}_${transB}_${read_length}_seq.fa") || die "Step 1: cannot open this path for scaffold sequence:$!\n";
+							print OUT ">scaffold\n"; # Pls note: always use "scaffold" as the name
+							print OUT "$scaffold_geneA_part", "$scaffold_geneB_part\n";
+							close OUT;
+
+							print "Step 1: The position of breakpoint split in the sequence is at $breakpoint_scaffold, and continues the next step\n";
+						} else {
+							print "Step 1: The upstream and downstream sequences do not match to the given transcript references of $geneA and $geneB\n"; next;
+						}
 					}
-
-					# the start position of breakpoint site in the sequence
-					$breakpoint_scaffold = length($ref_sequence->{$geneA}[2])+1;
-					# output the GeneA, GeneB and breakpoint together as a fasta file (reference for running alignment)
-					my $transA = $ref_sequence->{$geneA}[1]; my $transB = $ref_sequence->{$geneB}[1]; # use transcript Ensembl_id (the longest one) as file name
-
-					`cat $dir/${geneA}_${geneB}.fasta > $output/$name/scaffold_${transA}_${breakpoint_scaffold}_${transB}_${read_length}_seq.fa`;
-					open (OUT, ">>$output/$name/scaffold_${transA}_${breakpoint_scaffold}_${transB}_${read_length}_seq.fa") || die "Step 1: cannot open this path for scaffold sequence:$!\n";
-					print OUT ">scaffold\n"; # Pls note: always use "scaffold" as the name
-					print OUT "$ref_sequence->{$geneA}[2]", "$ref_sequence->{$geneB}[2]\n";
-					close OUT;
-
-					print "Step 1: The position of breakpoint split in the sequence is at $breakpoint_scaffold, and continues the next step\n";
 				} else {
 					print "Step 1: Downstream of scaffold does not match the transcript of $geneB and stop here for $name, or use user-defined sequence\n"; next;
 				}
@@ -342,7 +463,7 @@ print "#########################################################################
 				my %multiple = (); # collect multiple hit reads for discordant_split / singlton_split / spanning
 				my $type = 'spanning';
 				if ( exists($read{$type}) ) {
-					my $spa_flag = system("hisat2 -p $cpus --no-unal --secondary -k 600 -x $genome_index -q -U $output/$name/${type}_1.txt,$output/$name/${type}_2.txt -S $output/$name/tmp/${type}_sec.sam");
+					my $spa_flag = system("hisat2 -p $cpus --no-unal --no-softclip --secondary -k 600 -x $genome_index -q -U $output/$name/${type}_1.txt,$output/$name/${type}_2.txt -S $output/$name/tmp/${type}_sec.sam");
 					$spa_flag == 0 or die "Step 3-1 Hisat2 maps spanning_1 and spanning_2 to genome fails\n";
 					Genome_align::discordant_specif($read{$type}, $multiple{$type}, "$output/$name/", \@partner, "spanning", $header_sep, $geneA_pos_tag, $geneB_pos_tag);
 					if ( %{$read{$type}} ) {
@@ -438,9 +559,9 @@ print "#########################################################################
 				open (SPT, ">$output/$name/summary_read_mapping_support.txt") || die "Step 3-4: cannot output the summary of read mapping support:$!\n";
 				print SPT "# summary of read mapping support #\n";
 				print SPT "===================================\n";
-				print SPT "* Num (proportion) of discordant split reads unique mapping to $geneA and scaffold: $Dis_A_F / $Dis_A (", $Per_Dis_A, ")\n";
-				print SPT "* Num (proportion) of discordant split reads unique mapping to $geneB and scaffold: $Dis_B_F / $Dis_B (", $Per_Dis_B, ")\n";
-				print SPT "* Num (proportion) of spanning read pairs unique mapping to $geneA and $geneB: $Spa_AB_F / $Spa_AB (", $Per_Spa_AB, ")\n\n";
+				print SPT "* Number (proportion) of discordant split read pairs unique mapping to $geneA and scaffold: $Dis_A_F / $Dis_A (", $Per_Dis_A, ")\n";
+				print SPT "* Number (proportion) of discordant split read pairs unique mapping to $geneB and scaffold: $Dis_B_F / $Dis_B (", $Per_Dis_B, ")\n";
+				print SPT "* Number (proportion) of spanning read pairs unique mapping to $geneA and $geneB: $Spa_AB_F / $Spa_AB (", $Per_Spa_AB, ")\n\n";
 				close SPT;
 
 				if (! -z "$output/$name/final_read_mapped_info" ) { # final_read_mapped_info is not zero => put spanning and split reads together for running alignment
