@@ -127,12 +127,12 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   * `singlton_split_1.txt, singlton_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other has no mapping to cDNA sequences of geneA/geneB)
   * `spanning_1.txt, spanning_2.txt` (paired-end reads in fastq format: one-end maps to cDNA sequence of geneA; the other maps to cDNA sequence of geneB)
   * `read_mapped_info` (mapping summary of discordant/singlton split reads and spanning reads)
-  * **`*final_read_mapped_info`** (mapping summary of filtered discordant/singlton split reads and filtered spanning reads)
+  * **`*final_read_mapped_info`** (mapping summary of discordant/singlton split and spanning reads after filtering out reads with unspecific mapping)
   * **`*final_split_1.txt, final_split_2.txt`** (paired-end reads in fastq format: merge discordant and singlton split reads after filtering out unspecific mapping)
   * **`*final_spanning_1.txt, final_spanning_1.txt`** (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping)
   * **`*final_spanning_noclip.sorted.bam`** (filtered spanning reads mapped to scaffold sequence). If there are no spanning reads, the "final_spanning_noclip.sorted.bam" is not present.
-  * **`*final_split_noclip.sorted.bam`** (filtered discordant and singlton split reads mapped to scaffold sequence). If there are no discordant/singlton split reads, the "final_split_noclip.sorted.bam" is not present.
-  * **`*summary_read_mapping_support.txt`** (comparison of read number and fraction of discordant split and spanning reads before/after filtering out unspecific mapping)
+  * **`*final_split_noclip.sorted.bam`** (filtered discordant/singlton split reads mapped to scaffold sequence). If there are no discordant/singlton split reads, the "final_split_noclip.sorted.bam" is not present.
+  * **`*summary_read_mapping_support.txt`** (the number and fraction of discordant split and spanning reads showing unique aligned to GeneA, GeneB and scaffold, after filtering out unspecific mapped reads)
     
 *: files with bold name are important for users
 
@@ -155,7 +155,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
      For example: ~/examples/RCC1_ABHD12B_summary
       
-     * **`summary.txt`** (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold sequence across a cohort of samples; statistics test for mapping distribution bias to scaffold sequence [p<.05 indicates bias])
+     * **`summary.txt`** (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold sequence across a cohort of samples; statistics test for mapping distribution bias to scaffold sequence)
      
      * **`alt_0`** (concatenate split reads across a cohort of samples, and make an alignment)
      
@@ -181,10 +181,10 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   - For Linux and Mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
   
   5.3.2 Pull image from Docker Hub/Cloud repositories
-  - Users can pull the ScaR engine image directly from Docker Hub (approx 7.4Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar:latest`. After that, check the image by typing `docker images`
+  - Users can pull the ScaR engine image directly from Docker Hub (approx 9Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar:latest`. After that, check the image by typing `docker images`
   
-  5.3.2 Build image from docker container (optional)
-  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .` (If this building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda .`). NOTE: building may take a long process (around 1-2 hours, dependent on network condition) and also needs a disk space with at least free 50G.
+  5.3.3 Build image from docker container (optional)
+  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .` (If this building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda .`). NOTE: building may take a long process (around 1 hours, dependent on network condition) and also needs a disk space with at least free 50G.
   - After building is done, check the images by typing `docker images`
     
   5.4 Run ScaR engine image
