@@ -108,7 +108,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       #       3. In general, the breakpoint sequences are composed of cDNAs (i.e. exon region). If users would like to detect the fusion sequences including intron/intergenic region, they have to set user-defined reference sequences, please see the usage of parameter "--user_ref".
 
       --coordinate "chr1:34114119|chr2:65341523,chr1:3412125|chr2:65339145"
-      # Set genomic junction coodinates (build GRCh38) of breakpoint sites for GeneA and GeneB (if --coordinate is active, --scaffold should be inactivated)
+      # Set genomic junction coodinates (build GRCh38) of breakpoint sites for GeneA and GeneB, e.g. chr1:34114119 and chr2:65341523 correpsond to the chromosome names and genomic breakpoints of GeneA and GeneB, respectively. (if --coordinate is active, --scaffold should be inactivated)
       
       --user_ref ~/upstream.fasta
       # User-defined reference sequences, users can specify transcript reference sequences (or genomic sequences) in fasta format which are not present in the default database.
