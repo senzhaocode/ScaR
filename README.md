@@ -9,19 +9,31 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
   1.1 Perl version >= 5.10.2
   
-  1.2 HISAT2 version 2.1.0 (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip)
+  1.2 HiSAT2 v2.1.0 (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip)
       
-      The binary files have been integrated in ~/bin/hisat2-2.1.0/, and please add the path to linux environment variables before running: 
+      The binary executable files have been integrated in ~/bin/hisat2-2.1.0/, and just add the path to Linux environment variables before running: 
         PATH=$PATH:/where_is_path/ScaR/bin/hisat2-2.1.0/
         export PATH
 
-  1.3 HISAT2 aligner HGFM index (genome reference plus transcripts based on Ensembl GRCh38 version) 
+  1.3 HiSAT2 aligner HGFM index files (genome reference plus transcripts based on Ensembl GRCh38 version) 
       
-      Users have to download the index files in ~/reference following the command:
+      Users have to download the index files in ~/reference following the settings:
         cd ~/reference
         wget "ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grch38_tran.tar.gz"
         tar -vxf grch38_tran.tar.gz
         mv grch38_tran/genome_tran.* .
+        
+  1.4 STAR v2.7.2d (https://github.com/alexdobin/STAR/archive/2.7.2d.tar.gz)
+  
+      The binary executable files have been integrated in ~/bin/STAR-2.7.2d/, and just add the path to Linux environment variables before running:
+        PATH=$PATH:/where_is_path/ScaR/bin/STAR-2.7.2d/
+        export PATH
+        
+  1.5 STAR aligner SA index files (genome reference plus transcript annotation in gtf format)
+  
+      Users can download index files that were pre-build on basis of GRCh38 genome reference and Ensembl v89 transcript annotations)
+        cd ~/reference
+        wget ""
   
   1.4 Samtools version >= 1.3 (https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2)
       
