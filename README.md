@@ -140,21 +140,20 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   For example: ~/examples/output/
   
   * `scaffold_*_seq.fa` (cDNA sequences of geneA and geneB, and breakpoint sequence of scaffold in fasta format)
-  * `hisats_noclip.sorted.bam` (BAM file: done by no-splicing alignment model)
-  * `discordant_split_1.txt, discordant_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other maps to cDNA sequences of geneA/geneB)
-  * `singlton_split_1.txt, singlton_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other has no mapping to cDNA sequences of geneA/geneB)
-  * `spanning_1.txt, spanning_2.txt` (paired-end reads in fastq format: one-end maps to cDNA sequence of geneA; the other maps to cDNA sequence of geneB)
+  * `discordant_split_1.txt, discordant_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other maps to geneA/geneB)
+  * `singlton_split_1.txt, singlton_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other has no mapping to geneA/geneB)
+  * `spanning_1.txt, spanning_2.txt` (paired-end reads in fastq format: one-end maps to geneA; the other maps to geneB)
   * `read_mapped_info` (mapping summary of discordant/singlton split reads and spanning reads)
   * **`*final_read_mapped_info`** (mapping summary of discordant/singlton split and spanning reads after filtering out reads with unspecific mapping)
   * **`*final_split_1.txt, final_split_2.txt`** (paired-end reads in fastq format: merge discordant and singlton split reads after filtering out unspecific mapping)
   * **`*final_spanning_1.txt, final_spanning_1.txt`** (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping)
-  * **`*final_spanning_noclip.sorted.bam`** (filtered spanning reads mapped to scaffold sequence). If there are no spanning reads, the "final_spanning_noclip.sorted.bam" is not present.
-  * **`*final_split_noclip.sorted.bam`** (filtered discordant/singlton split reads mapped to scaffold sequence). If there are no discordant/singlton split reads, the "final_split_noclip.sorted.bam" is not present.
-  * **`*summary_read_mapping_support.txt`** (the number and fraction of discordant split and spanning reads showing unique aligned to GeneA, GeneB and scaffold, after filtering out unspecific mapped reads)
+  * **`*final_spanning_noclip.sorted.bam`** (filtered spanning reads mapped to scaffold sequence). If there are no spanning reads, "final_spanning_noclip.sorted.bam" is not present.
+  * **`*final_split_noclip.sorted.bam`** (filtered discordant/singlton split reads mapped to scaffold sequence). If there are no discordant/singlton split reads, "final_split_noclip.sorted.bam" is not present.
+  * **`*summary_read_mapping_support.txt`** (the number and fraction of discordant split and spanning reads that show a unique alignment to GeneA, GeneB and scaffold, after filtering out unspecific mapped reads)
     
 *: files with bold name are important for users
 
-## 4. Summarise the number of spanning and split reads across a cohort of samples (running evaluate.pl)
+## 4. Summarize the number of spanning and split reads across a cohort of samples (run evaluate.pl)
   4.1 See running parameters:
       perl evaluate.pl --help
       
@@ -169,16 +168,16 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       --output ~/examples/RCC1_ABHD12B_summary 
       # Set the output directory of running "evaluate.pl"
   
-  4.3 Summary of output directory run by `evaluate.pl`
+  4.3 Summarize output directory of `evaluate.pl`
   
      For example: ~/examples/RCC1_ABHD12B_summary
       
      * **`summary.txt`** (the number of read support [discordant_split, singlton_split; spanning] for breakpoint scaffold sequence across a cohort of samples; statistics test for mapping distribution bias to scaffold sequence)
      
-     * **`alt_0`** (concatenate split reads across a cohort of samples, and make an alignment)
+     * **`alt_0`** (concatenate all split reads across a cohort of samples, and align to scaffold sequence)
      
         |--- "All_sample_split_1.txt, All_sample_split_2.txt" (paired-end discordant/singlton split reads concatenated across all samples)
-        |--- "All_sample_noclip.sorted.bam" (align the concatenated split reads to scaffold sequence, user can visualize this bam file uisng scaffold_ENST00000373833_49_ENST00000337334_48_seq.fa as reference by IGV)
+        |--- "All_sample_noclip.sorted.bam" (align concatenated split reads to scaffold sequence, and user can visualize this bam file uisng scaffold_ENST00000373833_49_ENST00000337334_48_seq.fa as reference by IGV)
         |--- "p.value" (fisher exact test and chi-squred test for mapping distribution bias to upstream/downstream of scaffold sequence)
         
 ## 5. Installation/Running via Docker
@@ -247,7 +246,8 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
 ## 6. Reference
 1. Kim D, Langmead B, and Salzberg SL, HISAT: a fast spliced aligner with low memory requirements. Nature Methods 12, 357-360 (2015). [DIO:10.1038/nmeth.3317](http://www.nature.com/nmeth/journal/v12/n4/full/nmeth.3317.html)
 2. Li H., Handsaker B., Wysoker A., Fennell T., Ruan J., Homer N., Marth G., Abecasis G., Durbin R. and 1000 Genome Project Data Processing Subgroup. The Sequence alignment/map (SAM) format and SAMtools. Bioinformatics, 25, 2078-9 (2009). [DOI: 10.1093/bioinformatics/btp352](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btp352)
-3. Zhao S*., Andreas M Hoff*, Rolf I Skotheim, ScaR - A tool for sensitive detection of known fusion transcripts: Establishing prevalence of fusions in testicular germ cell tumors. BioRix [https://www.biorxiv.org/content/10.1101/518316v1](https://www.biorxiv.org/content/10.1101/518316v1) (* equal contribution)
+3. Dobin A, Davis CA, Schlesinger F, et al. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013;29(1):15–21. [doi:10.1093/bioinformatics/bts635](https://academic.oup.com/bioinformatics/article/29/1/15/272537)
+4. Zhao S*., Andreas M Hoff*, Rolf I Skotheim, ScaR - A tool for sensitive detection of known fusion transcripts: Establishing prevalence of fusions in testicular germ cell tumors. BioRix [https://www.biorxiv.org/content/10.1101/518316v1](https://www.biorxiv.org/content/10.1101/518316v1) (* equal contribution)
 
 ## Contact
 
