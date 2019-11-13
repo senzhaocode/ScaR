@@ -11,7 +11,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
   1.2 HiSAT2 v2.1.0 (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip)
       
-      The binary executable files have been integrated in ~/bin/hisat2-2.1.0/, and just add the path to Linux environment variables before running: 
+      The binary executable files have been integrated in ~/bin/hisat2-2.1.0/, please add a working path to Linux environment variables before running: 
         PATH=$PATH:/where_is_path/ScaR/bin/hisat2-2.1.0/
         export PATH
 
@@ -25,7 +25,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
         
   1.4 STAR v2.7.2d (https://github.com/alexdobin/STAR/archive/2.7.2d.tar.gz)
   
-      The binary executable files have been integrated in ~/bin/STAR-2.7.2d/, and just add the path to Linux environment variables before running:
+      The binary executable files have been integrated in ~/bin/STAR-2.7.2d/, please add a working path to Linux environment variables before running:
         PATH=$PATH:/where_is_path/ScaR/bin/STAR-2.7.2d/
         export PATH
         
@@ -33,24 +33,22 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
       Users can download index files that were pre-build on basis of GRCh38 genome reference and Ensembl v89 transcript annotations)
         cd ~/reference
-        wget ""
+        wget "http://folk.uio.no/senz/SAindex_reference.tar.gz"
+        tar -vxf SAindex_reference.tar.gz
+        mv SAindex_reference/* .
   
   1.4 Samtools version >= 1.3 (https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2)
       
-      If samtools has not been installed in the system, users have to download and install it locally.
-      Then, add the path to linux environment variables before running:
+      If samtools is not available in the system, users have to download and install it locally.
+      Then, add a working path to linux environment variables before running:
         PATH=$PATH:/where_is_path_samtools
         export PATH
  
   1.5 R version >= 3.0.3 (https://cran.r-project.org)
-      
-      Please add the path to linux environment variables before running (if necessary):
-        PATH=$PATH:/where_is_path/R
-        export PATH
     
   1.6 Genomic data and annotations
   
-      Type the command and download these files
+      Type the commands and download these files
         cd ~/reference
         wget "http://folk.uio.no/senz/GRCh38.primary_assembly.genome.fa" #-- whole genome sequences (build GRCh38 version)
         wget "http://folk.uio.no/senz/Gene_hg38.txt" #-- gene annotation file
@@ -59,7 +57,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
         wget "http://folk.uio.no/senz/ucsc_transcript.fa" #-- the human transcriptome sequences annotated from UCSC database (Release date: Nov 2018)
         wget "http://folk.uio.no/senz/ucsc_refGene.txt"
         
-  1.7 Set the path of Perl libraries to environment variables
+  1.7 Set Perl libraries to environment variables
   
       PERL5LIB="$PERL5LIB:/where_is_path/ScaR/lib"
       export PERL5LIB
@@ -75,10 +73,10 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       perl select_read.pl
       
       --first ~/examples/input/raw_1.fastq 
-      # Raw or compressed fastq (.fastq.gz) file for the 1st end of paired-end reads
+      # Raw *.fastq or compressed *.fastq.gz file for the 1st end of paired-end reads
       
       --second ~/examples/input/raw_2.fastq 
-      # Raw or compressed fastq (.fastq.gz) file for the 2nd end of paired-end reads
+      # Raw *.fastq or compressed *.fastq.gz file for the 2nd end of paired-end reads
       
       --geneA RCC1 --geneB ABHD12B 
       # Fusion partner gene names (Refseq gene symbol and Ensembl id are accepted)
@@ -92,42 +90,50 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       # Set whether the input fastq reads are trimmed (1) or not (0)
       
       --length 48 
-      # Set the maximum length of sequencing read, this option is only active when raw fastq reads are trimmed (--trimm 1)
+      # Set the maximum length of reads, this option is only available when raw fastq reads are trimmed (--trimm 1)
+      
+      --transAlign
+      # (default: hisat2)
+      Set an aligner to map reads at transcriptome level using no-splicing mode (Options: hisat2 or star)
+      
+      --genomeAlign
+      # (default: hisat2)
+      Set an aligner to map reads at genome level using splicing mode (Options: hisat2 or star)
       
       --trans_ref ensembl
       # (default: ensembl)
-      # The setting of annotation resources, users could choose other options (e.g. "gencode" or "ucsc").
+      # Set the resource of transcript sequence data (Options: gencode, ensembl or ucsc).
       
       --p 8 
       # (default: 8)
       # The number of threads for running in parallel. 
       
       --anno ~/reference/ 
-      # Set the path of genomic, transcriptomic sequences and annotations
+      # Set the directory of genomic, transcriptomic sequences and annotations
       
       --output ~/examples/output/ 
       # Output directory
       
       --scaffold ~/examples/input/RCC1_ABHD12B_scaff_seq.fa 
-      # A list of fusion scaffold sequences in fasta format (if --scaffold is active, --coordinate should be inactivated)
+      # A list of fusion scaffold sequences in fasta format (if --scaffold is active, --coordinate has to be inactivated)
       # For instance:
       #	>alt_0
       #	XXXXXXXXXXXXXXXXXX|YYYYYYYYYYYYYYYY
       #	>alt_1
       #	XXXXXXXXXXXXXXXXXX*YYYYYYYYYYYYYYY
-      # NOTE: 1. It only accepts '*' or '|' as a separator for breakpoint sequences. 'XXXXXXXXXXX' and 'YYYYYYYYY' correspond to the sequences from geneA and geneB, respectively.
-      #       2. To ensure the specificity of breakpoint sequences matching to the reference, we recommend that 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
+      # NOTE: 1. It only accepts '*' or '|' as a separator for breakpoint sequences.
+      #       2. To ensure the specificity of breakpoint sequences matching to the reference, we recommend that the lengths of 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
       #       3. In general, the breakpoint sequences are composed of cDNAs (i.e. exon region). If users would like to detect the fusion sequences including intron/intergenic region, they have to set user-defined reference sequences, please see the usage of parameter "--user_ref".
 
       --coordinate "chr1:34114119|chr2:65341523,chr1:3412125|chr2:65339145"
-      # Set genomic junction coodinates (build GRCh38) of breakpoint sites for GeneA and GeneB, e.g. chr1:34114119 and chr2:65341523 correpsond to the chromosome names and genomic breakpoints of GeneA and GeneB, respectively. (if --coordinate is active, --scaffold should be inactivated)
+      # Set genomic junction coordinates (build GRCh38) of breakpoint sites for GeneA and GeneB, e.g. chr1:34114119 and chr2:65341523 correpsond to the chromosome names and genomic breakpoints of GeneA and GeneB, respectively. (if --coordinate is active, --scaffold has to be inactivated)
       
       --user_ref ~/upstream.fasta
-      # User-defined reference sequences, users can specify transcript reference sequences (or genomic sequences) in fasta format which are not present in the default database.
+      # User-defined reference sequences, users can specify transcript reference sequences (or genomic sequences) in fasta format which are not present in the default annotation database.
       # For instance:
       # >RP11-599B13.3|alternative1
       # CTTTGTGTCTTTGTCTTTATTTCTTTTCTCATTCCCTCGTCTCCACCGGGAAGGGGAGAGCCTGCGGGTGGTGTATCAGGCAGGTTCCCCTACATCTTTGGCACCCAACAC
-      # NOTE: 'RP11-599B13.3' is the gene name and should be identical to the input of gene partner names (either GeneA or GeneB); 'alternative1' is the transcript name (please avoid using symbol '_' in user-defined transcript name). Make sure both 'RP11-599B13.3' and 'alternative1' are present together, and separated by '|'.
+      # NOTE: 'RP11-599B13.3' is the gene name and should be identical to the input of gene partner names (either GeneA or GeneB); 'alternative1' is the transcript name (please avoid using the symbol '_ $ % & # * @ ^ ? + ! < >' in user-defined transcript name). Make sure both 'RP11-599B13.3' and 'alternative1' are together, and separated by '|'.
     
       
 ## 3. Output results
