@@ -36,11 +36,12 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
         wget "http://folk.uio.no/senz/STAR_index.tar.gz"
         tar -vxf STAR_index.tar.gz
         mv STAR_index/* .
+        
+        NOTE: Users can generate their own genome indexes with most latest assemblies and annotations.
   
   1.4 Samtools version >= 1.3 (https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2)
       
-      If samtools is not available in the system, users have to download and install it locally.
-      Then, add a working path to linux environment variables before running:
+      If samtools is not available in the system, users have to download and install it locally. 
         PATH=$PATH:/where_is_path_samtools
         export PATH
  
@@ -48,7 +49,6 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
     
   1.6 Genomic data and annotations
   
-      Type the commands and download these files
         cd ~/reference
         wget "http://folk.uio.no/senz/GRCh38.primary_assembly.genome.fa" #-- whole genome sequences (build GRCh38 version)
         wget "http://folk.uio.no/senz/Gene_hg38.txt" #-- gene annotation file
@@ -121,19 +121,19 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       #	XXXXXXXXXXXXXXXXXX|YYYYYYYYYYYYYYYY
       #	>alt_1
       #	XXXXXXXXXXXXXXXXXX*YYYYYYYYYYYYYYY
-      # NOTE: 1. It only accepts '*' or '|' as a separator for breakpoint sequences.
-      #       2. To ensure the specificity of breakpoint sequences matching to the reference, we recommend that the lengths of 'XXXXXXXX' and 'YYYYYYYY' should be at least 20 bp.
+      # NOTE: 1. '*' or '|' is accepted as a separator for breakpoint sequences.
+      #       2. To ensure the specificity of breakpoint sequences matching to the reference, we recommend that the lengths of 'XXXXXXXX' and 'YYYYYYYY' have to be at least 20 bp.
       #       3. In general, the breakpoint sequences are composed of cDNAs (i.e. exon region). If users would like to detect the fusion sequences including intron/intergenic region, they have to set user-defined reference sequences, please see the usage of parameter "--user_ref".
 
       --coordinate "chr1:34114119|chr2:65341523,chr1:3412125|chr2:65339145"
       # Set genomic junction coordinates (build GRCh38) of breakpoint sites for GeneA and GeneB, e.g. chr1:34114119 and chr2:65341523 correpsond to the chromosome names and genomic breakpoints of GeneA and GeneB, respectively. (if --coordinate is active, --scaffold has to be inactivated)
       
       --user_ref ~/upstream.fasta
-      # User-defined reference sequences, users can specify transcript reference sequences (or genomic sequences) in fasta format which are not present in the default annotation database.
+      # User-defined reference sequences, users can specify transcript reference sequences (or genomic sequences) in fasta format which are not present in the provided annotation databases.
       # For instance:
       # >RP11-599B13.3|alternative1
       # CTTTGTGTCTTTGTCTTTATTTCTTTTCTCATTCCCTCGTCTCCACCGGGAAGGGGAGAGCCTGCGGGTGGTGTATCAGGCAGGTTCCCCTACATCTTTGGCACCCAACAC
-      # NOTE: 'RP11-599B13.3' is the gene name and should be identical to the input of gene partner names (either GeneA or GeneB); 'alternative1' is the transcript name (please avoid using the symbol '_ $ % & # * @ ^ ? + ! < >' in user-defined transcript name). Make sure both 'RP11-599B13.3' and 'alternative1' are together, and separated by '|'.
+      # NOTE: 'RP11-599B13.3' is the gene name and has to be identical to the input of gene partner names; 'alternative1' is the transcript name (please avoid using the symbol '_ $ % & # * @ ^ ? + ! < > | / \' in user-defined transcript name). Make sure both 'RP11-599B13.3' and 'alternative1' are together, and separated by '|'.
     
       
 ## 3. Output results
@@ -144,11 +144,11 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   * `singlton_split_1.txt, singlton_split_2.txt` (paired-end reads in fastq format: one-end maps to scaffold; the other has no mapping to geneA/geneB)
   * `spanning_1.txt, spanning_2.txt` (paired-end reads in fastq format: one-end maps to geneA; the other maps to geneB)
   * `read_mapped_info` (mapping summary of discordant/singlton split reads and spanning reads)
-  * **`*final_read_mapped_info`** (mapping summary of discordant/singlton split and spanning reads after filtering out reads with unspecific mapping)
-  * **`*final_split_1.txt, final_split_2.txt`** (paired-end reads in fastq format: merge discordant and singlton split reads after filtering out unspecific mapping)
-  * **`*final_spanning_1.txt, final_spanning_1.txt`** (paired-end reads in fastq format: spanning reads after filtering out unspecific mapping)
-  * **`*final_spanning_noclip.sorted.bam`** (filtered spanning reads mapped to scaffold sequence). If there are no spanning reads, "final_spanning_noclip.sorted.bam" is not present.
-  * **`*final_split_noclip.sorted.bam`** (filtered discordant/singlton split reads mapped to scaffold sequence). If there are no discordant/singlton split reads, "final_split_noclip.sorted.bam" is not present.
+  * **`*final_read_mapped_info`** (mapping summary of discordant/singlton split and spanning reads after filtering out unspecific mapping)
+  * **`*final_split_1.txt, final_split_2.txt`** (merge discordant and singlton split reads in fastq format after filtering out unspecific mapping)
+  * **`*final_spanning_1.txt, final_spanning_1.txt`** (spanning reads in fastq format after filtering out unspecific mapping)
+  * **`*final_spanning_noclip.sorted.bam`** (filtered spanning reads mapped to GeneA/GeneB/scaffold sequence). If there are no spanning reads, "final_spanning_noclip.sorted.bam" is absent.
+  * **`*final_split_noclip.sorted.bam`** (filtered discordant/singlton split reads mapped to GeneA/GeneB/scaffold sequence). If there are no discordant/singlton split reads, "final_split_noclip.sorted.bam" is absent.
   * **`*summary_read_mapping_support.txt`** (the number and fraction of discordant split and spanning reads that show a unique alignment to GeneA, GeneB and scaffold, after filtering out unspecific mapped reads)
     
 *: files with bold name are important for users
@@ -158,7 +158,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       perl evaluate.pl --help
       
   4.2 An example of running:
-      Users have to create a directory that contains outputs from `select_read.pl` for summarizing. For instance in "examples" directory, if RCC1_ABHD12B_new folder is not present, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new/`, then run `evaluate.pl` as follows.
+      Users have to make a directory that contains outputs from `select_read.pl` for summarizing. For instance in "examples" directory, if RCC1_ABHD12B_new folder is not present, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new/`, then run `evaluate.pl` as follows:
       
       perl evaluate.pl 
       
@@ -201,7 +201,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   - Users can pull the ScaR engine image directly from Docker Hub (approx 9Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar:latest`. After that, check the image by typing `docker images`
   
   5.3.3 Build image from docker container (optional)
-  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .` (If this building process is not successful, please try another `docker build --rm -t senzhao/scar:latest -f Dockerfile_conda .`). NOTE: building may take a long process (around 1 hours, dependent on network condition) and also needs a disk space with at least free 50G.
+  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .`. NOTE: building may take a long process (around 1 hours, dependent on network condition) and also needs a disk space with at least free 50G.
   - After building is done, check the images by typing `docker images`
     
   5.4 Run ScaR engine image
@@ -227,6 +227,28 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
               --anno /reference \
               --output output
   ```
+  Some notes for choosing STAR as alinger to run ScaR under Docker framework:
+   As the STAR genome index files are very large, we do not pack them in the container and create a huge image (it can be harder to distribute and use).
+   The best way in loading the STAR genome index file is to use a "bind mount" solution to attach the volume to the container. For example, if the storage directory in host machine is `/input_data_path/examples`, 
+    
+    cd /input_data_path/examples
+    wget "http://folk.uio.no/senz/STAR_index.tar.gz"
+    tar -vxf STAR_index.tar.gz
+    
+   If user would like to use the index files generated by theirselv, please make a new folder named `STAR_index` (never change the name) and transfer all index files (e.g. SA, SAindex, Genome) within `/input_data_path/examples/STAR_index`.
+
+```bash
+  docker run -t --rm -v /input_data_path/examples:/data senzhao/scar perl /ScaR/select_read.pl --p 4 \
+              --first input/raw_1.fastq \
+              --second input/raw_2.fastq \
+              --geneA RCC1 --geneB ABHD12B --trimm 0 \
+              --transAlign star \
+              --genomeAlign star \
+              --scaffold input/RCC1_ABHD12B_scaff_seq.fa \
+              --anno /reference \
+              --output output
+``` 
+    
   * "perl /ScaR/select_read.pl" - the running path of ScaR in docker image (NOTE: keep it as this path)
   * "/input_data_path/examples" - set the full path of input directory (it contains both raw reads and scaffold sequence files). Users need to define a new path for their own data.
   * "input/raw_1.fastq" - set the path of the R1 reads file in the input directory (relative path referring to input directory /input_data_path/examples). users need to define file name of their own R1 reads. 
