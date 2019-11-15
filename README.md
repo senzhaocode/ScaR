@@ -33,9 +33,8 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
       Users can download index files that were pre-build on basis of GRCh38 genome reference and Ensembl v89 transcript annotations)
         cd ~/reference
-        wget "http://folk.uio.no/senz/SAindex_reference.tar.gz"
-        tar -vxf SAindex_reference.tar.gz
-        mv SAindex_reference/* .
+        wget "http://folk.uio.no/senz/STAR_index.tar.gz"
+        
   
   1.4 Samtools version >= 1.3 (https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2)
       
