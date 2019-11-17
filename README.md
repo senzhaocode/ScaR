@@ -201,7 +201,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   - Users can pull the ScaR engine image directly from Docker Hub (approx 9Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar:latest`. After that, check the image by typing `docker images`
   
   5.3.3 Build image from docker container (optional)
-  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .`. NOTE: building may take a long process (around 1 hours, dependent on network condition) and also needs a disk space with at least free 50G.
+  - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .`. NOTE: building may take a long process (around 30 mins) and also needs a disk image size with at least 50G.
   - After building is done, check the images by typing `docker images`
     
   5.4 Run ScaR engine image
