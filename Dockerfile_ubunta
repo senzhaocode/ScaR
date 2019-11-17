@@ -4,7 +4,7 @@ FROM ubuntu:16.04
 LABEL base.image="ubuntu"
 LABEL software="ScaR"
 LABEL description="A scaffold realignment approach for fusion detection"
-LABEL software.version="20190312"
+LABEL software.version="20191117"
 LABEL tags="Genomics"
 LABEL version="vX"
 LABEL documentation=""
@@ -46,10 +46,17 @@ RUN cd / && wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.
 	&& rm -rf hisat2-2.1.0-Linux_x86_64.zip
 ENV PATH=$PATH:/hisat2-2.1.0
 
+# install STAR-2.7.2d
+RUN cd / && wget https://github.com/alexdobin/STAR/archive/2.7.2d.tar.gz \
+	&& tar -vxf 2.7.2d.tar.gz \
+	&& rm -rf 2.7.2d.tar.gz
+ENV PATH=$PATH:/STAR-2.7.2d/bin/Linux_x86_64_static
+
 # install ScaR
 RUN mkdir /ScaR && mkdir /ScaR/lib && mkdir /ScaR/examples
 ENV PATH=$PATH:/ScaR
-COPY select_read.pl evaluate.pl /ScaR/
+COPY examples/script_for_docker.pl evaluate.pl /ScaR/
+RUN mv /ScaR/script_for_docker.pl /ScaR/select_read.pl
 RUN chmod 777 /ScaR/select_read.pl
 RUN chmod 777 /ScaR/evaluate.pl
 COPY lib/*.pm /ScaR/lib/
@@ -61,17 +68,17 @@ RUN mkdir /data && chmod 777 /data
 RUN mkdir /reference && mkdir /reference/partner_gene_sim
 COPY examples/partner_gene_sim/*.fasta /reference/partner_gene_sim/
 RUN cd /reference \
-        && wget "ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grch38_tran.tar.gz" \
-        && tar -xvf grch38_tran.tar.gz \
-        && mv grch38_tran/genome_tran.* . \
+	&& wget "ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grch38_tran.tar.gz" \
+	&& tar -xvf grch38_tran.tar.gz \
+	&& mv grch38_tran/genome_tran.* . \
+	&& rm -rf grch38_tran.tar.gz \
+	&& rm -rf grch38_tran \
         && wget "http://folk.uio.no/senz/ensembl_transcript.fa" \
         && wget "http://folk.uio.no/senz/gencode_transcript.fa" \
         && wget "http://folk.uio.no/senz/ucsc_transcript.fa" \
         && wget "http://folk.uio.no/senz/ucsc_refGene.txt" \
         && wget "http://folk.uio.no/senz/Gene_hg38.txt" \
-	&& wget "http://folk.uio.no/senz/GRCh38.primary_assembly.genome.fa" \
-        && rm -rf grch38_tran.tar.gz \
-        && rm -rf grch38_tran
+	&& wget "http://folk.uio.no/senz/GRCh38.primary_assembly.genome.fa"
 
 # Final setting
 RUN apt-get clean autoclean
