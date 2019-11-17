@@ -230,7 +230,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   
   Some notes for running ScaR using STAR aligner under Docker framework:
   
-  - As STAR genome index files are very large, we do not pack them into container and create a huge image (it can be harder to distribute and use). The best way in loading the STAR genome index file is to use a "bind mount" solution to attach the volume to the container. For example, if the storage directory in host machine is `/input_data_path/examples`, 
+  - As STAR genome index files are very large, we do not pack them into container and create a huge image (it can be harder to distribute and use). The best way to load the STAR genome index files in host machine is to use a "bind mount" solution to attach the volume to the container. For example, if the storage directory in host machine is `/input_data_path/examples`, 
     
         cd /input_data_path/examples
         wget "http://folk.uio.no/senz/STAR_index.tar.gz"
