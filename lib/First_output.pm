@@ -172,6 +172,54 @@ use warnings;
 							print OUT1 "@"."$id/1\n$seq_2_tr\n+\n$seq_2_qual\n";
 							print OUT2 "@"."$id/2\n$seq_1_tr\n+\n$seq_1_qual\n";
 						}
+					} elsif ( $dis_ref->{$id}[0][5] == 81 ) { #incorrect insert - judge the flag of first element = 1st end (reverse complement)
+						if ( $dis_ref->{$id}[1][5] == 161 ) { #incorrect insert - judge the flag of second element = 2nd end
+							print OUT "discordant_split\t$id\t$dis_ref->{$id}[0][2](reverse_complement)\t$dis_ref->{$id}[1][2]\n"; 
+							print OUT1 "@"."$id/1\n$seq_1_tr\n+\n$seq_1_qual\n";
+							print OUT2 "@"."$id/2\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+						}
+					} elsif ( $dis_ref->{$id}[0][5] == 97 ) { #incorrect insert - judge the flag of first element = 1st end
+						if ( $dis_ref->{$id}[1][5] == 145 ) { #incorrect insert judge the flag of second element = 2nd end (reverse complement)
+							print OUT "discordant_split\t$id\t$dis_ref->{$id}[0][2]\t$dis_ref->{$id}[1][2](reverse complement)\n";
+							print OUT1 "@"."$id/1\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+							print OUT2 "@"."$id/2\n$seq_2_tr\n+\n$seq_2_qual\n";
+						}
+					} elsif ( $dis_ref->{$id}[0][5] == 65 ) { #incorrect insert - judge the flag of first element = 1st end
+						if ( $dis_ref->{$id}[1][5] == 129 ) { #incorrect insert - judge the flag of second element = 2nd end
+							print OUT "discordant_split\t$id\t$dis_ref->{$id}[0][2]\t$dis_ref->{$id}[1][2]\n";
+							print OUT1 "@"."$id/1\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+							print OUT2 "@"."$id/2\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+						}
+					} elsif ( $dis_ref->{$id}[0][5] == 113 ) { #incorrect insert - judge the flag of first element = 1st end (reverse complement)
+						if ( $dis_ref->{$id}[1][5] == 177 ) { #incorrect insert - judge the flag of second element = 2nd end (reverse complement)
+							print OUT "discordant_split\t$id\t$dis_ref->{$id}[0][2](reverse_complement)\t$dis_ref->{$id}[1][2](reverse_complement)\n";
+							print OUT1 "@"."$id/1\n$seq_1_tr\n+\n$seq_1_qual\n";
+							print OUT2 "@"."$id/2\n$seq_2_tr\n+\n$seq_2_qual\n";
+						}
+					} elsif ( $dis_ref->{$id}[0][5] == 161 ) { #incorrect insert - judge the flag of first element = 2nd end
+						if ( $dis_ref->{$id}[1][5] == 81 ) { #incorrect insert - judge the flag of second element = 1st end (reverse complement)
+							print OUT "discordant_split\t$id\t$dis_ref->{$id}[1][2](reverse_complement)\t$dis_ref->{$id}[0][2]\n";
+							print OUT1 "@"."$id/1\n$seq_2_tr\n+\n$seq_2_qual\n";
+							print OUT2 "@"."$id/2\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+						}
+					} elsif ( $dis_ref->{$id}[0][5] == 145 ) { #incorrect insert - judge the flag of first element = 2nd end (reverse complement)
+						if ( $dis_ref->{$id}[1][5] == 97 ) { #incorrect insert - judge the flag of second element = 1st end
+							print OUT "discordant_split\t$id\t$dis_ref->{$id}[1][2]\t$dis_ref->{$id}[0][2](reverse complement)\n";
+							print OUT1 "@"."$id/1\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+							print OUT2 "@"."$id/2\n$seq_1_tr\n+\n$seq_1_qual\n";
+						}
+					} elsif ( $dis_ref->{$id}[0][5] == 129 ) { #incorrect insert - judge the flag of first element = 2nd end
+						if ( $dis_ref->{$id}[1][5] == 65 ) { #incorrect insert - judge the flag of second element = 1st end
+							print OUT "discordant_split\t$id\t$dis_ref->{$id}[1][2]\t$dis_ref->{$id}[0][2]\n";
+							print OUT1 "@"."$id/1\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+							print OUT2 "@"."$id/2\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+						}
+					} elsif ( $dis_ref->{$id}[0][5] == 177 ) { #incorrect insert - judge the flag of first element = 2st end (reverse complement)
+						if ( $dis_ref->{$id}[1][5] == 113 ) { #incorrect insert - judge the flag of second element = 1nd end (reverse complement)
+							print OUT "discordant_split\t$id\t$dis_ref->{$id}[1][2](reverse_complement)\t$dis_ref->{$id}[0][2](reverse_complement)\n";
+							print OUT1 "@"."$id/1\n$seq_2_tr\n+\n$seq_2_qual\n";
+							print OUT2 "@"."$id/2\n$seq_1_tr\n+\n$seq_1_qual\n";
+						}
 					} else {
 						print "discordant_split\t$id has incorrect flag value\n";
 					}
@@ -285,6 +333,111 @@ use warnings;
 		close OUT;
 	}
 	
+	sub grep_dis_singlton {
+		my ($dis_ref, $fastq_1, $fastq_2, $path, $sep) = @_;
+		open (OUT, ">>$path/read_mapped_info") || die "Step 2-3: cannot open summary output path, 2:$!\n";
+		open (OUT1, ">>$path/singlton_split_1.txt") || die "Step 2-3: cannot open first round singlton_1 output path, 2:$!\n";
+		open (OUT2, ">>$path/singlton_split_2.txt") || die "Step 2-3: cannot open first round singlton_2 output path, 2:$!\n";
+
+		foreach my $id ( keys %{$dis_ref} ) {
+			my $header = "@".$id.$sep;
+			
+			if ( scalar(@{$dis_ref->{$id}}) == 2 ) {
+				my $seq_1_tr = $dis_ref->{$id}[0][3]; $seq_1_tr =~tr/ATCG/TAGC/; $seq_1_tr = reverse($seq_1_tr);
+				my $seq_1_qual = $dis_ref->{$id}[0][6]; $seq_1_qual = reverse($seq_1_qual);
+				my $seq_2_tr = $dis_ref->{$id}[1][3]; $seq_2_tr =~tr/ATCG/TAGC/; $seq_2_tr = reverse($seq_2_tr);
+				my $seq_2_qual = $dis_ref->{$id}[1][6]; $seq_2_qual = reverse($seq_2_qual);
+
+				if ( $dis_ref->{$id}[0][5] == 81 ) { # judge the flag of first element = 1st end (reverse complement)
+					if ( $dis_ref->{$id}[1][5] == 161 ) { # judge the flag of second element = 2nd end
+						if ( $dis_ref->{$id}[0][2] eq "scaffold" ) { 
+							print OUT "singlton_split\t$id\t$dis_ref->{$id}[0][2](reverse_complement)\tNULL\n";
+						} elsif ( $dis_ref->{$id}[1][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\tNULL\t$dis_ref->{$id}[1][2]\n";
+						}
+						print OUT1 "@"."$id/1\n$seq_1_tr\n+\n$seq_1_qual\n";
+						print OUT2 "@"."$id/2\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+					}
+				} elsif ( $dis_ref->{$id}[0][5] == 97 ) {  # judge the flag of first element = 1st end
+					if ( $dis_ref->{$id}[1][5] == 145 ) { # judge the flag of second element = 2nd end (reverse complement)
+						if ( $dis_ref->{$id}[0][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\t$dis_ref->{$id}[0][2]\tNULL\n";
+						} elsif ( $dis_ref->{$id}[1][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\tNULL\t$dis_ref->{$id}[1][2](reverse complement)\n";
+						}
+						print OUT1 "@"."$id/1\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+						print OUT2 "@"."$id/2\n$seq_2_tr\n+\n$seq_2_qual\n";
+					}
+				} elsif ( $dis_ref->{$id}[0][5] == 65 ) { # judge the flag of first element = 1st end
+					if ( $dis_ref->{$id}[1][5] == 129 ) { # judge the flag of second element = 2nd end
+						if ( $dis_ref->{$id}[0][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\t$dis_ref->{$id}[0][2]\tNULL\n";
+						} elsif ( $dis_ref->{$id}[1][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\tNULL\t$dis_ref->{$id}[1][2]\n"; 
+						}
+						print OUT1 "@"."$id/1\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+                                   		print OUT2 "@"."$id/2\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+					}
+				} elsif ( $dis_ref->{$id}[0][5] == 113 ) { # judge the flag of first element = 1st end (reverse complement)
+					if ( $dis_ref->{$id}[1][5] == 177 ) { # judge the flag of second element = 2nd end (reverse complement)
+						if ( $dis_ref->{$id}[0][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\t$dis_ref->{$id}[0][2](reverse_complement)\tNULL\n";
+						} elsif ( $dis_ref->{$id}[1][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\tNULL\t$dis_ref->{$id}[1][2](reverse_complement)\n";
+						}
+						print OUT1 "@"."$id/1\n$seq_1_tr\n+\n$seq_1_qual\n";
+						print OUT2 "@"."$id/2\n$seq_2_tr\n+\n$seq_2_qual\n";
+					}
+				} elsif ( $dis_ref->{$id}[0][5] == 161 ) { # judge the flag of first element = 2nd end
+					if ( $dis_ref->{$id}[1][5] == 81 ) { # judge the flag of second element = 1st end (reverse complement)
+						if ( $dis_ref->{$id}[0][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\tNULL\t$dis_ref->{$id}[0][2]\n";
+						} elsif ( $dis_ref->{$id}[1][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\t$dis_ref->{$id}[1][2](reverse_complement)\tNULL\n";
+						}
+						print OUT1 "@"."$id/1\n$seq_2_tr\n+\n$seq_2_qual\n";
+						print OUT2 "@"."$id/2\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+					}
+				} elsif ( $dis_ref->{$id}[0][5] == 145 ) { # judge the flag of first element = 2nd end (reverse complement)
+					if ( $dis_ref->{$id}[1][5] == 97 ) { # judge the flag of second element = 1st end
+						if ( $dis_ref->{$id}[0][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\tNULL\t$dis_ref->{$id}[0][2](reverse complement)\n";
+						} elsif ( $dis_ref->{$id}[1][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\t$dis_ref->{$id}[1][2]\tNULL\n";
+						}
+						print OUT1 "@"."$id/1\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+						print OUT2 "@"."$id/2\n$seq_1_tr\n+\n$seq_1_qual\n";
+					}
+				} elsif ( $dis_ref->{$id}[0][5] == 129 ) { # judge the flag of first element = 2nd end
+					if ( $dis_ref->{$id}[1][5] == 65 ) { # judge the flag of second element = 1st end
+						if ( $dis_ref->{$id}[0][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\tNULL\t$dis_ref->{$id}[0][2]\n";
+						} elsif ( $dis_ref->{$id}[1][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\t$dis_ref->{$id}[1][2]\tNULL\n";
+						}
+						print OUT1 "@"."$id/1\n$dis_ref->{$id}[1][3]\n+\n$dis_ref->{$id}[1][6]\n";
+						print OUT2 "@"."$id/2\n$dis_ref->{$id}[0][3]\n+\n$dis_ref->{$id}[0][6]\n";
+					}
+				} elsif ( $dis_ref->{$id}[0][5] == 177 ) { # judge the flag of first element = 2st end (reverse complement)
+					if ( $dis_ref->{$id}[1][5] == 113 ) { # judge the flag of second element = 1nd end (reverse complement)
+						if ( $dis_ref->{$id}[0][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\tNULL\t$dis_ref->{$id}[0][2](reverse_complement)\n";
+						} elsif ( $dis_ref->{$id}[1][2] eq "scaffold" ) {
+							print OUT "singlton_split\t$id\t$dis_ref->{$id}[1][2](reverse_complement)\tNULL\n";
+						}
+						print OUT1 "@"."$id/1\n$seq_2_tr\n+\n$seq_2_qual\n";
+						print OUT2 "@"."$id/2\n$seq_1_tr\n+\n$seq_1_qual\n";
+					}
+				} else {
+					print "convert discordant_split\t$id to singlton_split has incorrect flag value\n";
+				}
+			}
+		}
+		close OUT1;
+		close OUT2;
+		close OUT;
+	}
+
 	sub grep_singlton {
 		my ($dis_ref, $fastq_1, $fastq_2, $path, $sep) = @_;
 		open (OUT, ">>$path/read_mapped_info") || die "Step 2-3: cannot open summary output path:$!\n";

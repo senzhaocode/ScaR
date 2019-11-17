@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 	sub discordant_specif {
-		my ($dis_ref, $multiple_ref, $path, $gene, $read_type, $sep, $a_pos_tag, $b_pos_tag) = @_; #read_type: spanning / discordant
+		my ($dis_ref, $multiple_ref, $path, $gene, $read_type, $sep, $a_pos_tag, $b_pos_tag, $aligner) = @_; #read_type: spanning / discordant
 		foreach my $id ( keys %{$dis_ref} ) {
 			my $com = "@".$id."/"; #please do not use $sep, we have to set the header in end with '/'
 			my $hit_1 = `grep "$com" -A 3 $path/${read_type}_1.txt`; chomp $hit_1;
@@ -19,7 +19,11 @@ use warnings;
 		}
 
 		# collect mutiple hit reads or bad quality reads
-		open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5<40)' $path/tmp/${read_type}_sec.sam |") || die "Step 3: cannot $read_type sam file:$!\n";
+		if ( $aligner eq "hisat2" ) {
+			open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5<40)' $path/tmp/${read_type}_sec.sam |") || die "Step 3: cannot $read_type sam file from hisat2:$!\n";
+		} elsif ( $aligner eq "star" ) {
+			open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5<3)' $path/tmp/${read_type}_sec.sam |") || die "Step 3: cannot $read_type sam file from star:$!\n";
+		}
 		while ( <IN> ) {
 			chomp $_; my ($id, $flag, $chr, $pos, $quality, $cigar, $seq) = (split /\t/, $_)[0,1,2,3,4,5,9];
 			$id =~s/\/[\w\:\-]+$//g; $id =~s/\s[\w\:\-]+$//g; # print "#*$id\n"; # trimmed header
@@ -81,7 +85,11 @@ use warnings;
 		}
 
 		my %mapped; # mapped read with good quality (and remove the other end of reads with multiple hits)
-		open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5>=40)' $path/tmp/${read_type}_sec.sam |") || die "Step 3: cannot $read_type sam file:$!\n";
+		if  ( $aligner eq "hisat2" ) {
+			open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5>=40)' $path/tmp/${read_type}_sec.sam |") || die "Step 3: cannot $read_type sam file from hisat2:$!\n";
+		} elsif ( $aligner eq "star" ) {
+			open (IN, "awk -F '\t' -v OFS='\t' '(\$8>=0 && \$5>=3)' $path/tmp/${read_type}_sec.sam |") || die "Step 3: cannot $read_type sam file from star:$!\n";
+		}
 		while ( <IN> ) {
 			chomp $_; my ($id, $flag, $chr, $pos, $quality, $cigar, $seq) = (split /\t/, $_)[0,1,2,3,4,5,9];
 			$id =~s/\/[\w\:\-]+$//g; $id =~s/\s[\w\:\-]+$//g; # print "#*$id\n"; # trimmed header
@@ -225,7 +233,7 @@ use warnings;
 	}
 
 	sub singlton_specif {
-		my ($dis_ref, $multiple_ref, $path, $gene, $read_type, $sep, $a_pos_tag, $b_pos_tag) = @_;
+		my ($dis_ref, $multiple_ref, $path, $gene, $read_type, $sep, $a_pos_tag, $b_pos_tag, $aligner) = @_;
 		foreach my $id ( keys %{$dis_ref} ) {
 			my $com = "@".$id."/"; # Please do not use $sep, we have to set the header in end with '/'
 			my $hit_1 = `grep "$com" -A 3 $path/${read_type}_1.txt`; chomp $hit_1;

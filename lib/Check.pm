@@ -355,7 +355,7 @@ use warnings;
 					# $ref->{$header}[4]/[5] = [gene_name, transcript_length, transcript_name, transcript_sequence]
 					if ( $scaff_seq_A{$seqA}[1] eq "noexon" ) { $ref->{$header}[4] = [$geneA, $scaff_seq_A{$seqA}[4], $scaff_seq_A{$seqA}[5], $scaff_seq_A{$seqA}[6]]; }
 					if ( $scaff_seq_B{$seqB}[1] eq "noexon" ) { $ref->{$header}[5] = [$geneB, $scaff_seq_B{$seqB}[4], $scaff_seq_B{$seqB}[5], $scaff_seq_B{$seqB}[6]]; }
-					#print "$header\t$scaff_seq_A{$seqA}[3].$scaff_seq_B{$seqB}[3]\t$scaff_seq_A{$seqA}[1]\t$scaff_seq_A{$seqA}[0]\t$seqA\t$scaff_seq_B{$seqB}[1]\t$scaff_seq_B{$seqB}[0]\t$seqB\n";
+					print "$header\t$scaff_seq_A{$seqA}[3].$scaff_seq_B{$seqB}[3]\t$scaff_seq_A{$seqA}[1]\t$scaff_seq_A{$seqA}[0]\t$seqA\t$scaff_seq_B{$seqB}[1]\t$scaff_seq_B{$seqB}[0]\t$seqB\n";
 					$x++;
 				}
 			}
