@@ -98,11 +98,11 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       
       --transAlign
       # (default: hisat2)
-      Set an aligner to map reads at transcriptome level using no-splicing mode (Options: hisat2 or star)
+      # Set an aligner to map reads at transcriptome level using no-splicing mode (Options: hisat2 or star)
       
       --genomeAlign
       # (default: hisat2)
-      Set an aligner to map reads at genome level using splicing mode (Options: hisat2 or star)
+      # Set an aligner to map reads at genome level using splicing mode (Options: hisat2 or star)
       
       --trans_ref ensembl
       # (default: ensembl)
@@ -113,7 +113,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       # The number of threads for running in parallel. 
       
       --anno ~/reference/ 
-      # Set the directory of genomic, transcriptomic sequences and annotations
+      # Set the directory path of genomic, transcriptomic sequences and annotations
       
       --output ~/examples/output/ 
       # Output directory
@@ -198,7 +198,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
  
   6.3 Pull / Build ScaR engine image
 
-  6.3.1 Reqiurements
+  6.3.1 Requirements
   - For Linux and Mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
   
   6.3.2 Pull image from Docker Hub/Cloud repositories
