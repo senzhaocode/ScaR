@@ -22,22 +22,6 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
         wget "ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/grch38_tran.tar.gz"
         tar -vxf grch38_tran.tar.gz
         mv grch38_tran/genome_tran.* .
-        
-  1.4 STAR v2.7.2d (https://github.com/alexdobin/STAR/archive/2.7.2d.tar.gz)
-  
-      The binary executable files have been integrated in ~/bin/STAR-2.7.2d/, please add a working path to Linux environment variables before running:
-        PATH=$PATH:/where_is_path/ScaR/bin/STAR-2.7.2d/
-        export PATH
-        
-  1.5 STAR aligner SA index files (genome reference plus transcript annotation in gtf format)
-  
-      Users can download index files that were pre-build on basis of GRCh38 genome reference and Ensembl v89 transcript annotations)
-        cd ~/reference
-        wget "http://folk.uio.no/senz/STAR_index.tar.gz"
-        tar -vxf STAR_index.tar.gz
-        mv STAR_index/* .
-        
-        NOTE: Users can generate their own genome indexes with most latest assemblies and annotations.
   
   1.4 Samtools version >= 1.3 (https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2)
       
@@ -62,13 +46,33 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       PERL5LIB="$PERL5LIB:/where_is_path/ScaR/lib"
       export PERL5LIB
       NOTE: we recommend that users add the path of perl libraries to .bashrc, then "source .bashrc"
+
+## 2. Optional dependencies
+
+  If users would like to use an optional aligner STAR instead of the default HiSAT2:
+  
+  2.1 STAR v2.7.2d (https://github.com/alexdobin/STAR/archive/2.7.2d.tar.gz)
+  
+      The binary executable files have been integrated in ~/bin/STAR-2.7.2d/, please add a working path to Linux environment variables before running:
+        PATH=$PATH:/where_is_path/ScaR/bin/STAR-2.7.2d/
+        export PATH
         
-## 2. Usage of the "select_read.pl"
-  2.1 See running parameters
+  2.2 STAR aligner SA index files (genome reference plus transcript annotation in gtf format)
+  
+      Users can download index files that were pre-build on basis of GRCh38 genome reference and Ensembl v89 transcript annotations)
+        cd ~/reference
+        wget "http://folk.uio.no/senz/STAR_index.tar.gz"
+        tar -vxf STAR_index.tar.gz
+        mv STAR_index/* .
+        
+        NOTE: Users can generate their own genome indexes with most latest assemblies and annotations.
+
+## 3. Usage of the "select_read.pl"
+  3.1 See running parameters
       
       perl select_read.pl --help
 
-  2.2 An example of running:
+  3.2 An example of running:
       
       perl select_read.pl
       
@@ -136,7 +140,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       # NOTE: 'RP11-599B13.3' is the gene name and has to be identical to the input of gene partner names; 'alternative1' is the transcript name (please avoid using the symbol '_ $ % & # * @ ^ ? + ! < > | / \' in user-defined transcript name). Make sure both 'RP11-599B13.3' and 'alternative1' are together, and separated by '|'.
     
       
-## 3. Output results
+## 4. Output results
   For example: ~/examples/output/
   
   * `scaffold_*_seq.fa` (cDNA sequences of geneA and geneB, and breakpoint sequence of scaffold in fasta format)
@@ -153,11 +157,11 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
     
 *: files with bold name are important for users
 
-## 4. Summarize the number of spanning and split reads across a cohort of samples (run evaluate.pl)
-  4.1 See running parameters:
+## 5. Summarize the number of spanning and split reads across a cohort of samples (run evaluate.pl)
+  5.1 See running parameters:
       perl evaluate.pl --help
       
-  4.2 An example of running:
+  5.2 An example of running:
       Users have to make a directory that contains outputs from `select_read.pl` for summarizing. For instance in "examples" directory, if RCC1_ABHD12B_new folder is not present, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new/`, then run `evaluate.pl` as follows:
       
       perl evaluate.pl 
@@ -168,7 +172,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       --output ~/examples/RCC1_ABHD12B_summary 
       # Set the output directory of running "evaluate.pl"
   
-  4.3 Summarize output directory of `evaluate.pl`
+  5.3 Summarize output directory of `evaluate.pl`
   
      For example: ~/examples/RCC1_ABHD12B_summary
       
@@ -180,35 +184,35 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
         |--- "All_sample_noclip.sorted.bam" (align concatenated split reads to scaffold sequence, and user can visualize this bam file uisng scaffold_ENST00000373833_49_ENST00000337334_48_seq.fa as reference by IGV)
         |--- "p.value" (fisher exact test and chi-squred test for mapping distribution bias to upstream/downstream of scaffold sequence)
         
-## 5. Installation/Running via Docker
+## 6. Installation/Running via Docker
 
-  5.1 [Install the Docker engine](https://docs.docker.com/engine/installation/) in your OS platform
+  6.1 [Install the Docker engine](https://docs.docker.com/engine/installation/) in your OS platform
   - installing [Docker on Linux](https://docs.docker.com/engine/installation/linux/) 
   - installing [Docker on Mac OS](https://docs.docker.com/engine/installation/mac/) 
   - installing [Docker on Windows](https://docs.docker.com/docker-for-windows/) (NOTE: We have not yet done enough testing on the Windows platform, so we would like to recieve more feedback on it)
 
-  5.2 Allocate computational resource to docker, e.g.
+  6.2 Allocate computational resource to docker, e.g.
   - Memory: min 4GB for ScaR running
   - CPUs: 4 (Users have to set up based on their own hardwares)
   - Swap: 1GB (ScaR does not need a large memory for running, so keep a small mount of Swap space)
  
-  5.3 Pull / Build ScaR engine image
+  6.3 Pull / Build ScaR engine image
 
-  5.3.1 Reqiurements
+  6.3.1 Reqiurements
   - For Linux and Mac users, root privilege is needed. If you are non-root user, please refer to [this setting](https://docs.docker.com/install/linux/linux-postinstall/). 
   
-  5.3.2 Pull image from Docker Hub/Cloud repositories
+  6.3.2 Pull image from Docker Hub/Cloud repositories
   - Users can pull the ScaR engine image directly from Docker Hub (approx 9Gb) which has been built and pushed to Docker Hub/Cloud repositories in advance. Run `docker pull senzhao/scar:latest`. After that, check the image by typing `docker images`
   
-  5.3.3 Build image from docker container (optional)
+  6.3.3 Build image from docker container (optional)
   - If users would like to build the ScaR engine image instead of pulling it from Docker Hub, just download the soruce code and change to directory `cd ~/ScaR-master`, and then run `docker build --rm -t senzhao/scar:latest -f Dockerfile_ubunta .`. NOTE: building may take a long process (around 30 mins) and also needs a disk image size with at least 50G.
   - After building is done, check the images by typing `docker images`
     
-  5.4 Run ScaR engine image
+  6.4 Run ScaR engine image
   
-  5.4.1 Usage - display all parameters: `docker run -t --rm senzhao/scar perl /ScaR/select_read.pl`
+  6.4.1 Usage - display all parameters: `docker run -t --rm senzhao/scar perl /ScaR/select_read.pl`
   
-  5.4.2 Run an example using the data in the "examples" directory: 
+  6.4.2 Run an example using the data in the "examples" directory: 
   
   ```bash
   docker run -t --rm -v /input_data_path/examples:/data senzhao/scar perl /ScaR/select_read.pl --p 4 \
@@ -258,7 +262,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   * "/reference" - the path of reference and annotation files in docker image (NOTE: keep it as "/reference")
   * "output" - set the output of ScaR running (relative path to the directory /input_data_path/examples in host machine).
   
-  5.4.3 Run an example of `evaluate.pl` for summarizing the number of spanning and split reads across a cohort of samples: 
+  6.4.3 Run an example of `evaluate.pl` for summarizing the number of spanning and split reads across a cohort of samples: 
   Users have to make a directory that contains outputs from `select_read.pl` for summarizing. For instance in "examples" directory, if RCC1_ABHD12B_new folder is not present, `mkdir RCC1_ABHD12B_new && cp -r output RCC1_ABHD12B_new/`, then run `evaluate.pl` as follows.
   
   ```bash
@@ -266,7 +270,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
       --input RCC1_ABHD12B_new --output RCC1_ABHD12B_summary
   ```
 
-## 6. Reference
+## 7. Reference
 1. Kim D, Langmead B, and Salzberg SL, HISAT: a fast spliced aligner with low memory requirements. Nature Methods 12, 357-360 (2015). [DIO:10.1038/nmeth.3317](http://www.nature.com/nmeth/journal/v12/n4/full/nmeth.3317.html)
 2. Li H., Handsaker B., Wysoker A., Fennell T., Ruan J., Homer N., Marth G., Abecasis G., Durbin R. and 1000 Genome Project Data Processing Subgroup. The Sequence alignment/map (SAM) format and SAMtools. Bioinformatics, 25, 2078-9 (2009). [DOI: 10.1093/bioinformatics/btp352](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btp352)
 3. Dobin A, Davis CA, Schlesinger F, et al. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013;29(1):15–21. [doi:10.1093/bioinformatics/bts635](https://academic.oup.com/bioinformatics/article/29/1/15/272537)
