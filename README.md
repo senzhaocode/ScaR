@@ -274,7 +274,7 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
 1. Kim D, Langmead B, and Salzberg SL, HISAT: a fast spliced aligner with low memory requirements. Nature Methods 12, 357-360 (2015). [DIO:10.1038/nmeth.3317](http://www.nature.com/nmeth/journal/v12/n4/full/nmeth.3317.html)
 2. Li H., Handsaker B., Wysoker A., Fennell T., Ruan J., Homer N., Marth G., Abecasis G., Durbin R. and 1000 Genome Project Data Processing Subgroup. The Sequence alignment/map (SAM) format and SAMtools. Bioinformatics, 25, 2078-9 (2009). [DOI: 10.1093/bioinformatics/btp352](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btp352)
 3. Dobin A, Davis CA, Schlesinger F, et al. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013;29(1):15–21. [doi:10.1093/bioinformatics/bts635](https://academic.oup.com/bioinformatics/article/29/1/15/272537)
-4. Zhao S*., Andreas M Hoff*, Rolf I Skotheim, ScaR - A tool for sensitive detection of known fusion transcripts: Establishing prevalence of fusions in testicular germ cell tumors. BioRix [https://www.biorxiv.org/content/10.1101/518316v1](https://www.biorxiv.org/content/10.1101/518316v1) (* equal contribution)
+4. Zhao S*., Andreas M Hoff*, Rolf I Skotheim, ScaR—a tool for sensitive detection of known fusion transcripts: establishing prevalence of fusions in testicular germ cell tumors. NAR Genomics and Bioinformatics, Volume 2, Issue 1, March 2020, lqz025, [https://doi.org/10.1093/nargab/lqz025](https://academic.oup.com/nargab/article/2/1/lqz025/5701460) (* equal contribution)
 
 ## Contact
 
