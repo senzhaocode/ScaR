@@ -32,8 +32,9 @@ use Check;
 		     "			GCTCTATGAAATTGCA|AACAAAGAGAGGGTCA\n",
 		     "			>scaffold2\n",
 		     "			GCTCTATGAAATTGCA*AACAAAGAGAGGGTCA\n";
-	push @usage, "	--coordinate	Set genomic junction coordinates (build GRCh38) of breakpoints for GeneA and GeneB (if --coordinate is active, --scaffold has to be inactivated),\n",
-		     "			e.g. \"chr1:34114119|chr2:65341523,chr1:3412125|chr2:65339145\"\n";
+	push @usage, "	--coordinate	Set genomic junction coordinates (build GRCh38) of breakpoints and strand directions (optional input) for GeneA and GeneB.\n",
+		     "			(if --coordinate is active, --scaffold has to be inactivated)\n",
+		     "			e.g. \"chr1:34114119|chr2:65341523,chr1:3412125|chr2:65339145\" and \"chr1:34114119:+|chr2:65341523:-,chr1:3412125:+|chr2:65339145\";\n";
 	push @usage, "	--anno		Set the directory of annotation files: e.g. /script_path/data/\n";
 	push @usage, "	--output	Output Directory\n";
 	push @usage, "	--anchor	The length of anchor for read mapping to breakpoint. Default: 6\n";
@@ -99,9 +100,13 @@ use Check;
 		}
 	} else {
 		if ( defined($coordinate) ) { 
-			if (! $coordinate =~/[\w]+\:[\d]+\|[\w]+\:[\d]+/ ) {
+			if ( $coordinate =~/[\w]+\:[\d]+\|[\w]+\:[\d]+/ ) {
+			} elsif ( $coordinate =~/[\w]+\:[\d]+\:[\+\-]{1}\|[\w]+\:[\d]+\:[\+\-]{1}/ ) {
+			} elsif ( $coordinate =~/[\w]+\:[\d]+\:[\+\-]{1}\|[\w]+\:[\d]+/ ) {
+			} elsif ( $coordinate =~/[\w]+\:[\d]+\|[\w]+\:[\d]+\:[\+\-]{1}/ ) {
+			} else {
 				print "\n$coordinate format is wrong, please set --coordinate in correct format\n\n"; exit;
-			}
+			} 
 		} else {
 			print "\nUser needs to activate either --scaffold or --coordinate paramter\n"; exit;
 		}
