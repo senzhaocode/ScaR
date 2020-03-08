@@ -111,8 +111,11 @@ use warnings;
 			if ( defined($geneA_pos) and defined($geneB_pos) ) {
 				my $chrom_geneA; if ( $geneA_pos =~/([\w]+)\:/ ) { $chrom_geneA = $1; $chrom_geneA =~s/[\s]+//; }
 				my $chrom_geneB; if ( $geneB_pos =~/([\w]+)\:/ ) { $chrom_geneB = $1; $chrom_geneB =~s/[\s]+//; }
-				$geneA_pos =~s/[\w]+\://g; $geneA_pos =~s/[\s]+//; $geneB_pos =~s/[\w]+\://g; $geneB_pos =~s/[\s]+//; # get genomic position of GeneA and GeneB
-				push @genomic_pos, [$geneA_pos, $geneB_pos, $chrom_geneA, $chrom_geneB]; # breakpos of GeneA, breakpos of GeneB, Chrom of GeneA, Chrom of GeneB
+				my $coord_geneA; if ( $geneA_pos =~/\:([\d]+)/ ) { $coord_geneA = $1; $coord_geneA =~s/[\s]+//; }
+				my $coord_geneB; if ( $geneB_pos =~/\:([\d]+)/ ) { $coord_geneB = $1; $coord_geneB =~s/[\s]+//; }
+				my $strand_geneA; if ( $geneA_pos =~/\:(\+|\-)/ ) { $strand_geneA = $1; $strand_geneA =~s/[\s]+//; } else { $strand_geneA = undef; } # if strand not, undef
+				my $strand_geneB; if ( $geneB_pos =~/\:(\+|\-)/ ) { $strand_geneB = $1; $strand_geneB =~s/[\s]+//; } else { $strand_geneB = undef; } # if strand not, undef
+				push @genomic_pos, [$coord_geneA, $coord_geneB, $chrom_geneA, $chrom_geneB, $strand_geneA, $strand_geneB]; # breakpos of GeneA, breakpos of GeneB, Chrom of GeneA, Chrom of GeneB, Strand of GeneA, Strand of GeneB
 			} else {
 				print "\nStep 0-3: $single format for genomic coordinate of breakpoint is wrong, please set --coordinate in correct format\n\n"; exit;
 			}
@@ -203,13 +206,13 @@ use warnings;
 			my $strand_seq_B; # strand direction of GeneB
 			if ( $geneA =~/ENSG/ ) { # geneA names as ensembl id
 				if ( $geneB =~/ENSG/ )  { # geneB names as ensembl id
-					if ( exists($cdna{$geneA}) ) { $strand_seq_A = &coordinate_seq($cdna{$geneA}, $read_l, $ref_pos->[0], "upstream", \%scaff_seq_A); }
-					if ( exists($cdna{$geneB}) ) { $strand_seq_B = &coordinate_seq($cdna{$geneB}, $read_l, $ref_pos->[1], "downstream", \%scaff_seq_B); }
+					if ( exists($cdna{$geneA}) ) { $strand_seq_A = &coordinate_seq($cdna{$geneA}, $read_l, $ref_pos->[0], "upstream", \%scaff_seq_A, $ref_pos->[4]); }
+					if ( exists($cdna{$geneB}) ) { $strand_seq_B = &coordinate_seq($cdna{$geneB}, $read_l, $ref_pos->[1], "downstream", \%scaff_seq_B, $ref_pos->[5]); }
 				} else { # geneB names as gene symbol
-					if ( exists($cdna{$geneA}) ) { $strand_seq_A = &coordinate_seq($cdna{$geneA}, $read_l, $ref_pos->[0], "upstream", \%scaff_seq_A); }
+					if ( exists($cdna{$geneA}) ) { $strand_seq_A = &coordinate_seq($cdna{$geneA}, $read_l, $ref_pos->[0], "upstream", \%scaff_seq_A, $ref_pos->[4]); }
 					if ( exists($name{$geneB}) ) {
 						if ( exists($cdna{$name{$geneB}}) ) {
-							$strand_seq_B = &coordinate_seq($cdna{$name{$geneB}}, $read_l, $ref_pos->[1], "downstream", \%scaff_seq_B);
+							$strand_seq_B = &coordinate_seq($cdna{$name{$geneB}}, $read_l, $ref_pos->[1], "downstream", \%scaff_seq_B, $ref_pos->[5]);
 						} 
 					} 
 				}
@@ -217,19 +220,19 @@ use warnings;
 				if ( $geneB =~/ENSG/ )  { # geneB names as ensembl id
 					if ( exists($name{$geneA}) ) {
 						if ( exists($cdna{$name{$geneA}}) ) {
-							$strand_seq_A = &coordinate_seq($cdna{$name{$geneA}}, $read_l, $ref_pos->[0], "upstream", \%scaff_seq_A);
+							$strand_seq_A = &coordinate_seq($cdna{$name{$geneA}}, $read_l, $ref_pos->[0], "upstream", \%scaff_seq_A, $ref_pos->[4]);
 						}
 					}
-					if ( exists($cdna{$geneB}) ) { $strand_seq_B = &coordinate_seq($cdna{$geneB}, $read_l, $ref_pos->[1], "downstream", \%scaff_seq_B); }
+					if ( exists($cdna{$geneB}) ) { $strand_seq_B = &coordinate_seq($cdna{$geneB}, $read_l, $ref_pos->[1], "downstream", \%scaff_seq_B, $ref_pos->[5]); }
 				} else {
 					if ( exists($name{$geneA}) ) {
 						if ( exists($cdna{$name{$geneA}}) ) {
-							$strand_seq_A = &coordinate_seq($cdna{$name{$geneA}}, $read_l, $ref_pos->[0], "upstream", \%scaff_seq_A); 
+							$strand_seq_A = &coordinate_seq($cdna{$name{$geneA}}, $read_l, $ref_pos->[0], "upstream", \%scaff_seq_A, $ref_pos->[4]); 
 						}
 					}
 					if ( exists($name{$geneB}) ) {
 						if ( exists($cdna{$name{$geneB}}) ) {
-							$strand_seq_B = &coordinate_seq($cdna{$name{$geneB}}, $read_l, $ref_pos->[1], "downstream", \%scaff_seq_B);
+							$strand_seq_B = &coordinate_seq($cdna{$name{$geneB}}, $read_l, $ref_pos->[1], "downstream", \%scaff_seq_B, $ref_pos->[5]);
 						}
 					}
 				}
@@ -272,11 +275,27 @@ use warnings;
 						$tmp_genomic_seq_rev =~tr/ATCG/TAGC/; $tmp_genomic_seq_rev = reverse($tmp_genomic_seq_rev);
 
 						if ( $strand_seq_A eq '+' ) { # if geneA at position strand
-							$scaff_seq_A{$tmp_seq} = [0, "noexon", $ref_pos->[0], "direction", 0-$seed, "trans$ref_pos->[0]pos", $tmp_genomic_seq];
-							$scaff_seq_A{$tmp_seq_rev} = [0, "noexon", $ref_pos->[0], "direction_rev", 0-$seed, "trans$ref_pos->[0]pos", $tmp_genomic_seq];
+							if ( defined($ref_pos->[4]) ) { # if the strand direction input of coordinate for geneA present
+								if ( $ref_pos->[4] eq $strand_seq_A ) {
+									$scaff_seq_A{$tmp_seq} = [0, "noexon", $ref_pos->[0], "direction", 0-$seed, "trans$ref_pos->[0]pos", $tmp_genomic_seq];
+								} else {
+									$scaff_seq_A{$tmp_seq_rev} = [0, "noexon", $ref_pos->[0], "direction_rev", 0-$seed, "trans$ref_pos->[0]pos", $tmp_genomic_seq];
+								}
+							} else {
+								$scaff_seq_A{$tmp_seq} = [0, "noexon", $ref_pos->[0], "direction", 0-$seed, "trans$ref_pos->[0]pos", $tmp_genomic_seq];
+								$scaff_seq_A{$tmp_seq_rev} = [0, "noexon", $ref_pos->[0], "direction_rev", 0-$seed, "trans$ref_pos->[0]pos", $tmp_genomic_seq];
+							}
 						} else { # if geneA at negatvie strand
-							$scaff_seq_A{$tmp_seq} = [0, "noexon", $ref_pos->[0], "direction_rev", 0-$seed_rev, "trans$ref_pos->[0]neg", $tmp_genomic_seq_rev];
-							$scaff_seq_A{$tmp_seq_rev} = [0, "noexon", $ref_pos->[0], "direction", 0-$seed_rev, "trans$ref_pos->[0]neg", $tmp_genomic_seq_rev];
+							if ( defined($ref_pos->[4]) ) { # if the strand direction input of coordinate for geneA present
+								if ( $ref_pos->[4] eq $strand_seq_A ) {
+									$scaff_seq_A{$tmp_seq_rev} = [0, "noexon", $ref_pos->[0], "direction", 0-$seed_rev, "trans$ref_pos->[0]neg", $tmp_genomic_seq_rev];
+								} else {
+									$scaff_seq_A{$tmp_seq} = [0, "noexon", $ref_pos->[0], "direction_rev", 0-$seed_rev, "trans$ref_pos->[0]neg", $tmp_genomic_seq_rev];
+								}
+							} else {
+								$scaff_seq_A{$tmp_seq} = [0, "noexon", $ref_pos->[0], "direction_rev", 0-$seed_rev, "trans$ref_pos->[0]neg", $tmp_genomic_seq_rev];
+								$scaff_seq_A{$tmp_seq_rev} = [0, "noexon", $ref_pos->[0], "direction", 0-$seed_rev, "trans$ref_pos->[0]neg", $tmp_genomic_seq_rev];
+							}
 						}
 						$seed = $seed + 1;
 						$seed_rev = $seed_rev - 1;
@@ -324,11 +343,27 @@ use warnings;
 						$tmp_genomic_seq_rev =~tr/ATCG/TAGC/; $tmp_genomic_seq_rev = reverse($tmp_genomic_seq_rev);
 	
 						if ( $strand_seq_B eq '+' ) { # if geneB at position strand
-							$scaff_seq_B{$tmp_seq} = [0, "noexon", $ref_pos->[1], "direction", 0-$seed, "trans$ref_pos->[1]pos", $tmp_genomic_seq];
-							$scaff_seq_B{$tmp_seq_rev} = [0, "noexon", $ref_pos->[1], "direction_rev", 0-$seed, "trans$ref_pos->[1]pos", $tmp_genomic_seq];
+							if ( defined($ref_pos->[5]) ) { # if the strand direction input of coordinate for geneB present
+								if ( $ref_pos->[5] eq $strand_seq_B ) {
+									$scaff_seq_B{$tmp_seq} = [0, "noexon", $ref_pos->[1], "direction", 0-$seed, "trans$ref_pos->[1]pos", $tmp_genomic_seq];
+								} else {
+									$scaff_seq_B{$tmp_seq_rev} = [0, "noexon", $ref_pos->[1], "direction_rev", 0-$seed, "trans$ref_pos->[1]pos", $tmp_genomic_seq];
+								}
+							} else {
+								$scaff_seq_B{$tmp_seq} = [0, "noexon", $ref_pos->[1], "direction", 0-$seed, "trans$ref_pos->[1]pos", $tmp_genomic_seq];
+								$scaff_seq_B{$tmp_seq_rev} = [0, "noexon", $ref_pos->[1], "direction_rev", 0-$seed, "trans$ref_pos->[1]pos", $tmp_genomic_seq];
+							}
 						} else {
-							$scaff_seq_B{$tmp_seq} = [0, "noexon", $ref_pos->[1], "direction_rev", 0-$seed_rev, "trans$ref_pos->[1]neg", $tmp_genomic_seq_rev];
-							$scaff_seq_B{$tmp_seq_rev} = [0, "noexon", $ref_pos->[1], "direction", 0-$seed_rev, "trans$ref_pos->[1]neg", $tmp_genomic_seq_rev];
+							if ( defined($ref_pos->[5]) ) { # if the strand direction input of coordinate for geneB present
+								if ( $ref_pos->[5] eq $strand_seq_B ) {
+									$scaff_seq_B{$tmp_seq_rev} = [0, "noexon", $ref_pos->[1], "direction", 0-$seed_rev, "trans$ref_pos->[1]neg", $tmp_genomic_seq_rev];
+								} else {
+									$scaff_seq_B{$tmp_seq} = [0, "noexon", $ref_pos->[1], "direction_rev", 0-$seed_rev, "trans$ref_pos->[1]neg", $tmp_genomic_seq_rev];
+								}
+							} else {
+								$scaff_seq_B{$tmp_seq} = [0, "noexon", $ref_pos->[1], "direction_rev", 0-$seed_rev, "trans$ref_pos->[1]neg", $tmp_genomic_seq_rev];
+								$scaff_seq_B{$tmp_seq_rev} = [0, "noexon", $ref_pos->[1], "direction", 0-$seed_rev, "trans$ref_pos->[1]neg", $tmp_genomic_seq_rev];
+							}
 						}
 						$seed = $seed + 1;
 						$seed_rev = $seed_rev - 1;
@@ -363,12 +398,13 @@ use warnings;
 	}
 
 	sub coordinate_seq {
-		my ($ref_seq, $read_range, $gene_pos, $type, $ref_hash) = @_;
+		my ($ref_seq, $read_range, $gene_pos, $type, $ref_hash, $given_strand) = @_;
 		# // $ref_seq: transcript sequence array - $cdna{$name{$geneB}}
 		# // $read_range: read length of paired-end fastq
 		# // $gene_pos: breakpoint coordinate of GeneA / GeneB
 		# // $type: "upstream" or "downstream"
 		# // $ref_hash: $ref_hash->{"scaffold_breakpoint_sequence"} = [|Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_coordinate, "direction"/"direction_rev"]
+		# // $given_strand: strand direction of geneA / geneB in coordinate input (i.e. undef, + or -)
 		my $strand_direction; # set strand direction of gene partner
 		foreach my $id ( @{$ref_seq} ) {
 			$strand_direction = $id->[1];
@@ -400,8 +436,16 @@ use warnings;
 
 						$front_frag = substr($front_frag, 1); $front_tag = $front_tag + 1; # get the length of upstream (read_length - 1)
 						$front_frag_reverse = substr($front_frag_reverse, 1); $front_tag_reverse = $front_tag_reverse + 1; # get the length of upstream (read_length - 1)
-						$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
-						$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+						if ( defined($given_strand) ) {
+							if ( $given_strand eq $id->[1] ) {
+								$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+							} else {
+								$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+							}
+						} else {
+							$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+							$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+						}
 					} elsif ( $type eq "downstream" ) { # downstream sequence
 						my $front_frag; my $front_tag = 0;
 						my $front_frag_reverse; my $front_tag_reverse = 0;
@@ -419,8 +463,16 @@ use warnings;
 						
 						$front_frag = substr($front_frag, 0, length($front_frag)-1); $front_tag = $front_tag + 1; # get the length of upstream (read_length - 1)
 						$front_frag_reverse = substr($front_frag_reverse, 0, length($front_frag_reverse)-1); $front_tag_reverse = $front_tag_reverse + 1; # get the length of upstream (read_length - 1)
-						$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
-						$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+						if ( defined($given_strand) ) {
+							if ( $given_strand eq $id->[1] ) {
+								$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_po
+							} else {
+								$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|,$transcript_id, genomic_pos
+							}
+						} else {
+							$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+							$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+						}
 					}
 				}
 			} else { # transcript in negative strand
@@ -452,8 +504,16 @@ use warnings;
 
 						$front_frag = substr($front_frag, 1); $front_tag = $front_tag + 1; # get the length of upstream (read_length - 1)
 						$front_frag_reverse = substr($front_frag_reverse, 1); $front_tag_reverse = $front_tag_reverse + 1; # get the length of upstream (read_length - 1)
-						$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
-						$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+						if ( defined($given_strand) ) {
+							if ( $given_strand eq $id->[1] ) {
+								$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+							} else {
+								$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+							}
+						} else {
+							$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+							$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+						}
 					} elsif ( $type eq "downstream" ) { # downstream sequence
 						my $front_frag; my $front_tag = 0;
 						my $front_frag_reverse; my $front_tag_reverse = 0;
@@ -472,8 +532,16 @@ use warnings;
 
 						$front_frag = substr($front_frag, 0, length($front_frag)-1); $front_tag = $front_tag + 1; # get the length of upstream (read_length - 1)
 						$front_frag_reverse = substr($front_frag_reverse, 0, length($front_frag_reverse)-1); $front_tag_reverse = $front_tag_reverse + 1; # get the length of upstream (read_length - 1)
-						$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
-						$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+						if ( defined($given_strand) ) {
+							if ( $given_strand eq $id->[1] ) {
+								$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+							} else {
+								$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+							}
+						} else {
+							$ref_hash->{$front_frag} = [$front_tag, $id->[4], $gene_pos, "direction"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+							$ref_hash->{$front_frag_reverse} = [$front_tag_reverse, $id->[4], $gene_pos, "direction_rev"]; # |Exp(read_length)-Obs(read_length)|, $transcript_id, genomic_pos
+						}
 					}
 				}
 			}
