@@ -34,12 +34,12 @@ Use scaffold re-aligning approach to detect the prevalence and recurrence of kno
   1.6 Genomic data and annotations
   
         cd ~/reference
-        wget "http://folk.uio.no/senz/GRCh38.primary_assembly.genome.fa" #-- whole genome sequences (build GRCh38 version)
-        wget "http://folk.uio.no/senz/Gene_hg38.txt" #-- gene annotation file
-        wget "http://folk.uio.no/senz/ensembl_transcript.fa" #-- the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
-        wget "http://folk.uio.no/senz/gencode_transcript.fa" #-- the human transcriptome sequences annotated from GENCODE database (Release version 27)
-        wget "http://folk.uio.no/senz/ucsc_transcript.fa" #-- the human transcriptome sequences annotated from UCSC database (Release date: Nov 2018)
-        wget "http://folk.uio.no/senz/ucsc_refGene.txt"
+        wget "https://zenodo.org/record/4036439/files/GRCh38.primary_assembly.genome.fa?download=1" && mv "GRCh38.primary_assembly.genome.fa?download=1" GRCh38.primary_assembly.genome.fa #-- whole genome sequences (build GRCh38 version)
+        wget "https://zenodo.org/record/4036439/files/Gene_hg38.txt?download=1" && mv "Gene_hg38.txt?download=1" Gene_hg38.txt #-- gene annotation file
+        wget "https://zenodo.org/record/4036439/files/ensembl_transcript.fa?download=1" && mv "ensembl_transcript.fa?download=1" ensembl_transcript.fa #-- the human transcriptome sequences annotated from ensembl database (Ensembl Archive Release 89)
+        wget "https://zenodo.org/record/4036439/files/gencode_transcript.fa?download=1" && mv "gencode_transcript.fa?download=1" gencode_transcript.fa #-- the human transcriptome sequences annotated from GENCODE database (Release version 27)
+        wget "https://zenodo.org/record/4036439/files/ucsc_transcript.fa?download=1" && mv "ucsc_transcript.fa?download=1" ucsc_transcript.fa #-- the human transcriptome sequences annotated from UCSC database (Release date: May 2019)
+        wget "https://zenodo.org/record/4036439/files/ucsc_refGene.txt?download=1" && mv "ucsc_refGene.txt?download=1" ucsc_refGene.txt
         
   1.7 Set Perl libraries to environment variables
   
