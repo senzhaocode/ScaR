@@ -198,8 +198,8 @@ use warnings;
 		$/ = "\n";
 
 		# judgement ensembl_id format or gene symbol format for --coordinate
-		my $x = 0; # count the number of breakpoint combinations
 		foreach my $ref_pos ( @genomic_pos ) { # // $ref_pos->[0]: breakpos of GeneA; # // $ref_pos->[1]: breakpos of GeneB
+			my $x = 0; # index the number of combinations per each breakpoint pair
 			my %scaff_seq_A; # collect scaffold breakpoint sequences of one given genomic coordinate for GeneA
 			my %scaff_seq_B; # collect scaffold breakpoint sequences of one given genomic coordinate for GeneB
 			my $strand_seq_A; # strand direction of GeneA
@@ -376,8 +376,8 @@ use warnings;
 			}
 
 			# print all scaffold combination
-			foreach my $seqA ( keys %scaff_seq_A ) {
-				foreach my $seqB ( keys %scaff_seq_B ) {
+			foreach my $seqA ( sort {$a cmp $b} keys %scaff_seq_A ) {
+				foreach my $seqB ( sort {$a cmp $b} keys %scaff_seq_B ) {
 					next if ( $scaff_seq_A{$seqA}[3] eq "direction_rev" and  $scaff_seq_B{$seqB}[3] eq "direction_rev" );
 					my $header = "alt_".$scaff_seq_A{$seqA}[2]."_".$scaff_seq_B{$seqB}[2]."_".$x;
 					$ref->{$header}[0] = [$scaff_seq_A{$seqA}[0], $seqA]; # breakpoint seq of GeneA
