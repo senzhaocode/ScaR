@@ -640,6 +640,9 @@ print "#########################################################################
 				`echo "* Num (proportion) of spanning read pairs unique mapping to $geneA and $geneB: 0 / 0 (0)" >> $output/$name/summary_read_mapping_support.txt`;
 				print strftime("%Y-%m-%d %H:%M:%S", localtime), " Step 3: No spanning | discordant/singlton split reads show successful mapping for breakpoint $name\n";
 			}
+			
+			# remove the tmp directory per each $name
+			`rm -r $output/$name/tmp`;
 		}
 	}
 
